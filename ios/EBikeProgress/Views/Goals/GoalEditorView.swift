@@ -68,7 +68,7 @@ struct GoalEditorView: View {
                     Button(L10n.tr("common.save"), systemImage: "checkmark") {
                         if model.save(using: goals) { dismiss() }
                     }
-                    .buttonStyle(.glassProminent)
+                    .buttonStyle(.primaryFlat)
                     .disabled(!model.isValid)
                 }
             }
@@ -81,11 +81,13 @@ struct GoalEditorView: View {
             .overlay {
                 if let image = model.previewImage {
                     Image(uiImage: image).resizable().scaledToFill()
+                } else if let bike = model.catalogBike, bike.image != nil {
+                    CatalogBikeImage(bike: bike)
                 } else {
-                    PhotoPlaceholder(bike: model.catalogBike)
+                    PhotoPlaceholder(hint: L10n.tr("photo.add"))
                 }
             }
-            .clipShape(.rect(cornerRadius: 26))
+            .clipShape(.rect(cornerRadius: 12))
             .animation(.smooth, value: model.hasPhoto)
     }
 }

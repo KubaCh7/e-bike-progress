@@ -34,7 +34,7 @@ struct GoalsManagerView: View {
                         Button(L10n.tr("common.edit"), systemImage: "pencil") {
                             editingGoal = goal
                         }
-                        .tint(.indigo)
+                        .tint(.gray)
                     }
                     .contextMenu {
                         if !goal.isDefault {
@@ -98,11 +98,11 @@ struct GoalListRow: View {
                     .font(.caption.monospacedDigit())
                     .foregroundStyle(.secondary)
                 ProgressView(value: stats.progress)
-                    .tint(.teal)
+                    .tint(.primary)
             }
             if isSelected {
                 Image(systemName: "checkmark.circle.fill")
-                    .foregroundStyle(.teal)
+                    .foregroundStyle(.secondary)
                     .font(.title3)
             }
         }

@@ -8,7 +8,7 @@ import { Brand } from './Shell'
 
 type Mode = 'signIn' | 'signUp'
 
-/** Logowanie / rejestracja (z imieniem), Sign in with Apple albo praca bez konta. */
+/** Logowanie / rejestracja (z imieniem) albo praca bez konta. */
 export function AuthScreen() {
   const { t } = useTranslation()
   const auth = useAuth()
@@ -103,11 +103,6 @@ export function AuthScreen() {
             {busy ? t('common.loading') : isSignUp ? t('auth.signUp') : t('auth.signIn')}
           </button>
 
-          <div className="divider">{t('auth.or')}</div>
-
-          <button type="button" className="btn outline block" onClick={() => auth.signInWithApple().catch((e: Error) => setError(e.message))}>
-            {t('auth.apple')}
-          </button>
           <button type="button" className="btn ghost block" onClick={auth.continueLocal}>{t('auth.continueOffline')}</button>
         </form>
       </main>

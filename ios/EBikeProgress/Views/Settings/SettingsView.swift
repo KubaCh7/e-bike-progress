@@ -17,6 +17,7 @@ struct SettingsView: View {
     @State private var section: SettingsSection = .profile
     @State private var nameDraft = ""
     @State private var confirmDeleteAccount = false
+    @State private var showUpdateGuide = false
     @Environment(AuthViewModel.self) private var auth
     @Environment(SyncService.self) private var sync
     @Environment(NetworkMonitor.self) private var network
@@ -108,7 +109,7 @@ struct SettingsView: View {
                     model.saveTarget(goal: goals.currentGoal, using: goals)
                     targetFocused = false
                 }
-                .buttonStyle(.glassProminent)
+                .buttonStyle(.primaryFlat)
             }
             Button(L10n.tr("settings.manageGoals"), systemImage: "list.bullet") { showManager = true }
         } header: {
@@ -188,7 +189,7 @@ struct SettingsView: View {
                 .onSubmit(saveName)
             if nameDraft.trimmingCharacters(in: .whitespaces) != (profile.displayName ?? "") && !nameDraft.trimmingCharacters(in: .whitespaces).isEmpty {
                 Button(L10n.tr("common.save"), systemImage: "checkmark", action: saveName)
-                    .buttonStyle(.glassProminent)
+                    .buttonStyle(.primaryFlat)
             }
         } header: {
             Text(L10n.tr("profile.name"))
@@ -211,7 +212,9 @@ struct SettingsView: View {
             Link(L10n.tr("legal.notices"), destination: LegalLinks.notices)
             if updates.isUpdateAvailable, let url = updates.updateURL {
                 Button(L10n.tr("update.install"), systemImage: "arrow.down.circle") { openURL(url) }
-                    .buttonStyle(.glassProminent)
+                    .buttonStyle(.primaryFlat)
+            } else if updates.isUpdateAvailable {
+                Button(L10n.tr("update.howTo"), systemImage: "arrow.down.circle") { showUpdateGuide = true }
             } else {
                 Button {
                     Task { await updates.check() }
@@ -230,13 +233,14 @@ struct SettingsView: View {
         } footer: {
             Text(L10n.tr("update.footer"))
         }
+        .sheet(isPresented: $showUpdateGuide) { UpdateGuideView() }
     }
 }
 
 extension Bundle {
     var appVersion: String {
         let version = object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0"
-        let build = object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "1"
+        let build = object(forInfoDictionaryKey: "EBPBuild") as? String ?? object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "1"
         return "\(version) (\(build))"
     }
 }

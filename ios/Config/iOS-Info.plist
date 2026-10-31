@@ -7,6 +7,9 @@
 	<string>$(SUPABASE_HOST)</string>
 	<key>SupabaseAnonKey</key>
 	<string>$(SUPABASE_ANON_KEY)</string>
+	<!-- Numer wydania aplikacji (APP_BUILD w Base.xcconfig) – porównywany z app_config.ios_update -->
+	<key>EBPBuild</key>
+	<string>$(APP_BUILD)</string>
 	<key>CFBundleLocalizations</key>
 	<array>
 		<string>pl</string>

@@ -21,17 +21,17 @@ struct PhotoSourceButtons: View {
                     Label(L10n.tr("photo.useSuggested"), systemImage: "sparkles")
                         .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.glassProminent)
+                .buttonStyle(.primaryFlat)
                 .controlSize(.large)
             }
 
-            GlassEffectContainer(spacing: 10) {
+            Group {
                 HStack(spacing: 10) {
                     PhotosPicker(selection: $model.pickerItem, matching: .images, photoLibrary: .shared()) {
                         Label(L10n.tr("photo.uploadOwn"), systemImage: "photo.on.rectangle")
                             .frame(maxWidth: .infinity)
                     }
-                    .buttonStyle(.glass)
+                    .buttonStyle(.secondaryFlat)
                     .controlSize(.large)
 
                     if CameraPicker.isAvailable {
@@ -39,7 +39,7 @@ struct PhotoSourceButtons: View {
                             Label(L10n.tr("photo.camera"), systemImage: "camera")
                                 .frame(maxWidth: .infinity)
                         }
-                        .buttonStyle(.glass)
+                        .buttonStyle(.secondaryFlat)
                         .controlSize(.large)
                     }
                 }
@@ -52,11 +52,11 @@ struct PhotoSourceButtons: View {
                 Label(L10n.tr("photo.fromLink"), systemImage: "link")
                     .frame(maxWidth: .infinity)
             }
-            .buttonStyle(.glass)
+            .buttonStyle(.secondaryFlat)
 
             if canRemove {
                 Button(L10n.tr("photo.remove"), systemImage: "trash", role: .destructive, action: onRemove)
-                    .buttonStyle(.glass)
+                    .buttonStyle(.secondaryFlat)
             }
 
             if model.isProcessing {

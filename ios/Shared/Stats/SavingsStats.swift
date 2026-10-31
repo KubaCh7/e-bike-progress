@@ -31,8 +31,11 @@ struct SavingsStats: Equatable {
         self.total = total
         self.remaining = max(target - total, 0)
         self.progress = target > 0 ? min(max((total / target).doubleValue, 0), 1) : 0
-        self.count = deposits.count
-        self.average = deposits.isEmpty ? nil : (total / Decimal(deposits.count)).rounded(scale: 2)
+        // liczba i średnia liczą tylko wpłaty (wypłaty mają ujemną kwotę)
+        let incoming = deposits.filter { $0.amount > 0 }
+        self.count = incoming.count
+        let incomingTotal = incoming.reduce(Decimal.zero) { $0 + $1.amount }
+        self.average = incoming.isEmpty ? nil : (incomingTotal / Decimal(incoming.count)).rounded(scale: 2)
 
         let monthStart = calendar.dateInterval(of: .month, for: now)?.start ?? now
         self.thisMonth = deposits

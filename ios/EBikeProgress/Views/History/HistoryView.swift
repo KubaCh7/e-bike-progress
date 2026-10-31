@@ -48,7 +48,7 @@ struct HistoryView: View {
                 Text(L10n.tr("history.emptyDesc"))
             } actions: {
                 Button(L10n.tr("home.addDeposit"), systemImage: "plus") { showNewDeposit = true }
-                    .buttonStyle(.glassProminent)
+                    .buttonStyle(.primaryFlat)
             }
         } else {
             List {
@@ -72,7 +72,7 @@ struct HistoryView: View {
                                 Button(L10n.tr("common.edit"), systemImage: "pencil") {
                                     editingDeposit = deposit
                                 }
-                                .tint(.indigo)
+                                .tint(.gray)
                             }
                             .contextMenu {
                                 Button(L10n.tr("common.edit"), systemImage: "pencil") { editingDeposit = deposit }
@@ -112,10 +112,10 @@ struct HistoryView: View {
                 .font(.title3.bold().monospacedDigit())
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)
-                .glassEffect(.clear.tint(.teal.opacity(0.4)), in: .capsule)
+                .chipBackground()
         }
         .padding(18)
-        .glassEffect(.clear, in: .rect(cornerRadius: 26))
+        .card(radius: 12)
         .padding(.vertical, 4)
     }
 

@@ -1,42 +1,37 @@
 import SwiftUI
 
-/// Pasek postępu na szklanej kapsule.
+/// Płaski pasek postępu – wypełnienie w kolorze marki e-bike'a (jedyny kolor na ekranie).
 struct GlassProgressBar: View {
     var progress: Double
-    var height: CGFloat = 16
+    var height: CGFloat = 10
+    var tint: Color = .primary
 
     var body: some View {
         GeometryReader { proxy in
-            let width = max(proxy.size.width * min(max(progress, 0), 1), progress > 0 ? height : 0)
+            let clamped = min(max(progress, 0), 1)
             ZStack(alignment: .leading) {
-                Capsule()
-                    .fill(.primary.opacity(0.06))
-                Capsule()
-                    .fill(
-                        LinearGradient(colors: [.mint, .teal, .indigo], startPoint: .leading, endPoint: .trailing)
-                    )
-                    .frame(width: width)
-                    .shadow(color: .teal.opacity(0.5), radius: 8)
-                    .animation(.spring(duration: 0.8, bounce: 0.25), value: progress)
+                RoundedRectangle(cornerRadius: 2).fill(Color(.tertiarySystemFill))
+                RoundedRectangle(cornerRadius: 2)
+                    .fill(tint)
+                    .frame(width: proxy.size.width * clamped)
+                    .animation(.smooth, value: progress)
             }
         }
         .frame(height: height)
-        .padding(4)
-        .glassEffect(.clear, in: .capsule)
         .accessibilityElement()
         .accessibilityValue(Money.percent(progress))
     }
 }
 
-/// Mała szklana "pigułka" z etykietą i wartością.
+/// Kafelek z etykietą i wartością (bez ikon).
 struct StatChip: View {
     let title: String
     let value: String
-    var systemImage: String
+    var systemImage: String = ""
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Label(title, systemImage: systemImage)
+            Text(title)
                 .font(.caption)
                 .foregroundStyle(.secondary)
             Text(value)
@@ -47,14 +42,14 @@ struct StatChip: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(14)
-        .glassEffect(.clear, in: .rect(cornerRadius: 22))
+        .card()
     }
 }
 
 #Preview {
     VStack {
-        GlassProgressBar(progress: 0.42)
-        StatChip(title: "Uzbierane", value: "12 500,00 zł", systemImage: "banknote")
+        GlassProgressBar(progress: 0.42, tint: .orange)
+        StatChip(title: "Uzbierane", value: "12 500,00 zł")
     }
     .padding()
     .background(GlassBackground())

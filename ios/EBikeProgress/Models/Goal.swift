@@ -30,6 +30,8 @@ final class Goal {
     var pendingDelete: Bool = false
     /// Rekord był już kiedyś na serwerze.
     var everSynced: Bool = false
+    /// Kadr zdjęcia "x% y%" (jak CSS object-position na stronie); nil = środek.
+    var photoPosition: String? = nil
 
     @Relationship(deleteRule: .cascade, inverse: \Deposit.goal)
     var deposits: [Deposit]? = []

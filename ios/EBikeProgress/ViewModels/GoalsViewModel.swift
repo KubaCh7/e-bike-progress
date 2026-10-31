@@ -95,6 +95,10 @@ final class GoalsViewModel {
         repository.removePhoto(goal)
     }
 
+    func setPhotoPosition(_ goal: Goal, _ position: String?) {
+        repository.setPhotoPosition(goal, position)
+    }
+
     func setDefault(_ goal: Goal) {
         repository.setDefault(goal)
         selectedGoalID = goal.id

@@ -164,6 +164,7 @@ final class SyncService {
 
     private func update(_ goal: Goal, from row: GoalRow) {
         goal.name = row.name
+        goal.photoPosition = row.photoPosition
         goal.targetAmount = row.targetAmount.rounded(scale: 2)
         goal.isDefault = row.isDefault
         goal.seedKey = row.seedKey
@@ -260,7 +261,8 @@ final class SyncService {
                     catalogID: goal.catalogId,
                     createdAt: PGDate.timestamp(goal.createdAt),
                     updatedAt: nil,
-                    deletedAt: goal.pendingDelete ? PGDate.timestamp(.now) : nil
+                    deletedAt: goal.pendingDelete ? PGDate.timestamp(.now) : nil,
+                    photoPosition: goal.photoPosition
                 )
             }
             try await client.from("goals").upsert(rows).execute()

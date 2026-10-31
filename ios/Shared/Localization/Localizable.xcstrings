@@ -919,6 +919,23 @@
         }
       }
     },
+    "deposit.withdrawal": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Withdrawal"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wypłata"
+          }
+        }
+      }
+    },
     "goals.confirmDelete": {
       "extractionState": "manual",
       "localizations": {
@@ -1299,13 +1316,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Goal reached! 🎉"
+            "value": "Goal reached"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cel osiągnięty! 🎉"
+            "value": "Cel osiągnięty"
           }
         }
       }
@@ -1323,6 +1340,74 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dodaj wpłatę"
+          }
+        }
+      }
+    },
+    "home.count": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deposits"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wpłaty"
+          }
+        }
+      }
+    },
+    "home.findingDone": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You have the full amount. You can buy it."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Masz całą kwotę. Możesz go kupić."
+          }
+        }
+      }
+    },
+    "home.findingEmpty": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add your first deposit and we will work out when you can buy it."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dodaj pierwszą wpłatę, a policzymy, kiedy go kupisz."
+          }
+        }
+      }
+    },
+    "home.findingForecast": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expected purchase: %@, at %@ a month."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prognoza zakupu: %@, przy tempie %@ miesięcznie."
           }
         }
       }
@@ -1374,6 +1459,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Brak celów"
+          }
+        }
+      }
+    },
+    "home.ofPrice": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "of %@"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "z %@"
           }
         }
       }
@@ -1650,6 +1752,23 @@
         }
       }
     },
+    "photo.add": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add a photo"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dodaj zdjęcie"
+          }
+        }
+      }
+    },
     "photo.camera": {
       "extractionState": "manual",
       "localizations": {
@@ -1667,6 +1786,23 @@
         }
       }
     },
+    "photo.center": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Center"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyśrodkuj"
+          }
+        }
+      }
+    },
     "photo.change": {
       "extractionState": "manual",
       "localizations": {
@@ -1680,6 +1816,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zmień zdjęcie"
+          }
+        }
+      }
+    },
+    "photo.cropHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drag to frame"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Przeciągnij, aby ustawić kadr"
+          }
+        }
+      }
+    },
+    "photo.cropText": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drag the photo up, down, left or right so the e-bike fits well."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Przesuń zdjęcie palcem w górę, w dół, w lewo lub w prawo, żeby e-bike dobrze się mieścił."
           }
         }
       }
@@ -2744,13 +2914,149 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The e-bike catalog and prices refresh on their own, no install needed. New app versions open in TestFlight."
+            "value": "Data, the e-bike catalog and prices refresh on their own. New app versions are installed from your Mac – the steps appear here when one is ready."
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Katalog e-bike'ów i ceny odświeżają się same, bez instalowania. Nowa wersja aplikacji otwiera się w TestFlight."
+            "value": "Dane, katalog e-bike'ów i ceny odświeżają się same. Nową wersję aplikacji instalujesz z Maca – instrukcja pojawi się tutaj, gdy będzie dostępna."
+          }
+        }
+      }
+    },
+    "update.guide.copied": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copied"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skopiowano"
+          }
+        }
+      }
+    },
+    "update.guide.copy": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kopiuj"
+          }
+        }
+      }
+    },
+    "update.guide.note": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple only lets apps from outside the App Store update through a computer. Free: the same way as the install. With TestFlight (paid Apple Developer account) updating would be one button."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple pozwala aplikacjom spoza App Store aktualizować się tylko przez komputer. Bez kosztów: ten sam sposób co instalacja. Przez TestFlight (płatne konto Apple Developer) aktualizacja byłaby jednym przyciskiem."
+          }
+        }
+      }
+    },
+    "update.guide.step1": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connect your iPhone to your Mac with a cable."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Podłącz iPhone'a kablem do Maca."
+          }
+        }
+      }
+    },
+    "update.guide.step2": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On your Mac, open Terminal and paste this command:"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Na Macu otwórz Terminal i wklej tę komendę:"
+          }
+        }
+      }
+    },
+    "update.guide.step3": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open the project in Xcode and press ▶ (with your iPhone selected at the top)."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otwórz projekt w Xcode i kliknij ▶ (u góry wybrany Twój iPhone)."
+          }
+        }
+      }
+    },
+    "update.guide.step4": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done – the app updates and your data stays."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gotowe – aplikacja zaktualizuje się, a Twoje dane zostaną."
+          }
+        }
+      }
+    },
+    "update.guide.versions": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You have version %@, the latest is %@."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Masz wersję %@, najnowsza to %@."
           }
         }
       }
@@ -2768,6 +3074,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zaktualizuj aplikację, aby dostać nowe funkcje."
+          }
+        }
+      }
+    },
+    "update.howTo": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How to update"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jak zaktualizować"
           }
         }
       }

@@ -77,7 +77,7 @@ struct CatalogGridView: View {
                     Image(systemName: "plus")
                         .font(.title3.bold())
                         .frame(width: 48, height: 48)
-                        .glassEffect(.clear.tint(.accentColor.opacity(0.35)), in: .circle)
+                        .circleBackground()
                     VStack(alignment: .leading, spacing: 2) {
                         Text(L10n.tr("catalog.custom")).font(.headline)
                         Text(L10n.tr("catalog.customHint")).font(.caption).foregroundStyle(.secondary)
@@ -85,7 +85,7 @@ struct CatalogGridView: View {
                     Spacer()
                 }
                 .padding(12)
-                .glassEffect(.clear.interactive(), in: .rect(cornerRadius: 24))
+                .card(radius: 12)
             }
             .buttonStyle(.plain)
 
@@ -98,7 +98,7 @@ struct CatalogGridView: View {
                     }
                     .padding(.top, 8)
                 }
-                GlassEffectContainer(spacing: 12) {
+                Group {
                     LazyVGrid(columns: columns, spacing: 12) {
                         ForEach(Array(group.bikes.enumerated()), id: \.element.id) { index, bike in
                             BikeCard(
@@ -170,7 +170,7 @@ struct BikeCard: View {
                 .foregroundStyle(.secondary)
         }
         .padding(8)
-        .glassEffect(.clear.interactive(), in: .rect(cornerRadius: 24))
+        .card(radius: 12)
         .overlay {
             RoundedRectangle(cornerRadius: 24)
                 .strokeBorder(Color.accentColor, lineWidth: isSelected ? 2.5 : 0)

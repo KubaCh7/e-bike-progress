@@ -28,13 +28,13 @@ struct DepositFormView: View {
                             .foregroundStyle(.secondary)
                     }
 
-                    GlassEffectContainer(spacing: 8) {
+                    Group {
                         HStack(spacing: 8) {
                             ForEach([50, 100, 200, 500] as [Decimal], id: \.self) { value in
                                 Button { model.add(value) } label: {
                                     Text(verbatim: "+\(Money.formatShort(value))")
                                 }
-                                .buttonStyle(.glass)
+                                .buttonStyle(.secondaryFlat)
                                 .font(.footnote.bold())
                             }
                         }
@@ -77,7 +77,7 @@ struct DepositFormView: View {
                     Button(L10n.tr("common.save"), systemImage: "checkmark") {
                         if model.save(using: goals, goal: goal) { dismiss() }
                     }
-                    .buttonStyle(.glassProminent)
+                    .buttonStyle(.primaryFlat)
                     .disabled(!model.isValid)
                 }
             }

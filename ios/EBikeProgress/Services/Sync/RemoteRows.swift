@@ -14,10 +14,12 @@ struct GoalRow: Codable, Sendable {
     /// Ustawiane przez serwer (trigger) – przy wysyłaniu pomijamy (nil).
     var updatedAt: String?
     var deletedAt: String?
+    var photoPosition: String? = nil
 
     enum CodingKeys: String, CodingKey {
         case id, name
         case userID = "user_id"
+        case photoPosition = "photo_position"
         case targetAmount = "target_amount"
         case photoURL = "photo_url"
         case isDefault = "is_default"

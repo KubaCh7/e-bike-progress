@@ -1,20 +1,25 @@
 import SwiftUI
 
-/// Zdjęcie celu: własne (z galerii/aparatu), sugerowane z Assets lub grafika zastępcza.
+/// Zdjęcie celu: własne (z galerii/aparatu), sugerowane z Assets, z katalogu albo ikona.
+/// Kadr (photoPosition, „x% y%”) działa jak CSS object-position na stronie.
 struct GoalPhotoView: View {
     let goal: Goal
-    var cornerRadius: CGFloat = 28
+    var cornerRadius: CGFloat = 12
+    /// Podgląd kadru podczas przeciągania (nadpisuje zapisany).
+    var position: String? = nil
+    /// Tekst pod ikoną, gdy nie ma zdjęcia (np. „Dodaj zdjęcie”).
+    var emptyHint: String? = nil
 
     var body: some View {
         // Color.clear przyjmuje dokładnie zaproponowany rozmiar – zdjęcie nie rozpycha układu
         Color.clear
             .overlay {
                 if let image = goal.uiImage {
-                    Image(uiImage: image)
-                        .resizable()
-                        .scaledToFill()
+                    PositionedImage(image: image, position: position ?? goal.photoPosition)
+                } else if let bike = goal.catalogBike, bike.image != nil {
+                    CatalogBikeImage(bike: bike)
                 } else {
-                    PhotoPlaceholder(bike: goal.catalogBike)
+                    PhotoPlaceholder(hint: emptyHint)
                 }
             }
             .clipShape(.rect(cornerRadius: cornerRadius))
@@ -23,15 +28,52 @@ struct GoalPhotoView: View {
     }
 }
 
-/// Zastępcza grafika, gdy nie ma zdjęcia: gradient w kolorze marki + sylwetka pojazdu.
-struct PhotoPlaceholder: View {
-    var bike: CatalogBike?
+/// Zdjęcie wypełniające ramkę, przesunięte według „x% y%” (0% = lewa/górna krawędź).
+struct PositionedImage: View {
+    let image: UIImage
+    var position: String?
+
+    static func parse(_ position: String?) -> CGPoint {
+        let parts = (position ?? "").split(separator: " ").compactMap { Double($0.replacingOccurrences(of: "%", with: "")) }
+        guard parts.count == 2 else { return CGPoint(x: 50, y: 50) }
+        return CGPoint(x: min(max(parts[0], 0), 100), y: min(max(parts[1], 0), 100))
+    }
 
     var body: some View {
-        if let bike {
-            CatalogBikeImage(bike: bike)
-        } else {
-            BikeArtView(category: .emtb, tint: .teal)
+        GeometryReader { proxy in
+            let frame = proxy.size
+            let size = image.size
+            let scale = max(frame.width / max(size.width, 1), frame.height / max(size.height, 1))
+            let width = size.width * scale
+            let height = size.height * scale
+            let point = Self.parse(position)
+            Image(uiImage: image)
+                .resizable()
+                .frame(width: width, height: height)
+                .offset(x: -(width - frame.width) * point.x / 100, y: -(height - frame.height) * point.y / 100)
+        }
+    }
+}
+
+/// Gdy nie ma zdjęcia: spokojna ikona e-bike'a na szarym tle (jak na stronie).
+struct PhotoPlaceholder: View {
+    var hint: String? = nil
+
+    var body: some View {
+        ZStack {
+            Color(.tertiarySystemFill)
+            VStack(spacing: 8) {
+                Image(systemName: "bicycle")
+                    .font(.system(size: 24, weight: .medium))
+                    .foregroundStyle(.primary)
+                    .frame(width: 56, height: 56)
+                    .background(Color(.secondarySystemGroupedBackground), in: .circle)
+                if let hint {
+                    Text(hint)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+            }
         }
     }
 }
@@ -50,11 +92,11 @@ struct CatalogBikeImage: View {
                         case .success(let image):
                             image.resizable().scaledToFill()
                         default:
-                            BikeArtView(category: bike.category, tint: bike.tint)
+                            PhotoPlaceholder()
                         }
                     }
                 } else {
-                    BikeArtView(category: bike.category, tint: bike.tint)
+                    PhotoPlaceholder()
                 }
             }
             .overlay(alignment: .bottomLeading) {
@@ -72,39 +114,12 @@ struct CatalogBikeImage: View {
     }
 }
 
-/// Ilustracja e-bike'a (bez pobierania zdjęć z internetu).
+/// Dawna ilustracja – teraz ta sama spokojna ikona co wszędzie.
 struct BikeArtView: View {
     let category: BikeCategory
     let tint: Color
 
-    private var symbol: String {
-        switch category {
-        case .moto:
-            // "motorcycle" jest w nowszych SF Symbols – w razie braku zwykły rower
-            UIImage(systemName: "motorcycle") != nil ? "motorcycle" : "bicycle"
-        case .emtb, .city:
-            "bicycle"
-        }
-    }
-
-    var body: some View {
-        ZStack {
-            LinearGradient(colors: [tint, tint.opacity(0.55)], startPoint: .topLeading, endPoint: .bottomTrailing)
-            RadialGradient(colors: [.white.opacity(0.4), .clear], center: .topLeading, startRadius: 0, endRadius: 260)
-            Image(systemName: symbol)
-                .resizable()
-                .scaledToFit()
-                .fontWeight(.semibold)
-                .foregroundStyle(.white)
-                .padding(28)
-                .overlay(alignment: .topTrailing) {
-                    Image(systemName: "bolt.fill")
-                        .font(.title2.bold())
-                        .foregroundStyle(.yellow)
-                        .padding(18)
-                }
-        }
-    }
+    var body: some View { PhotoPlaceholder() }
 }
 
 extension Goal {

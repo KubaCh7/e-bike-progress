@@ -1,10 +1,8 @@
 import SwiftUI
-import AuthenticationServices
 
-/// Ekran logowania: e-mail + hasło lub Sign in with Apple, albo praca bez konta.
+/// Ekran logowania: e-mail + hasło albo praca bez konta.
 struct AuthView: View {
     @Environment(AuthViewModel.self) private var auth
-    @Environment(\.colorScheme) private var colorScheme
     @State private var isSignUp = false
 
     var body: some View {
@@ -17,20 +15,19 @@ struct AuthView: View {
                     LanguagePicker()
                     header
 
-                    // natywny segmented picker – szklana pastylka przesuwa się między trybami
                     Picker(L10n.tr("auth.mode"), selection: $isSignUp.animation(.smooth)) {
                         Text(L10n.tr("auth.signIn")).tag(false)
                         Text(L10n.tr("auth.signUp")).tag(true)
                     }
                     .pickerStyle(.segmented)
 
-                    GlassEffectContainer(spacing: 14) {
+                    Group {
                         VStack(spacing: 14) {
                             if isSignUp {
                                 TextField(L10n.tr("profile.name"), text: $auth.displayName)
                                     .textContentType(.givenName)
                                     .padding(16)
-                                    .glassEffect(.clear, in: .rect(cornerRadius: 18))
+                                    .card(radius: 12)
                                     .transition(.move(edge: .top).combined(with: .opacity))
                             }
                             TextField(L10n.tr("auth.email"), text: $auth.email)
@@ -39,12 +36,12 @@ struct AuthView: View {
                                 .textInputAutocapitalization(.never)
                                 .autocorrectionDisabled()
                                 .padding(16)
-                                .glassEffect(.clear, in: .rect(cornerRadius: 18))
+                                .card(radius: 12)
 
                             SecureField(L10n.tr("auth.password"), text: $auth.password)
                                 .textContentType(isSignUp ? .newPassword : .password)
                                 .padding(16)
-                                .glassEffect(.clear, in: .rect(cornerRadius: 18))
+                                .card(radius: 12)
                         }
                     }
 
@@ -69,7 +66,7 @@ struct AuthView: View {
                         }
                         .frame(maxWidth: .infinity)
                     }
-                    .buttonStyle(.glassProminent)
+                    .buttonStyle(.primaryFlat)
                     .controlSize(.large)
                     .disabled(!auth.canSubmit || (isSignUp && auth.displayName.trimmingCharacters(in: .whitespaces).isEmpty))
 
@@ -79,19 +76,10 @@ struct AuthView: View {
                         Rectangle().frame(height: 0.5).opacity(0.3)
                     }
 
-                    SignInWithAppleButton(.signIn) { request in
-                        auth.prepareAppleRequest(request)
-                    } onCompletion: { result in
-                        Task { await auth.handleAppleResult(result) }
-                    }
-                    .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
-                    .frame(height: 50)
-                    .clipShape(.capsule)
-
                     Button(L10n.tr("auth.continueOffline")) {
                         auth.continueOffline()
                     }
-                    .buttonStyle(.glass)
+                    .buttonStyle(.secondaryFlat)
 
                     Text(L10n.tr("auth.offlineHint"))
                         .font(.caption)
@@ -110,7 +98,7 @@ struct AuthView: View {
             Image(systemName: "bicycle")
                 .font(.system(size: 44, weight: .semibold))
                 .frame(width: 96, height: 96)
-                .glassEffect(.clear.tint(.teal.opacity(0.5)), in: .circle)
+                .circleBackground()
             Text("e-bike progress")
                 .font(.largeTitle.bold())
             Text(L10n.tr("auth.subtitle"))

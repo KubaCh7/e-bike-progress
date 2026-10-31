@@ -48,7 +48,7 @@ struct OnboardingView: View {
                 .font(.system(size: 40, weight: .semibold))
                 .foregroundStyle(.white)
                 .frame(width: 92, height: 92)
-                .glassEffect(.clear.tint(.accentColor), in: .rect(cornerRadius: 28))
+                .card(radius: 12)
             Text(L10n.tr("onboarding.helloTitle"))
                 .font(.largeTitle.bold())
                 .multilineTextAlignment(.center)
@@ -62,13 +62,13 @@ struct OnboardingView: View {
                 .submitLabel(.next)
                 .focused($nameFocused)
                 .padding(18)
-                .glassEffect(.clear.interactive(), in: .capsule)
+                .chipBackground()
                 .onSubmit(saveName)
             Spacer()
             Button(action: saveName) {
                 Text(L10n.tr("common.next")).frame(maxWidth: .infinity)
             }
-            .buttonStyle(.glassProminent)
+            .buttonStyle(.primaryFlat)
             .controlSize(.extraLarge)
             .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
         }
@@ -114,13 +114,13 @@ struct OnboardingView: View {
                 Button(action: finish) {
                     if isSaving { ProgressView() } else { Text(L10n.tr("onboarding.start")) }
                 }
-                .buttonStyle(.glassProminent)
+                .buttonStyle(.primaryFlat)
                 .controlSize(.large)
                 .disabled(isSaving)
             }
             .padding(.leading, 20)
             .padding(8)
-            .glassEffect(.clear, in: .capsule)
+            .chipBackground()
             .padding(.horizontal)
         }
         .toolbar {

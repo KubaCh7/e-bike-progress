@@ -28,7 +28,7 @@ struct StatsView: View {
         let stats = model.stats(for: goal)
         return ScrollView {
             VStack(spacing: 16) {
-                GlassEffectContainer(spacing: 12) {
+                Group {
                     LazyVGrid(columns: columns, spacing: 12) {
                         StatTile(title: L10n.tr("stats.average"), value: stats.average.map(Money.format) ?? "—", systemImage: "divide")
                         StatTile(title: L10n.tr("stats.thisMonth"), value: Money.format(stats.thisMonth), systemImage: "calendar")
@@ -74,8 +74,11 @@ struct StatsView: View {
             }
         }
         .padding(18)
-        .glassEffect(.clear, in: .rect(cornerRadius: 28))
+        .card(radius: 12)
     }
+
+    /// Kolor marki e-bike'a – jedyny kolor na wykresie.
+    private var chartTint: Color { goals.currentGoal?.catalogBike?.dataTint ?? .primary }
 
     @ViewBuilder
     private func chart(points: [StatsViewModel.ChartPoint], target: Double) -> some View {
@@ -84,15 +87,10 @@ struct StatsView: View {
             switch model.chartMode {
             case .cumulative:
                 ForEach(points) { point in
-                    AreaMark(x: .value("Data", point.date), y: .value("Suma", point.value))
-                        .interpolationMethod(.monotone)
-                        .foregroundStyle(
-                            LinearGradient(colors: [.teal.opacity(0.35), .teal.opacity(0.02)], startPoint: .top, endPoint: .bottom)
-                        )
                     LineMark(x: .value("Data", point.date), y: .value("Suma", point.value))
-                        .interpolationMethod(.monotone)
+                        .interpolationMethod(.linear)
                         .lineStyle(StrokeStyle(lineWidth: 2))
-                        .foregroundStyle(.teal)
+                        .foregroundStyle(chartTint)
                 }
                 RuleMark(y: .value(L10n.tr("stats.chart.target"), target))
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
@@ -106,7 +104,7 @@ struct StatsView: View {
                 ForEach(points) { point in
                     BarMark(x: .value("Miesiąc", point.date, unit: .month), y: .value("Suma", point.value))
                         .cornerRadius(4)
-                        .foregroundStyle(.teal.opacity(selected == nil || selected?.date == point.date ? 1 : 0.4))
+                        .foregroundStyle(chartTint.opacity(selected == nil || selected?.date == point.date ? 1 : 0.4))
                 }
             }
 
@@ -125,7 +123,7 @@ struct StatsView: View {
                                 .font(.caption.bold().monospacedDigit())
                         }
                         .padding(8)
-                        .glassEffect(.clear, in: .rect(cornerRadius: 12))
+                        .card(radius: 12)
                     }
             }
         }
@@ -175,7 +173,7 @@ struct StatTile: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(14)
-        .glassEffect(.clear, in: .rect(cornerRadius: 22))
+        .card(radius: 12)
     }
 }
 

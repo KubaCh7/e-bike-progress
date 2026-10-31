@@ -21,7 +21,7 @@ struct HomeView: View {
                         Label(L10n.tr("home.noGoals"), systemImage: "bicycle")
                     } actions: {
                         Button(L10n.tr("goals.switcher.add"), systemImage: "plus") { showAddGoal = true }
-                            .buttonStyle(.glassProminent)
+                            .buttonStyle(.primaryFlat)
                     }
                 }
             }
@@ -53,45 +53,79 @@ struct HomeView: View {
     @ViewBuilder
     private func content(for goal: Goal) -> some View {
         let stats = goal.stats
+        let tint = goal.catalogBike?.dataTint ?? .primary
         ScrollView {
-            VStack(alignment: .leading, spacing: 22) {
+            VStack(alignment: .leading, spacing: 12) {
                 UpdateBanner()
 
-                if let name = profile.displayName {
-                    Text(L10n.tr("header.hello", name))
+                // nazwa e-bike'a i jedno zdanie: kiedy go kupisz
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(goal.name)
+                        .font(.title2.weight(.semibold))
+                    Text(findingLine(stats))
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
+                .padding(.bottom, 4)
 
-                GoalPhotoView(goal: goal, cornerRadius: 34)
-                    .frame(height: 240)
-                    .overlay(alignment: .bottomTrailing) {
-                        Button { showPhotoSheet = true } label: {
-                            Image(systemName: "camera.fill")
+                // zdjęcie + uzbierane / cena + pasek
+                VStack(alignment: .leading, spacing: 14) {
+                    Button { showPhotoSheet = true } label: {
+                        GoalPhotoView(goal: goal, cornerRadius: 8, emptyHint: L10n.tr("photo.add"))
+                            .aspectRatio(4 / 3, contentMode: .fit)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(L10n.tr("photo.change"))
+
+                    HStack(alignment: .lastTextBaseline) {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(L10n.tr("home.saved"))
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                            HStack(alignment: .firstTextBaseline, spacing: 6) {
+                                Text(Money.formatShort(stats.total))
+                                    .font(.system(size: 30, weight: .bold).monospacedDigit())
+                                    .contentTransition(.numericText())
+                                Text(L10n.tr("home.ofPrice", Money.formatShort(goal.targetAmount)))
+                                    .font(.subheadline.monospacedDigit())
+                                    .foregroundStyle(.secondary)
+                            }
                         }
-                        .buttonStyle(.glass)
-                        .buttonBorderShape(.circle)
-                        .padding(14)
-                        .accessibilityLabel(L10n.tr("photo.change"))
+                        Spacer(minLength: 8)
+                        VStack(alignment: .trailing, spacing: 2) {
+                            Text(stats.isAchieved ? L10n.tr("home.saved") : L10n.tr("home.remaining"))
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                            Text(stats.isAchieved ? Money.percent(1) : Money.formatShort(stats.remaining))
+                                .font(.headline.monospacedDigit())
+                        }
                     }
-                    .onTapGesture { showPhotoSheet = true }
 
-                // minimalistycznie: duży procent, pasek, jedna linijka kwot
-                VStack(alignment: .leading, spacing: 12) {
-                    Text(Money.percent(stats.progress))
-                        .font(.system(size: 76, weight: .bold, design: .rounded).monospacedDigit())
-                        .contentTransition(.numericText(value: stats.progress))
-                    GlassProgressBar(progress: stats.progress)
-                    HStack(alignment: .firstTextBaseline, spacing: 4) {
-                        Text(Money.format(stats.total)).font(.headline.monospacedDigit())
-                        Text(verbatim: "/ \(Money.formatShort(goal.targetAmount))")
-                            .font(.subheadline.monospacedDigit())
-                            .foregroundStyle(.secondary)
+                    GlassProgressBar(progress: stats.progress, tint: tint)
+                    HStack {
+                        Text(Money.percent(stats.progress))
+                        Spacer()
+                        Text(Money.formatShort(goal.targetAmount))
                     }
-                    Text(stats.isAchieved ? L10n.tr("home.achieved") : L10n.tr("home.remainingLine", Money.format(stats.remaining)))
-                        .font(.subheadline)
-                        .foregroundStyle(stats.isAchieved ? .green : .secondary)
+                    .font(.caption.monospacedDigit())
+                    .foregroundStyle(.secondary)
                 }
+                .padding(16)
+                .card()
+
+                // cztery liczby w jednym podzielonym pasku
+                Grid(horizontalSpacing: 0, verticalSpacing: 0) {
+                    GridRow {
+                        kpi(L10n.tr("stats.thisMonth"), Money.formatShort(stats.thisMonth))
+                        kpi(L10n.tr("stats.pace"), stats.dailyRate.map { Money.formatShort(($0 * 30).rounded(scale: 0)) } ?? "—")
+                    }
+                    Divider()
+                    GridRow {
+                        kpi(L10n.tr("stats.average"), stats.average.map { Money.formatShort($0) } ?? "—")
+                        kpi(L10n.tr("home.count"), "\(stats.count)")
+                    }
+                }
+                .card()
 
                 recentDeposits(goal: goal)
             }
@@ -99,6 +133,7 @@ struct HomeView: View {
             .padding(.bottom, 110)
             .animation(.smooth, value: goal.id)
         }
+        .background(Color(.systemGroupedBackground))
         .scrollIndicators(.hidden)
         .safeAreaInset(edge: .bottom) {
             QuickAddBar(
@@ -112,11 +147,34 @@ struct HomeView: View {
         .overlay(alignment: .top) { ToastView(message: Binding(get: { viewModel.toast }, set: { viewModel.toast = $0 })) }
     }
 
+    private func kpi(_ title: String, _ value: String) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(title)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            Text(value)
+                .font(.title3.weight(.medium).monospacedDigit())
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(14)
+    }
+
+    /// „Prognoza zakupu: marzec 2027, przy tempie 1 240 zł miesięcznie.”
+    private func findingLine(_ stats: SavingsStats) -> String {
+        if stats.count == 0 { return L10n.tr("home.findingEmpty") }
+        if stats.isAchieved { return L10n.tr("home.findingDone") }
+        guard let date = stats.forecastDate, let rate = stats.dailyRate else { return L10n.tr("stats.forecastNone") }
+        let month = date.formatted(.dateTime.month(.wide).year().locale(L10n.locale))
+        return L10n.tr("home.findingForecast", month, Money.formatShort((rate * 30).rounded(scale: 0)))
+    }
+
     private func recentDeposits(goal: Goal) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 10) {
             Text(L10n.tr("home.recent"))
                 .font(.headline)
-            let recent = Array(goal.sortedDeposits.prefix(4))
+            let recent = Array(goal.sortedDeposits.prefix(5))
             if recent.isEmpty {
                 Text(L10n.tr("home.noDeposits"))
                     .font(.subheadline)
@@ -132,50 +190,53 @@ struct HomeView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(18)
-        .glassEffect(.clear, in: .rect(cornerRadius: 28))
+        .padding(16)
+        .card()
     }
 }
 
-/// Wiersz z wpłatą (kwota, data, notatka).
+/// Wiersz z wpłatą: data i notatka po lewej, kwota po prawej (wypłata na czerwono z minusem).
 struct DepositRow: View {
     let deposit: Deposit
 
     var body: some View {
         HStack(spacing: 12) {
-            Image(systemName: "arrow.down.circle.fill")
-                .font(.title2)
-                .foregroundStyle(.teal)
             VStack(alignment: .leading, spacing: 2) {
-                Text(Money.format(deposit.amount))
-                    .font(.body.weight(.semibold).monospacedDigit())
-                if let note = deposit.note {
+                Text(deposit.date.formatted(.dateTime.day().month(.abbreviated).year().locale(L10n.locale)))
+                    .font(.body)
+                if let note = deposit.note, !note.isEmpty {
                     Text(note)
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
+                } else if deposit.amount < 0 {
+                    Text(L10n.tr("deposit.withdrawal"))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
             }
             Spacer()
-            Text(deposit.date.formatted(.dateTime.day().month(.abbreviated).year().locale(L10n.locale)))
-                .font(.caption)
-                .foregroundStyle(.secondary)
+            Text(verbatim: (deposit.amount < 0 ? "−" : "") + Money.format(abs(deposit.amount)))
+                .font(.body.weight(.bold).monospacedDigit())
+                .foregroundStyle(deposit.amount < 0 ? Color.red : Color.primary)
         }
+        .padding(.vertical, 4)
         .contentShape(.rect)
     }
 }
 
-/// Znikający komunikat na szkle.
+/// Znikający komunikat (czarna kapsuła).
 struct ToastView: View {
     @Binding var message: String?
 
     var body: some View {
         if let message {
-            Label(message, systemImage: "checkmark.circle.fill")
+            Label(message, systemImage: "checkmark")
                 .font(.subheadline.bold())
+                .foregroundStyle(Color(.systemBackground))
                 .padding(.horizontal, 16)
                 .padding(.vertical, 10)
-                .glassEffect(.clear.tint(.green.opacity(0.35)), in: .capsule)
+                .background(Color.primary, in: .capsule)
                 .padding(.top, 8)
                 .transition(.move(edge: .top).combined(with: .opacity))
                 .task(id: message) {

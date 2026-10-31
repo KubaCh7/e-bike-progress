@@ -1,17 +1,16 @@
 import SwiftUI
 
-/// Szklany przycisk "+", który płynnie (morphing) rozwija się w szybkie kwoty.
+/// Przycisk "+ Dodaj wpłatę", który rozwija się w szybkie kwoty.
 struct QuickAddBar: View {
     var onQuickAmount: (Decimal) -> Void
     var onCustom: () -> Void
 
     @State private var expanded = false
-    @Namespace private var glassNamespace
 
     private let quickAmounts: [Decimal] = [100, 200, 500]
 
     var body: some View {
-        GlassEffectContainer(spacing: 14) {
+        Group {
             HStack(spacing: 10) {
                 if expanded {
                     ForEach(quickAmounts, id: \.self) { amount in
@@ -23,10 +22,9 @@ struct QuickAddBar: View {
                                 .font(.subheadline.bold().monospacedDigit())
                                 .padding(.horizontal, 14)
                                 .frame(height: 52)
-                                .glassEffect(.clear.interactive(), in: .capsule)
+                                .chipBackground()
                         }
                         .buttonStyle(.plain)
-                        .glassEffectID("amount-\(amount)", in: glassNamespace)
                     }
 
                     Button {
@@ -36,10 +34,9 @@ struct QuickAddBar: View {
                         Image(systemName: "square.and.pencil")
                             .font(.title3.weight(.semibold))
                             .frame(width: 52, height: 52)
-                            .glassEffect(.clear.interactive(), in: .circle)
+                            .circleBackground()
                     }
                     .buttonStyle(.plain)
-                    .glassEffectID("custom", in: glassNamespace)
                     .accessibilityLabel(L10n.tr("home.otherAmount"))
                 }
 
@@ -58,11 +55,10 @@ struct QuickAddBar: View {
                                 .frame(height: 52)
                         }
                     }
-                    .foregroundStyle(.white)
-                    .glassEffect(.clear.tint(.teal).interactive(), in: .capsule)
+                    .foregroundStyle(Color(.systemBackground))
+                    .background(Color.primary, in: .capsule)
                 }
                 .buttonStyle(.plain)
-                .glassEffectID("toggle", in: glassNamespace)
                 .accessibilityLabel(L10n.tr("home.addDeposit"))
             }
         }

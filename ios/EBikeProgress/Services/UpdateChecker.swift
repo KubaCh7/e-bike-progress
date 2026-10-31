@@ -3,8 +3,9 @@ import Observation
 import Supabase
 
 /// Sprawdza w Supabase (`app_config.ios_update`), czy jest nowsza wersja aplikacji.
-/// iOS nie pozwala aplikacji podmienić własnego kodu – aktualizacja otwiera
-/// TestFlight / App Store (adres w `url`). Treści (katalog, ceny) odświeżają się same.
+/// iOS nie pozwala aplikacji podmienić własnego kodu. Z TestFlight / App Store (adres w `url`)
+/// aktualizacja otwiera sklep; bez tego aplikacja pokazuje instrukcję (git pull + ▶ w Xcode).
+/// Treści (katalog, ceny, dane) odświeżają się same, bez instalowania.
 @Observable
 @MainActor
 final class UpdateChecker {
@@ -32,7 +33,10 @@ final class UpdateChecker {
 
     /// Numer kompilacji zainstalowanej aplikacji (CFBundleVersion).
     var currentBuild: Int {
-        Int(Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "") ?? 0
+        if let build = Bundle.main.object(forInfoDictionaryKey: "EBPBuild") as? String, let value = Int(build) {
+            return value
+        }
+        return Int(Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "") ?? 0
     }
 
     var isUpdateAvailable: Bool {

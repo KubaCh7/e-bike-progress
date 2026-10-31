@@ -92,6 +92,7 @@ final class GoalRepository {
         goal.photoData = data
         goal.thumbnailData = thumbnail
         goal.photoNeedsUpload = true
+        goal.photoPosition = nil
         touch(goal)
         commit()
     }
@@ -174,6 +175,13 @@ final class GoalRepository {
         } else {
             context.delete(deposit)
         }
+        commit()
+    }
+
+    /// Kadr zdjęcia (przesunięcie w ramce), wspólny ze stroną.
+    func setPhotoPosition(_ goal: Goal, _ position: String?) {
+        goal.photoPosition = position
+        touch(goal)
         commit()
     }
 

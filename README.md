@@ -195,9 +195,11 @@ ma teraz też capability *App Groups*.
 ### Uwagi o kontach Apple
 
 - **Darmowe konto (Personal Team)**: aplikacja działa 7 dni (potem uruchom ponownie z Xcode),
-  maks. 3 aplikacje na urządzeniu. **Sign in with Apple nie jest dostępne** – usuń
-  capability *Sign in with Apple* w targecie EBikeProgress (lub plik
-  `Config/EBikeProgress.entitlements`) i loguj się e-mailem.
+  maks. 3 aplikacje na urządzeniu. Logowanie jest e-mailem i hasłem (Sign in with Apple
+  zostało usunięte – darmowe konto go nie obsługuje).
+- **Aktualizacje**: gdy w Supabase (`app_config.ios_update.latest_build`) jest wyższy numer niż
+  `APP_BUILD` z `Config/Base.xcconfig`, aplikacja pokazuje baner „Dostępna nowa wersja” z instrukcją
+  (`git pull` + ▶ w Xcode). Dane, katalog i ceny odświeżają się same.
   Jeśli podpisywanie zgłosi problem z *App Groups* (komplikacja i widżety), usuń tę
   capability – aplikacja zadziała, a widżety pokażą dane przykładowe.
 - **Apple Developer Program (99 USD/rok)**: wszystkie funkcje, w tym Sign in with Apple

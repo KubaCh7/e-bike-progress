@@ -214,6 +214,9 @@ struct WidgetPhoto: View {
             let py = parts.count == 2 ? min(max(parts[1], 0), 100) : 50
             Image(uiImage: image)
                 .resizable()
+                // gdy pulpit Maca nie jest aktywny (albo przyciemniony ekran iPhone'a), system
+                // pokazuje widżety jednokolorowo – zdjęcie jest wtedy czarno-białe zamiast szarej plamy
+                .widgetAccentedRenderingMode(.desaturated)
                 .frame(width: width, height: height)
                 .offset(x: -(width - frame.width) * px / 100, y: -(height - frame.height) * py / 100)
         }

@@ -6,6 +6,7 @@ enum AppConstants {
     static let defaultGoalName = "e-ride pro SR"
     static let defaultGoalTarget: Decimal = 30_000
     static let defaultGoalSeedKey = "ride_pro_sr"
+    static let defaultCatalogId = "eride-pro-sr"
 
     /// Sugerowane zdjęcie SR – asset w Assets.xcassets (podmień na własne zdjęcie).
     static let suggestedPhotoAsset = "ride_pro_sr_placeholder"

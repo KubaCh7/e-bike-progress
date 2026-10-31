@@ -59,7 +59,7 @@ struct GoalsManagerView: View {
                 GoalEditorView(goal: goal)
             }
             .sheet(isPresented: $showNewGoal) {
-                GoalEditorView(goal: nil)
+                AddGoalSheet()
             }
             .confirmationDialog(
                 L10n.tr("goals.confirmDelete", goalToDelete?.name ?? ""),

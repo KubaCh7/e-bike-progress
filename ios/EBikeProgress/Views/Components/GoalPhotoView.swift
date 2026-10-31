@@ -14,7 +14,7 @@ struct GoalPhotoView: View {
                         .resizable()
                         .scaledToFill()
                 } else {
-                    PhotoPlaceholder()
+                    PhotoPlaceholder(bike: goal.catalogBike)
                 }
             }
             .clipShape(.rect(cornerRadius: cornerRadius))
@@ -23,19 +23,45 @@ struct GoalPhotoView: View {
     }
 }
 
-/// Zastępcza grafika, gdy nie ma zdjęcia (lub slot w Assets jest pusty).
+/// Zastępcza grafika, gdy nie ma zdjęcia: gradient w kolorze marki + sylwetka pojazdu.
 struct PhotoPlaceholder: View {
+    var bike: CatalogBike?
+
+    var body: some View {
+        BikeArtView(category: bike?.category ?? .emtb, tint: bike?.tint ?? .teal)
+    }
+}
+
+/// Ilustracja e-bike'a (bez pobierania zdjęć z internetu).
+struct BikeArtView: View {
+    let category: BikeCategory
+    let tint: Color
+
+    private var symbol: String {
+        switch category {
+        case .moto:
+            // "motorcycle" jest w nowszych SF Symbols – w razie braku zwykły rower
+            UIImage(systemName: "motorcycle") != nil ? "motorcycle" : "bicycle"
+        case .emtb, .city:
+            "bicycle"
+        }
+    }
+
     var body: some View {
         ZStack {
-            LinearGradient(colors: [.teal.opacity(0.55), .indigo.opacity(0.55)], startPoint: .topLeading, endPoint: .bottomTrailing)
-            Image(systemName: "bicycle")
-                .font(.system(size: 72, weight: .semibold))
-                .foregroundStyle(.white.opacity(0.9))
+            LinearGradient(colors: [tint, tint.opacity(0.55)], startPoint: .topLeading, endPoint: .bottomTrailing)
+            RadialGradient(colors: [.white.opacity(0.4), .clear], center: .topLeading, startRadius: 0, endRadius: 260)
+            Image(systemName: symbol)
+                .resizable()
+                .scaledToFit()
+                .fontWeight(.semibold)
+                .foregroundStyle(.white)
+                .padding(28)
                 .overlay(alignment: .topTrailing) {
                     Image(systemName: "bolt.fill")
-                        .font(.system(size: 28, weight: .bold))
+                        .font(.title2.bold())
                         .foregroundStyle(.yellow)
-                        .offset(x: 10, y: -14)
+                        .padding(18)
                 }
         }
     }

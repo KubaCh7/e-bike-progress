@@ -11,6 +11,9 @@ final class AppCoordinator {
     let sync: SyncService
     let network: NetworkMonitor
     let watch: PhoneConnectivity
+    let profile: ProfileStore
+    let catalog: CatalogStore
+    let updates: UpdateChecker
 
     init(inMemory: Bool = false) {
         container = PersistenceController.makeContainer(inMemory: inMemory)
@@ -20,6 +23,9 @@ final class AppCoordinator {
         sync = SyncService(repository: repository)
         network = NetworkMonitor()
         watch = PhoneConnectivity()
+        profile = ProfileStore()
+        catalog = CatalogStore()
+        updates = UpdateChecker()
 
         // lokalna zmiana → wyślij na serwer (z opóźnieniem)
         goals.onDataChanged = { [weak self] in
@@ -30,10 +36,18 @@ final class AppCoordinator {
             self?.dataChanged(local: false)
         }
         auth.onSignedIn = { [weak self] in
-            Task { await self?.sync.sync() }
+            guard let self else { return }
+            Task {
+                await self.sync.sync()
+                if case .signedIn(let userID, _) = self.auth.state {
+                    await self.profile.activate(userID: userID, hasGoals: !self.goals.goals.isEmpty)
+                }
+            }
         }
         auth.onSignedOut = { [weak self] in
-            self?.sync.resetLocalData()
+            guard let self else { return }
+            self.sync.resetLocalData()
+            Task { await self.profile.activate(userID: nil, hasGoals: false) }
         }
         network.onReconnect = { [weak self] in
             self?.sync.scheduleSync(delay: .milliseconds(300))
@@ -50,11 +64,20 @@ final class AppCoordinator {
         auth.start()
         network.start()
         watch.start()
+        Task {
+            // tryb bez konta / brak konfiguracji Supabase – profil lokalny
+            if !auth.isConfigured || auth.offlineMode {
+                await profile.activate(userID: nil, hasGoals: !goals.goals.isEmpty)
+            }
+            await catalog.refresh()
+            await updates.check()
+        }
     }
 
     /// Aplikacja wróciła na pierwszy plan.
     func becameActive() {
         sync.scheduleSync(delay: .milliseconds(200))
+        Task { await updates.check() }
     }
 
     private func dataChanged(local: Bool) {

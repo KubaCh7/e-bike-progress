@@ -27,7 +27,6 @@ final class SyncService {
     @ObservationIgnored private var scheduledTask: Task<Void, Never>?
     @ObservationIgnored private var isRunning = false
     @ObservationIgnored private var needsAnotherRun = false
-    @ObservationIgnored private var ensuredDefaultFor: UUID?
 
     private var context: ModelContext { repository.context }
 
@@ -75,11 +74,6 @@ final class SyncService {
         status = .syncing
 
         do {
-            if ensuredDefaultFor != userID {
-                // cel SR po stronie serwera (idempotentne)
-                try await client.rpc("ensure_default_goal").execute()
-                ensuredDefaultFor = userID
-            }
             let changedByPull = try await pull(client: client, userID: userID)
             try await push(client: client, userID: userID)
             let changedByPhotos = await downloadMissingPhotos(client: client)
@@ -152,7 +146,8 @@ final class SyncService {
             photoURL: row.photoURL,
             isDefault: row.isDefault,
             createdAt: PGDate.parseTimestamp(row.createdAt) ?? .now,
-            seedKey: row.seedKey
+            seedKey: row.seedKey,
+            catalogId: row.catalogID
         )
         goal.needsSync = false
         goal.everSynced = true
@@ -172,6 +167,7 @@ final class SyncService {
         goal.targetAmount = row.targetAmount.rounded(scale: 2)
         goal.isDefault = row.isDefault
         goal.seedKey = row.seedKey
+        goal.catalogId = row.catalogID ?? goal.catalogId
         goal.everSynced = true
         if goal.photoURL != row.photoURL {
             goal.photoURL = row.photoURL
@@ -261,6 +257,7 @@ final class SyncService {
                     photoURL: goal.photoURL,
                     isDefault: goal.isDefault,
                     seedKey: goal.seedKey,
+                    catalogID: goal.catalogId,
                     createdAt: PGDate.timestamp(goal.createdAt),
                     updatedAt: nil,
                     deletedAt: goal.pendingDelete ? PGDate.timestamp(.now) : nil
@@ -340,8 +337,6 @@ final class SyncService {
         }
         UserDefaults.standard.removeObject(forKey: "lastSyncDate")
         lastSyncDate = nil
-        ensuredDefaultFor = nil
-        repository.seedDefaultGoalIfNeeded()
         onRemoteChanges?()
     }
 }

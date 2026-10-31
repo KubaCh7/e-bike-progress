@@ -16,8 +16,22 @@ struct AuthView: View {
                 VStack(spacing: 24) {
                     header
 
+                    // natywny segmented picker – szklana pastylka przesuwa się między trybami
+                    Picker(L10n.tr("auth.mode"), selection: $isSignUp.animation(.smooth)) {
+                        Text(L10n.tr("auth.signIn")).tag(false)
+                        Text(L10n.tr("auth.signUp")).tag(true)
+                    }
+                    .pickerStyle(.segmented)
+
                     GlassEffectContainer(spacing: 14) {
                         VStack(spacing: 14) {
+                            if isSignUp {
+                                TextField(L10n.tr("profile.name"), text: $auth.displayName)
+                                    .textContentType(.givenName)
+                                    .padding(16)
+                                    .glassEffect(.regular, in: .rect(cornerRadius: 18))
+                                    .transition(.move(edge: .top).combined(with: .opacity))
+                            }
                             TextField(L10n.tr("auth.email"), text: $auth.email)
                                 .textContentType(.emailAddress)
                                 .keyboardType(.emailAddress)
@@ -56,12 +70,7 @@ struct AuthView: View {
                     }
                     .buttonStyle(.glassProminent)
                     .controlSize(.large)
-                    .disabled(!auth.canSubmit)
-
-                    Button(isSignUp ? L10n.tr("auth.haveAccount") : L10n.tr("auth.noAccount")) {
-                        withAnimation(.smooth) { isSignUp.toggle() }
-                    }
-                    .font(.footnote)
+                    .disabled(!auth.canSubmit || (isSignUp && auth.displayName.trimmingCharacters(in: .whitespaces).isEmpty))
 
                     HStack {
                         Rectangle().frame(height: 0.5).opacity(0.3)

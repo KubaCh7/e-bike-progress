@@ -9,6 +9,7 @@ struct GoalRow: Codable, Sendable {
     var photoURL: String?
     var isDefault: Bool
     var seedKey: String?
+    var catalogID: String?
     var createdAt: String
     /// Ustawiane przez serwer (trigger) – przy wysyłaniu pomijamy (nil).
     var updatedAt: String?
@@ -21,6 +22,7 @@ struct GoalRow: Codable, Sendable {
         case photoURL = "photo_url"
         case isDefault = "is_default"
         case seedKey = "seed_key"
+        case catalogID = "catalog_id"
         case createdAt = "created_at"
         case updatedAt = "updated_at"
         case deletedAt = "deleted_at"

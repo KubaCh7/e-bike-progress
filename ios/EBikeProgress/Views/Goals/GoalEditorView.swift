@@ -6,8 +6,8 @@ struct GoalEditorView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var model: GoalEditorViewModel
 
-    init(goal: Goal?) {
-        _model = State(initialValue: GoalEditorViewModel(goal: goal))
+    init(goal: Goal?, preset: CatalogBike? = nil, isFirstGoal: Bool = false) {
+        _model = State(initialValue: GoalEditorViewModel(goal: goal, preset: preset, isFirstGoal: isFirstGoal))
     }
 
     var body: some View {
@@ -82,7 +82,7 @@ struct GoalEditorView: View {
                 if let image = model.previewImage {
                     Image(uiImage: image).resizable().scaledToFill()
                 } else {
-                    PhotoPlaceholder()
+                    PhotoPlaceholder(bike: model.catalogBike)
                 }
             }
             .clipShape(.rect(cornerRadius: 26))

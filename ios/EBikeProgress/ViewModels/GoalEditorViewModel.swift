@@ -6,6 +6,8 @@ import Observation
 @MainActor
 final class GoalEditorViewModel {
     let editing: Goal?
+    /// Model z katalogu, z którego tworzymy nowy cel (nil = własny e-bike).
+    let preset: CatalogBike?
     var name: String
     var priceText: String
     var makeDefault: Bool
@@ -15,12 +17,18 @@ final class GoalEditorViewModel {
     var useSuggested = false
     var removePhoto = false
 
-    init(goal: Goal?) {
+    init(goal: Goal?, preset: CatalogBike? = nil, isFirstGoal: Bool = false) {
         editing = goal
-        name = goal?.name ?? ""
-        priceText = goal.map { Money.formatNumber($0.targetAmount) } ?? ""
-        makeDefault = goal?.isDefault ?? false
+        self.preset = preset
+        name = goal?.name ?? preset?.displayName ?? ""
+        priceText = goal.map { Money.formatNumber($0.targetAmount) } ?? preset.map { Money.formatNumber($0.price) } ?? ""
+        makeDefault = goal?.isDefault ?? isFirstGoal
+        // dla e-ride pro SR od razu sugerowane zdjęcie
+        useSuggested = goal == nil && preset?.id == AppConstants.defaultCatalogId
     }
+
+    var catalogId: String? { editing?.catalogId ?? preset?.id }
+    var catalogBike: CatalogBike? { BundledCatalog.bike(id: catalogId) }
 
     var isEditing: Bool { editing != nil }
     var price: Decimal? { Money.parse(priceText) }
@@ -35,7 +43,7 @@ final class GoalEditorViewModel {
 
     /// Sugerowane zdjęcie proponujemy dla e-ride pro SR.
     var canSuggestPhoto: Bool {
-        editing?.isSeedGoal == true || trimmedName.localizedCaseInsensitiveContains("pro SR")
+        editing?.isSeedGoal == true || catalogId == AppConstants.defaultCatalogId || trimmedName.localizedCaseInsensitiveContains("pro SR")
     }
 
     var previewImage: UIImage? {
@@ -92,7 +100,8 @@ final class GoalEditorViewModel {
                 photo: newPhoto?.photo,
                 thumbnail: newPhoto?.thumbnail ?? (useSuggested ? ImageProcessor.suggestedThumbnail() : nil),
                 photoURL: useSuggested ? AppConstants.suggestedPhotoURL : nil,
-                makeDefault: makeDefault
+                makeDefault: makeDefault,
+                catalogId: catalogId
             )
         }
         return true

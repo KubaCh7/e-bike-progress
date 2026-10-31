@@ -3,7 +3,9 @@ import SwiftUI
 /// Ekran główny: zdjęcie celu, uzbierane, pozostało, procent i pasek postępu.
 struct HomeView: View {
     @Environment(GoalsViewModel.self) private var viewModel
+    @Environment(ProfileStore.self) private var profile
     @State private var showDepositForm = false
+    @State private var showAddGoal = false
     @State private var editingDeposit: Deposit?
     @State private var showPhotoSheet = false
 
@@ -15,7 +17,12 @@ struct HomeView: View {
                 if let goal = viewModel.currentGoal {
                     content(for: goal)
                 } else {
-                    ContentUnavailableView(L10n.tr("home.noGoals"), systemImage: "bicycle")
+                    ContentUnavailableView {
+                        Label(L10n.tr("home.noGoals"), systemImage: "bicycle")
+                    } actions: {
+                        Button(L10n.tr("goals.switcher.add"), systemImage: "plus") { showAddGoal = true }
+                            .buttonStyle(.glassProminent)
+                    }
                 }
             }
             .toolbar {
@@ -34,6 +41,7 @@ struct HomeView: View {
                     DepositFormView(goal: goal, deposit: deposit)
                 }
             }
+            .sheet(isPresented: $showAddGoal) { AddGoalSheet() }
             .sheet(isPresented: $showPhotoSheet) {
                 if let goal = viewModel.currentGoal {
                     GoalPhotoSheet(goal: goal)
@@ -46,14 +54,43 @@ struct HomeView: View {
     private func content(for goal: Goal) -> some View {
         let stats = goal.stats
         ScrollView {
-            VStack(spacing: 18) {
-                hero(goal: goal, stats: stats)
+            VStack(alignment: .leading, spacing: 22) {
+                UpdateBanner()
 
-                GlassEffectContainer(spacing: 12) {
-                    HStack(spacing: 12) {
-                        StatChip(title: L10n.tr("home.saved"), value: Money.format(stats.total), systemImage: "banknote")
-                        StatChip(title: L10n.tr("home.remaining"), value: Money.format(stats.remaining), systemImage: "flag.checkered")
+                if let name = profile.displayName {
+                    Text(L10n.tr("header.hello", name))
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+
+                GoalPhotoView(goal: goal, cornerRadius: 34)
+                    .frame(height: 240)
+                    .overlay(alignment: .bottomTrailing) {
+                        Button { showPhotoSheet = true } label: {
+                            Image(systemName: "camera.fill")
+                        }
+                        .buttonStyle(.glass)
+                        .buttonBorderShape(.circle)
+                        .padding(14)
+                        .accessibilityLabel(L10n.tr("photo.change"))
                     }
+                    .onTapGesture { showPhotoSheet = true }
+
+                // minimalistycznie: duży procent, pasek, jedna linijka kwot
+                VStack(alignment: .leading, spacing: 12) {
+                    Text(Money.percent(stats.progress))
+                        .font(.system(size: 76, weight: .bold, design: .rounded).monospacedDigit())
+                        .contentTransition(.numericText(value: stats.progress))
+                    GlassProgressBar(progress: stats.progress)
+                    HStack(alignment: .firstTextBaseline, spacing: 4) {
+                        Text(Money.format(stats.total)).font(.headline.monospacedDigit())
+                        Text(verbatim: "/ \(Money.formatShort(goal.targetAmount))")
+                            .font(.subheadline.monospacedDigit())
+                            .foregroundStyle(.secondary)
+                    }
+                    Text(stats.isAchieved ? L10n.tr("home.achieved") : L10n.tr("home.remainingLine", Money.format(stats.remaining)))
+                        .font(.subheadline)
+                        .foregroundStyle(stats.isAchieved ? .green : .secondary)
                 }
 
                 recentDeposits(goal: goal)
@@ -73,57 +110,6 @@ struct HomeView: View {
             .padding(.bottom, 8)
         }
         .overlay(alignment: .top) { ToastView(message: Binding(get: { viewModel.toast }, set: { viewModel.toast = $0 })) }
-    }
-
-    private func hero(goal: Goal, stats: SavingsStats) -> some View {
-        VStack(alignment: .leading, spacing: 16) {
-            GoalPhotoView(goal: goal, cornerRadius: 26)
-                .frame(height: 220)
-                .overlay(alignment: .topLeading) {
-                    if goal.isDefault {
-                        Label(L10n.tr("home.mainGoal"), systemImage: "star.fill")
-                            .font(.caption.bold())
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 6)
-                            .glassEffect(.regular, in: .capsule)
-                            .padding(12)
-                    }
-                }
-                .overlay(alignment: .bottomTrailing) {
-                    Button { showPhotoSheet = true } label: {
-                        Image(systemName: "camera.fill")
-                    }
-                    .buttonStyle(.glass)
-                    .buttonBorderShape(.circle)
-                    .padding(12)
-                    .accessibilityLabel(L10n.tr("photo.change"))
-                }
-                .onTapGesture { showPhotoSheet = true }
-
-            VStack(alignment: .leading, spacing: 6) {
-                Text(goal.name)
-                    .font(.title2.bold())
-                Text(L10n.tr("home.target", Money.format(goal.targetAmount)))
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
-
-            HStack(alignment: .firstTextBaseline) {
-                Text(Money.percent(stats.progress))
-                    .font(.system(size: 52, weight: .bold, design: .rounded).monospacedDigit())
-                    .contentTransition(.numericText(value: stats.progress))
-                Spacer()
-                if stats.isAchieved {
-                    Text(L10n.tr("home.achieved"))
-                        .font(.headline)
-                        .foregroundStyle(.green)
-                }
-            }
-
-            GlassProgressBar(progress: stats.progress)
-        }
-        .padding(18)
-        .glassEffect(.regular, in: .rect(cornerRadius: 34))
     }
 
     private func recentDeposits(goal: Goal) -> some View {

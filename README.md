@@ -51,6 +51,8 @@ wdrożenie po każdym pushu na `main`; backend: projekt Supabase `e-bike-progres
    4. `20261031000004_storage.sql` – prywatny bucket `goal-photos` + polityki
    5. `20261031000005_realtime.sql` – Realtime (web od razu widzi zmiany z iPhone'a)
    6. `20261031000006_harden_functions.sql` – utwardzenie funkcji (Security Advisor)
+   7. `20261031000007_profiles_catalog_config.sql` – profile (imię), katalog e-bike'ów, `app_config`
+   8. `20261031000008_seed_bike_catalog.sql` – 46 popularnych modeli (generowane z `catalog/bikes.json`)
 
    Alternatywnie Supabase CLI: `supabase link --project-ref <ref>` i `supabase db push`.
 3. **Project Settings → API**: skopiuj **Project URL** i klucz **anon public**.
@@ -186,6 +188,33 @@ grafikę `web/public/ride_pro_sr_placeholder.svg`.
   przez **WatchConnectivity** (`updateApplicationContext`), a nowe wpłaty odsyła
   (`sendMessage` lub kolejka `transferUserInfo`, gdy iPhone jest nieosiągalny).
 - Web korzysta z tej samej bazy, a dzięki **Realtime** od razu widzi zmiany z telefonu.
+
+## Katalog e-bike'ów, imię i aktualizacje
+
+- **Powitanie**: po założeniu konta (z imieniem) lub pierwszym uruchomieniu aplikacja pyta
+  o imię i pokazuje katalog **46 popularnych modeli** – E-Ride Pro SR/SS, Sur-Ron (Light Bee X,
+  Ultra Bee, Storm Bee…), Talaria (Sting R MX4, XXX, Komodo…), Stark Varg, KTM Freeride E,
+  Segway, Super73, Specialized Turbo Levo, Trek Rail, Cube Stereo Hybrid, Kross i inne – albo
+  **własny e-bike**. e-ride pro SR jest zaznaczony domyślnie jako cel główny.
+- Ceny są orientacyjne (polskie ogłoszenia, X 2026; gdzie ich brak – przeliczone z EUR/USD)
+  i można je zmienić przy dodawaniu.
+- **Katalog** jest w `catalog/bikes.json` (wbudowany w web i iOS – działa offline) oraz w tabeli
+  `bike_catalog` w Supabase. Aplikacje pobierają go z serwera, więc **nowe modele i ceny pojawiają się
+  bez aktualizacji aplikacji**. Po zmianie pliku: `python3 catalog/build.py` (kopiuje do web/iOS
+  i generuje SQL).
+- **Imię** zmienisz w *Ustawienia → Profil*; nazwę i cenę celu – w edycji celu.
+- **Aktualizacje iOS z poziomu aplikacji**: iOS nie pozwala aplikacji podmienić własnego kodu,
+  więc nowe wersje dystrybuuje się przez **TestFlight** (wymaga Apple Developer Program).
+  Aplikacja sama sprawdza `app_config.ios_update` w Supabase i pokazuje szklany baner
+  „Dostępna nowa wersja” z przyciskiem otwierającym TestFlight. Po wysłaniu nowego buildu
+  do TestFlight ustaw w Supabase:
+  ```sql
+  update public.app_config
+     set value = jsonb_set(jsonb_set(value, '{latest_build}', '2'), '{url}', '"https://testflight.apple.com/join/XXXXXXX"')
+   where key = 'ios_update';
+  ```
+  Aplikacja na Apple Watch aktualizuje się automatycznie razem z aplikacją na iPhonie.
+  Wersja web (PWA) aktualizuje się sama po każdym wdrożeniu na Vercel.
 
 ## Architektura iOS (MVVM)
 

@@ -42,6 +42,6 @@ struct GoalSwitcherMenu: View {
         }
         .accessibilityLabel(L10n.tr("goals.switcher.label"))
         .sheet(isPresented: $showManager) { GoalsManagerView() }
-        .sheet(isPresented: $showNewGoal) { GoalEditorView(goal: nil) }
+        .sheet(isPresented: $showNewGoal) { AddGoalSheet() }
     }
 }

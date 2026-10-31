@@ -17,6 +17,8 @@ final class AuthViewModel {
     private(set) var state: State = .loading
     var email = ""
     var password = ""
+    /// Imię podawane przy zakładaniu konta.
+    var displayName = ""
     var isWorking = false
     var errorMessage: String?
     var infoMessage: String?
@@ -90,7 +92,12 @@ final class AuthViewModel {
 
     func signUp() async {
         await perform {
-            let response = try await $0.auth.signUp(email: self.email.trimmed, password: self.password)
+            let name = self.displayName.trimmed
+            let response = try await $0.auth.signUp(
+                email: self.email.trimmed,
+                password: self.password,
+                data: name.isEmpty ? nil : ["display_name": .string(name)]
+            )
             if response.session == nil {
                 self.infoMessage = L10n.tr("auth.checkEmail")
             }

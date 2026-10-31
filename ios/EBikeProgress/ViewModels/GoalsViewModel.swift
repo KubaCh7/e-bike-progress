@@ -25,7 +25,7 @@ final class GoalsViewModel {
         if let raw = UserDefaults.standard.string(forKey: Self.selectedKey) {
             selectedGoalID = UUID(uuidString: raw)
         }
-        repository.seedDefaultGoalIfNeeded()
+        // cele wybiera się na ekranie powitalnym (OnboardingView)
         repository.onChange = { [weak self] in
             self?.reload()
             self?.onDataChanged?()
@@ -71,8 +71,8 @@ final class GoalsViewModel {
     // MARK: - Cele
 
     @discardableResult
-    func createGoal(name: String, target: Decimal, photo: Data?, thumbnail: Data?, photoURL: String?, makeDefault: Bool) -> Goal {
-        let goal = repository.createGoal(name: name, target: target, photo: photo, thumbnail: thumbnail, photoURL: photoURL, makeDefault: makeDefault)
+    func createGoal(name: String, target: Decimal, photo: Data?, thumbnail: Data?, photoURL: String?, makeDefault: Bool, catalogId: String? = nil) -> Goal {
+        let goal = repository.createGoal(name: name, target: target, photo: photo, thumbnail: thumbnail, photoURL: photoURL, makeDefault: makeDefault, catalogId: catalogId)
         selectedGoalID = goal.id
         return goal
     }

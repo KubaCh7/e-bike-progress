@@ -1,8 +1,21 @@
 import SwiftUI
 
-/// Ustawienia: język, motyw, cele i kwota celu.
+/// Zakładki ustawień.
+enum SettingsSection: String, CaseIterable, Identifiable {
+    case profile, goals, appearance, account
+    var id: String { rawValue }
+    var title: String { L10n.tr("settings.section.\(rawValue)") }
+}
+
+/// Ustawienia: profil (imię), cele i kwota, wygląd (motyw, język), konto i aktualizacje.
+/// Zakładki przełącza natywny segmented picker – w iOS 26 ze szklaną, przesuwaną pastylką.
 struct SettingsView: View {
     @Environment(GoalsViewModel.self) private var goals
+    @Environment(ProfileStore.self) private var profile
+    @Environment(UpdateChecker.self) private var updates
+    @Environment(\.openURL) private var openURL
+    @State private var section: SettingsSection = .profile
+    @State private var nameDraft = 
     @Environment(AuthViewModel.self) private var auth
     @Environment(SyncService.self) private var sync
     @Environment(NetworkMonitor.self) private var network
@@ -15,17 +28,37 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             Form {
-                appearanceSection
-                languageSection
-                goalSection
-                accountSection
-                aboutSection
+                switch section {
+                case .profile:
+                    profileSection
+                case .goals:
+                    goalSection
+                case .appearance:
+                    appearanceSection
+                    languageSection
+                case .account:
+                    accountSection
+                    aboutSection
+                }
+            }
+            .contentTransition(.opacity)
+            .animation(.smooth, value: section)
+            .safeAreaInset(edge: .top) {
+                Picker(L10n.tr("settings.title"), selection: $section) {
+                    ForEach(SettingsSection.allCases) { Text($0.title).tag($0) }
+                }
+                .pickerStyle(.segmented)
+                .padding(.horizontal)
+                .padding(.bottom, 6)
             }
             .scrollContentBackground(.hidden)
             .background(GlassBackground())
             .navigationTitle(L10n.tr("settings.title"))
             .sheet(isPresented: $showManager) { GoalsManagerView() }
-            .onAppear { model.load(from: goals.currentGoal) }
+            .onAppear {
+                model.load(from: goals.currentGoal)
+                nameDraft = profile.displayName ?? ""
+            }
             .onChange(of: goals.currentGoal?.id) { _, _ in model.load(from: goals.currentGoal) }
         }
     }
@@ -138,9 +171,52 @@ struct SettingsView: View {
         }
     }
 
+    private var profileSection: some View {
+        Section {
+            TextField(L10n.tr("profile.namePlaceholder"), text: $nameDraft)
+                .textContentType(.givenName)
+                .submitLabel(.done)
+                .onSubmit(saveName)
+            if nameDraft.trimmingCharacters(in: .whitespaces) != (profile.displayName ?? "") && !nameDraft.trimmingCharacters(in: .whitespaces).isEmpty {
+                Button(L10n.tr("common.save"), systemImage: "checkmark", action: saveName)
+                    .buttonStyle(.glassProminent)
+            }
+        } header: {
+            Text(L10n.tr("profile.name"))
+        } footer: {
+            Text(L10n.tr("profile.footer"))
+        }
+    }
+
+    private func saveName() {
+        let trimmed = nameDraft.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        Task { await profile.setName(trimmed) }
+    }
+
     private var aboutSection: some View {
-        Section(L10n.tr("settings.about")) {
+        Section {
             LabeledContent(L10n.tr("settings.version"), value: Bundle.main.appVersion)
+            if updates.isUpdateAvailable, let url = updates.updateURL {
+                Button(L10n.tr("update.install"), systemImage: "arrow.down.circle") { openURL(url) }
+                    .buttonStyle(.glassProminent)
+            } else {
+                Button {
+                    Task { await updates.check() }
+                } label: {
+                    HStack {
+                        Label(L10n.tr("update.check"), systemImage: "arrow.triangle.2.circlepath")
+                        Spacer()
+                        if updates.isChecking { ProgressView() } else if updates.lastChecked != nil {
+                            Text(L10n.tr("update.upToDate")).foregroundStyle(.secondary)
+                        }
+                    }
+                }
+            }
+        } header: {
+            Text(L10n.tr("settings.about"))
+        } footer: {
+            Text(L10n.tr("update.footer"))
         }
     }
 }

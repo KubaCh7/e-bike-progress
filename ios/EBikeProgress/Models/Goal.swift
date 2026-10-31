@@ -18,6 +18,8 @@ final class Goal {
     var updatedAt: Date
     /// Znacznik celu tworzonego automatycznie ("ride_pro_sr").
     var seedKey: String?
+    /// Model z katalogu, z którego powstał cel (nil = własny e-bike).
+    var catalogId: String?
 
     // MARK: Stan synchronizacji
     /// Lokalna zmiana czeka na wysłanie do Supabase.
@@ -39,7 +41,8 @@ final class Goal {
         photoURL: String? = nil,
         isDefault: Bool = false,
         createdAt: Date = .now,
-        seedKey: String? = nil
+        seedKey: String? = nil,
+        catalogId: String? = nil
     ) {
         self.id = id
         self.name = name
@@ -49,6 +52,7 @@ final class Goal {
         self.createdAt = createdAt
         self.updatedAt = createdAt
         self.seedKey = seedKey
+        self.catalogId = catalogId ?? (seedKey == AppConstants.defaultGoalSeedKey ? AppConstants.defaultCatalogId : nil)
     }
 
     /// Aktywne (nieusunięte) wpłaty.
@@ -66,5 +70,8 @@ final class Goal {
     }
 
     var isSuggestedPhoto: Bool { photoURL == AppConstants.suggestedPhotoURL }
-    var isSeedGoal: Bool { seedKey == AppConstants.defaultGoalSeedKey }
+    var isSeedGoal: Bool { seedKey == AppConstants.defaultGoalSeedKey || catalogId == AppConstants.defaultCatalogId }
+
+    /// Model z katalogu (do ilustracji i podpowiedzi).
+    var catalogBike: CatalogBike? { BundledCatalog.bike(id: catalogId) }
 }

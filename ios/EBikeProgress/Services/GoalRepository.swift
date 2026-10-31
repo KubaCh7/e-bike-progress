@@ -41,10 +41,11 @@ final class GoalRepository {
 
     // MARK: - Pierwsze uruchomienie
 
-    /// Tworzy cel "e-ride pro SR" za 30 000 zł, jeśli nie ma jeszcze żadnego celu.
+    /// Tworzy cel "e-ride pro SR" za 30 000 zł, jeśli nie ma jeszcze żadnego celu
+    /// (np. gdy użytkownik pominie wybór e-bike'a na ekranie powitalnym).
     @discardableResult
     func seedDefaultGoalIfNeeded() -> Goal? {
-        guard allGoalsIncludingDeleted().isEmpty else { return nil }
+        guard fetchGoals().isEmpty else { return nil }
         let goal = Goal(
             name: AppConstants.defaultGoalName,
             targetAmount: AppConstants.defaultGoalTarget,
@@ -60,8 +61,14 @@ final class GoalRepository {
     // MARK: - Cele
 
     @discardableResult
-    func createGoal(name: String, target: Decimal, photo: Data?, thumbnail: Data?, photoURL: String?, makeDefault: Bool) -> Goal {
-        let goal = Goal(name: name, targetAmount: target, photoURL: photoURL)
+    func createGoal(name: String, target: Decimal, photo: Data?, thumbnail: Data?, photoURL: String?, makeDefault: Bool, catalogId: String? = nil) -> Goal {
+        let goal = Goal(
+            name: name,
+            targetAmount: target,
+            photoURL: photoURL,
+            seedKey: catalogId == AppConstants.defaultCatalogId ? AppConstants.defaultGoalSeedKey : nil,
+            catalogId: catalogId
+        )
         goal.photoData = photo
         goal.thumbnailData = thumbnail
         goal.photoNeedsUpload = photo != nil

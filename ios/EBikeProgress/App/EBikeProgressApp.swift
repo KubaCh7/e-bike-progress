@@ -15,7 +15,7 @@ struct EBikeProgressApp: App {
 
     var body: some Scene {
         WindowGroup {
-            MainTabView()
+            RootView()
                 .environment(goalsViewModel)
         }
         .modelContainer(container)

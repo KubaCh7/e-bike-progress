@@ -81,6 +81,20 @@ final class GoalsViewModel {
         repository.updateGoal(goal, name: name, target: target)
     }
 
+    // MARK: - Zdjęcia
+
+    func setPhoto(_ goal: Goal, data: Data, thumbnail: Data?) {
+        repository.setPhoto(goal, data: data, thumbnail: thumbnail)
+    }
+
+    func useSuggestedPhoto(_ goal: Goal) {
+        repository.useSuggestedPhoto(goal, thumbnail: ImageProcessor.suggestedThumbnail())
+    }
+
+    func removePhoto(_ goal: Goal) {
+        repository.removePhoto(goal)
+    }
+
     func setDefault(_ goal: Goal) {
         repository.setDefault(goal)
         selectedGoalID = goal.id

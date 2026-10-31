@@ -7,6 +7,7 @@ struct HomeView: View {
     @State private var showGoalsManager = false
     @State private var showNewGoal = false
     @State private var editingDeposit: Deposit?
+    @State private var showPhotoSheet = false
 
     var body: some View {
         NavigationStack {
@@ -33,6 +34,11 @@ struct HomeView: View {
             .sheet(item: $editingDeposit) { deposit in
                 if let goal = viewModel.currentGoal {
                     DepositFormView(goal: goal, deposit: deposit)
+                }
+            }
+            .sheet(isPresented: $showPhotoSheet) {
+                if let goal = viewModel.currentGoal {
+                    GoalPhotoSheet(goal: goal)
                 }
             }
         }
@@ -85,6 +91,16 @@ struct HomeView: View {
                             .padding(12)
                     }
                 }
+                .overlay(alignment: .bottomTrailing) {
+                    Button { showPhotoSheet = true } label: {
+                        Image(systemName: "camera.fill")
+                    }
+                    .buttonStyle(.glass)
+                    .buttonBorderShape(.circle)
+                    .padding(12)
+                    .accessibilityLabel(L10n.tr("photo.change"))
+                }
+                .onTapGesture { showPhotoSheet = true }
 
             VStack(alignment: .leading, spacing: 6) {
                 Text(goal.name)

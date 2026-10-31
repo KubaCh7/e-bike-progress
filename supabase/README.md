@@ -9,3 +9,5 @@ Migracje uruchamiaj w kolejności nazw plików:
 
 Najprościej: Dashboard → **SQL Editor** → wklej zawartość każdego pliku → **Run**.
 Albo Supabase CLI: `supabase link --project-ref <ref>` i `supabase db push`.
+5. `20261031000005_realtime.sql` – Realtime
+6. `20261031000006_harden_functions.sql` – utwardzenie funkcji (Security Advisor)

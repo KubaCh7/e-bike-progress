@@ -47,6 +47,7 @@ Format kwot zawsze polski: **12 500,00 zł** (PLN).
    3. `20261031000003_default_goal_and_rpc.sql` – cel „e-ride pro SR” 30 000 zł dla każdego nowego konta
    4. `20261031000004_storage.sql` – prywatny bucket `goal-photos` + polityki
    5. `20261031000005_realtime.sql` – Realtime (web od razu widzi zmiany z iPhone'a)
+   6. `20261031000006_harden_functions.sql` – utwardzenie funkcji (Security Advisor)
 
    Alternatywnie Supabase CLI: `supabase link --project-ref <ref>` i `supabase db push`.
 3. **Project Settings → API**: skopiuj **Project URL** i klucz **anon public**.

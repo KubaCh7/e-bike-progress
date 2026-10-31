@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Deposit } from '../lib/types'
 import type { SavingsStats } from '../lib/stats'
@@ -85,6 +85,7 @@ export function SavingsChart({ deposits, stats, height = 240 }: { deposits: Depo
 /** Sumy wpłat w miesiącach; bieżący miesiąc w kolorze danych, poprzednie szare. */
 export function MonthlyBars({ deposits, height = 180 }: { deposits: Deposit[]; height?: number }) {
   const { t, i18n } = useTranslation()
+  const [readout, setReadout] = useState<string | null>(null)
   const dark = useIsDark()
   const ref = useRef<HTMLDivElement>(null)
   const locale = localeFor(i18n.language)
@@ -151,5 +152,19 @@ export function MonthlyBars({ deposits, height = 180 }: { deposits: Deposit[]; h
   }, [data, height, locale, dark, t])
 
   if (!data) return <p className="empty">{t('chart.empty')}</p>
-  return <div ref={ref} className="chart" style={{ minHeight: height }} />
+  return (
+    <>
+      <div
+        ref={ref}
+        className="chart"
+        style={{ minHeight: height }}
+        onClick={(e) => {
+          // na telefonie nie ma najechania – dotknięcie słupka pokazuje jego wartość
+          const title = (e.target as Element).closest('rect')?.querySelector('title')?.textContent
+          setReadout(title ?? null)
+        }}
+      />
+      <p className="chart-readout" aria-live="polite">{readout ?? t('chart.tapHint')}</p>
+    </>
+  )
 }

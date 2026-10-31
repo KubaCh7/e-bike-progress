@@ -403,7 +403,7 @@ select.input { appearance: none; padding-right: 32px; background-image: var(--ch
   .kpi:nth-child(2n) { border-left: 1px solid var(--border); }
   .kpi { padding: 14px 16px; }
   .plan { grid-template-columns: minmax(0, 1fr); gap: 16px; }
-  .plan-photo { aspect-ratio: 16 / 9; }
+  .plan-photo { aspect-ratio: 4 / 3; }
   .panel { padding: 16px; }
   .overlay { align-items: end; padding: 0; }
   .dialog, .dialog.wide { width: 100%; max-height: 92svh; border-radius: 12px 12px 0 0; }
@@ -457,7 +457,7 @@ select.input { appearance: none; padding-right: 32px; background-image: var(--ch
   .plan-tick.flip.low { padding-top: 34px; }
 }
 @media (max-width: 860px) {
-  .plan-photo { aspect-ratio: auto; height: 150px; }
+  .plan-photo { aspect-ratio: 4 / 3; height: auto; }
 }
 
 /* bikes table */
@@ -498,3 +498,7 @@ select.input { appearance: none; padding-right: 32px; background-image: var(--ch
 @media (max-width: 480px) { .photo-field { grid-template-columns: minmax(0, 1fr); } }
 .amount.neg { color: var(--negative); }
 .money.neg { color: var(--negative); }
+
+.chart-readout { min-height: 20px; margin-top: 8px; color: var(--muted); font-size: var(--fs-small); font-variant-numeric: tabular-nums; }
+.chart-readout strong { color: var(--text); font-weight: 500; }
+.chart svg rect[data-tap] { cursor: pointer; }

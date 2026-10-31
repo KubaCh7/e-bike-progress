@@ -244,5 +244,6 @@
   "photo.added": "Photo added",
   "photo.cropHint": "Drag to frame",
   "photo.cropText": "Drag the photo up, down, left or right (or use the arrow keys) so the e-bike fits well.",
-  "photo.center": "Center"
+  "photo.center": "Center",
+  "chart.tapHint": "Tap or hover a bar to see the amount."
 }

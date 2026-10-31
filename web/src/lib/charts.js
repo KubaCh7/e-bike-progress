@@ -302,7 +302,7 @@
       const dots = series.map((sr, k) => svg('circle', { r: 3.5, fill: css(el, '--surface', '#fff'), stroke: colourOf(sr, k), 'stroke-width': 2, opacity: 0 }, g));
       const hit = svg('rect', { x: padL, y: padT, width: w - padL, height: h - padT - padB, fill: 'transparent' }, s);
       const move = (ev) => { const r = s.getBoundingClientRect(); const px = ((ev.clientX - r.left) / r.width) * w; const i = Math.max(0, Math.min(labels.length - 1, Math.round(((px - padL) / (w - padL - padR)) * (labels.length - 1)))); rule.setAttribute('x1', x(i)); rule.setAttribute('x2', x(i)); rule.setAttribute('opacity', 0.35); series.forEach((sr, k) => { const v = sr.values[i]; dots[k].setAttribute('cx', x(i)); dots[k].setAttribute('cy', v == null ? -99 : y(Math.min(v, yt.at(-1)))); dots[k].setAttribute('opacity', v == null ? 0 : 1); }); tip.innerHTML = `<div style="opacity:.7">${esc(labels[i])}</div>` + series.map((sr) => `<div><b style="font-weight:600">${sr.values[i] == null ? '–' : esc(format(sr.values[i]))}</b> ${series.length > 1 ? esc(sr.name) : ''}</div>`).join(''); const left = Math.min((x(i) / w) * r.width + 12, r.width - tip.offsetWidth - 4); tip.style.left = `${Math.max(0, left)}px`; tip.style.top = '0px'; tip.style.opacity = 1; };
-      hit.addEventListener('pointermove', move); hit.addEventListener('pointerleave', () => { tip.style.opacity = 0; rule.setAttribute('opacity', 0); dots.forEach((d) => d.setAttribute('opacity', 0)); });
+      hit.addEventListener('pointermove', move); hit.addEventListener('pointerdown', move); hit.addEventListener('pointerleave', (ev) => { if (ev.pointerType === 'touch') return; tip.style.opacity = 0; rule.setAttribute('opacity', 0); dots.forEach((d) => d.setAttribute('opacity', 0)); });
       const last = series[0].values.filter((v) => v != null).at(-1);
       s.setAttribute('aria-label', `${series.map((x) => x.name).join(', ')}, ${labels[0]} to ${labels.at(-1)}; latest ${last == null ? 'no data' : format(last)}`);
     };
@@ -346,7 +346,7 @@
       const { s, w, h } = frame(el, heightOf(height));
       const hiUp = Math.max(0, ...up), hiDown = Math.max(0, ...down);
       const yt = ticks(-hiDown, hiUp || 1, 4); const stp = yt[1] - yt[0]; if (hiDown > 0 && yt[0] >= -hiDown) yt.unshift(+(yt[0] - stp).toFixed(10));
-      const padL = 12 + Math.max(...yt.map((v) => measure(s, tick(v), 12))), padB = 26;
+      const padL = 12 + Math.max(...yt.map((v) => measure(s, tick(v), 12))), padB = 44; // taste-skill-ignore: caption row under the month labels
       const band = (w - padL) / labels.length, bw = Math.max(2, band * 0.62);
       const x = (i) => padL + band * i + band / 2;
       // the caption for the upper side opens the label rows above the plot; the lower one sits under the plot, at left
@@ -354,8 +354,8 @@
       const y = (v) => padT + (h - padT - padB) * (1 - (v - yt[0]) / (yt.at(-1) - yt[0]));
       const g = svg('g', {}, s), ink = css(el, '--axis-ink', '#6b6b6b');
       const bwid = measure(s, below, 11) + 9;
-      axes(g, el, { w, h, padL, padB, yt, y, labels, x, band: true, at: xAt, tick, avoid: [padL, padL + bwid] });
-      svg('path', { d: `M${padL} ${h - padB + 11}l3 6l3 -6z`, fill: ink }, g); text(g, below, { x: padL + 9, y: h - padB + 18, 'font-size': 11, fill: ink });
+      void bwid; axes(g, el, { w, h: h - 18, padL, padB: padB - 18, yt, y, labels, x, band: true, at: xAt, tick });
+      svg('path', { d: `M${padL} ${h - 13}l3 6l3 -6z`, fill: ink }, g); text(g, below, { x: padL + 9, y: h - 6, 'font-size': 11, fill: ink });
       notesUnder(g, el, N, { padT, h, padB });
       for (const it of N.items) if (it.at != null) it.end = y(up[it.at] || 0) - 4;
       labels.forEach((lab, i) => {

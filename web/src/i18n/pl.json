@@ -248,5 +248,6 @@
   "photo.added": "Dodano zdjęcie",
   "photo.cropHint": "Przeciągnij, aby ustawić kadr",
   "photo.cropText": "Przeciągnij zdjęcie w górę, w dół, w lewo lub w prawo (albo użyj strzałek), żeby e-bike dobrze się mieścił.",
-  "photo.center": "Wyśrodkuj"
+  "photo.center": "Wyśrodkuj",
+  "chart.tapHint": "Dotknij lub najedź na słupek, aby zobaczyć kwotę."
 }

@@ -91,8 +91,12 @@ export function MonthlyBars({ deposits, height = 180 }: { deposits: Deposit[]; h
 
   const data = useMemo(() => {
     if (!deposits.length) return null
-    const byMonth = new Map<string, number>()
-    for (const d of deposits) byMonth.set(d.date.slice(0, 7), (byMonth.get(d.date.slice(0, 7)) ?? 0) + Math.round(d.amount * 100))
+    const ins = new Map<string, number>()
+    const outs = new Map<string, number>()
+    for (const d of deposits) {
+      const map = d.amount < 0 ? outs : ins
+      map.set(d.date.slice(0, 7), (map.get(d.date.slice(0, 7)) ?? 0) + Math.round(Math.abs(d.amount) * 100))
+    }
     const first = deposits.map((d) => parseDay(d.date)).reduce((a, b) => (a < b ? a : b))
     const now = new Date()
     const end = new Date(now.getFullYear(), now.getMonth(), 1)
@@ -101,7 +105,12 @@ export function MonthlyBars({ deposits, height = 180 }: { deposits: Deposit[]; h
     if (addMonths(start, 5) > end) start = addMonths(end, -5)
     const months: Date[] = []
     for (let m = start; m <= end; m = addMonths(m, 1)) months.push(m)
-    return { months, values: months.map((m) => (byMonth.get(monthKey(m)) ?? 0) / 100) }
+    return {
+      months,
+      values: months.map((m) => (ins.get(monthKey(m)) ?? 0) / 100),
+      outs: months.map((m) => (outs.get(monthKey(m)) ?? 0) / 100),
+      hasOut: outs.size > 0,
+    }
   }, [deposits])
 
   useEffect(() => {
@@ -113,8 +122,24 @@ export function MonthlyBars({ deposits, height = 180 }: { deposits: Deposit[]; h
     const fmtMonth = new Intl.DateTimeFormat(locale, { month: 'short' })
     const C = window.Charts
     const grey = getComputedStyle(host).getPropertyValue('--chart-2').trim() || '#8a8a8a'
+    const labels = data.months.map((m) => fmtMonth.format(m))
+    if (data.hasOut) {
+      // wpłaty w górę (kolor danych), wypłaty w dół (szare)
+      C.diverging(el, {
+        labels,
+        up: data.values,
+        down: data.outs,
+        above: t('deposit.kindIn'),
+        below: t('deposit.kindOut'),
+        format: C.fmt.money('PLN', 0),
+        tickFormat: C.fmt.compact,
+        height,
+        xAt: spread(data.months.length, 8),
+      })
+      return
+    }
     C.bars(el, {
-      labels: data.months.map((m) => fmtMonth.format(m)),
+      labels,
       values: data.values,
       format: C.fmt.money('PLN', 0),
       tickFormat: C.fmt.compact,
@@ -123,7 +148,7 @@ export function MonthlyBars({ deposits, height = 180 }: { deposits: Deposit[]; h
       mutedColour: grey,
       xAt: spread(data.months.length, 8),
     })
-  }, [data, height, locale, dark])
+  }, [data, height, locale, dark, t])
 
   if (!data) return <p className="empty">{t('chart.empty')}</p>
   return <div ref={ref} className="chart" style={{ minHeight: height }} />

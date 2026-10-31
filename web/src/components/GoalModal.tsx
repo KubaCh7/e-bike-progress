@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { bikeName, DEFAULT_GOAL, SUGGESTED_PHOTO_URL, type CatalogBike, type Goal } from '../lib/types'
 import { formatNumber, parseAmount } from '../lib/format'
 import { useData } from '../state/DataContext'
+import { play } from '../lib/sound'
 import { Modal, ConfirmDialog } from './Modal'
 import { PhotoPicker, type PhotoChoice } from './PhotoPicker'
 import { CatalogPicker } from './CatalogPicker'
@@ -50,6 +51,7 @@ export function GoalModal({
   const [photo, setPhoto] = useState<PhotoChoice>(
     !goal && preset?.id === DEFAULT_GOAL.catalogId ? { kind: 'suggested' } : { kind: 'keep' },
   )
+  const [position, setPosition] = useState<string | null>(goal?.photoPosition ?? null)
   const [busy, setBusy] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
 
@@ -74,12 +76,14 @@ export function GoalModal({
             name: trimmed,
             targetAmount: price,
             ...(photoURL !== undefined && { photoURL }),
+            photoPosition: position,
             ...(makeDefault && !goal.isDefault && { isDefault: true }),
           },
           blob,
         )
       } else {
-        await createGoal({ name: trimmed, targetAmount: price, photoURL: photoURL ?? null, isDefault: makeDefault, catalogId }, blob)
+        await createGoal({ name: trimmed, targetAmount: price, photoURL: photoURL ?? null, isDefault: makeDefault, catalogId, photoPosition: position }, blob)
+        play('bike')
       }
       showToast(t('goals.saved'))
       onClose()
@@ -96,6 +100,7 @@ export function GoalModal({
         onCancel={() => setConfirmDelete(false)}
         onConfirm={async () => {
           await deleteGoal(goal.id)
+          play('remove')
           onClose()
         }}
       />
@@ -112,6 +117,8 @@ export function GoalModal({
           showSuggested={showSuggested}
           choice={photo}
           onChange={setPhoto}
+          position={position}
+          onPositionChange={setPosition}
         />
 
         <div className="field">

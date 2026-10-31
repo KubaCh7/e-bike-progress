@@ -3,7 +3,10 @@ import { useData } from '../state/DataContext'
 import { formatDate, formatMoneyShort, formatPercent, localeFor } from '../lib/format'
 import type { CatalogBike, Deposit } from '../lib/types'
 import type { SavingsStats } from '../lib/stats'
+import { useRef, useState } from 'react'
 import { GoalPhoto } from '../components/GoalPhoto'
+import { compressImage } from '../lib/image'
+import type { Goal } from '../lib/types'
 import { SavingsChart } from '../components/Charts'
 
 const QUICK = [100, 200, 500]
@@ -14,12 +17,14 @@ const chartHeight = () => (window.innerWidth < 860 ? 220 : 320)
 /** Przegląd: ile brakuje do e-bike'a i kiedy go kupisz. */
 export function OverviewPage({
   onAddDeposit,
+  onWithdraw,
   onQuickDeposit,
   onEditGoal,
   onEditDeposit,
   onShowDeposits,
 }: {
   onAddDeposit: () => void
+  onWithdraw: () => void
   onQuickDeposit: (amount: number) => void
   onEditGoal: () => void
   onEditDeposit: (d: Deposit) => void
@@ -57,6 +62,7 @@ export function OverviewPage({
         </div>
         <div className="actions desk">
           <button type="button" className="btn ghost" onClick={onEditGoal}>{t('overview.editBike')}</button>
+          <button type="button" className="btn outline" onClick={onWithdraw} disabled={stats.total <= 0}>{t('deposit.kindOut')}</button>
           <button type="button" className="btn primary" onClick={onAddDeposit}>{t('home.addDeposit')}</button>
         </div>
       </div>
@@ -64,9 +70,7 @@ export function OverviewPage({
       <div className="stack">
         <section className="panel" aria-label={t('home.progress')}>
           <div className="plan">
-            <div className="plan-photo">
-              <GoalPhoto goal={goal} alt={goal.name} />
-            </div>
+            <PlanPhoto goal={goal} hasCatalogImage={!!bike?.image_url} onEdit={onEditGoal} />
             <div>
               <div className="plan-figures">
                 <div>
@@ -134,9 +138,9 @@ export function OverviewPage({
                     <button type="button" className="row row-button" onClick={() => onEditDeposit(d)} aria-label={`${t('common.edit')}: ${formatDate(d.date, i18n.language)}`}>
                       <span className="grow">
                         <span>{formatDate(d.date, i18n.language)}</span>
-                        {d.note && <span className="small muted ellipsis">{d.note}</span>}
+                        {(d.note || d.amount < 0) && <span className="small muted ellipsis">{d.note || t('deposit.kindOut')}</span>}
                       </span>
-                      <span className="amount">{formatMoneyShort(d.amount)}</span>
+                      <span className={`amount ${d.amount < 0 ? 'neg' : ''}`}>{d.amount < 0 ? '−' : ''}{formatMoneyShort(Math.abs(d.amount))}</span>
                     </button>
                   </li>
                 ))}
@@ -216,6 +220,43 @@ function PlanBar({ stats, bike, catalog }: { stats: SavingsStats; bike: CatalogB
           <span>{formatMoneyShort(stats.target)}</span>
         </div>
       )}
+    </div>
+  )
+}
+
+/** Zdjęcie e-bike'a. Bez zdjęcia: ikona z „Dodaj zdjęcie” – kliknięcie od razu otwiera wybór pliku. */
+function PlanPhoto({ goal, hasCatalogImage, onEdit }: { goal: Goal; hasCatalogImage: boolean; onEdit: () => void }) {
+  const { t } = useTranslation()
+  const { updateGoal, showToast } = useData()
+  const input = useRef<HTMLInputElement>(null)
+  const [busy, setBusy] = useState(false)
+  const empty = !goal.photoURL && !hasCatalogImage
+
+  async function upload(file: File | undefined) {
+    if (!file || !file.type.startsWith('image/')) return
+    setBusy(true)
+    try {
+      await updateGoal(goal.id, { photoPosition: null }, await compressImage(file))
+      showToast(t('photo.added'))
+    } catch {
+      showToast(t('photo.error'))
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <div className="plan-photo">
+      <button
+        type="button"
+        className="plan-photo-button"
+        onClick={() => (empty ? input.current?.click() : onEdit())}
+        aria-label={empty ? t('photo.add') : t('photo.change')}
+        title={empty ? t('photo.add') : t('photo.change')}
+      >
+        <GoalPhoto goal={goal} alt={goal.name} hint={busy ? t('photo.processing') : t('photo.add')} />
+      </button>
+      <input ref={input} type="file" accept="image/*" hidden onChange={(e) => void upload(e.target.files?.[0])} />
     </div>
   )
 }

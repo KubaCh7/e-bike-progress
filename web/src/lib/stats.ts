@@ -28,8 +28,10 @@ export function computeStats(target: number, deposits: Deposit[], now = new Date
   const total = totalCents / 100
   const remaining = Math.max(target - total, 0)
   const progress = target > 0 ? Math.min(Math.max(total / target, 0), 1) : 0
-  const count = deposits.length
-  const average = count ? Math.round(totalCents / count) / 100 : null
+  // średnia i liczba liczą tylko wpłaty (bez wypłat)
+  const incoming = deposits.filter((d) => d.amount > 0)
+  const count = incoming.length
+  const average = count ? Math.round(incoming.reduce((s, d) => s + cents(d.amount), 0) / count) / 100 : null
 
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1)
   const thisMonth =
@@ -37,7 +39,7 @@ export function computeStats(target: number, deposits: Deposit[], now = new Date
 
   let dailyRate: number | null = null
   let forecastDate: Date | null = null
-  if (count && total > 0) {
+  if (deposits.length && total > 0) {
     const first = deposits.map((d) => parseDay(d.date).getTime()).reduce((a, b) => Math.min(a, b))
     const todayStart = parseDay(toDay(now)).getTime()
     const days = Math.round((todayStart - first) / DAY_MS) + 1

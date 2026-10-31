@@ -24,6 +24,7 @@ export class LocalStore implements DataStore {
         const data = JSON.parse(raw) as LocalData
         // starsze dane: brak catalogId i profilu
         data.goals.forEach((g) => (g.catalogId ??= g.seedKey === 'ride_pro_sr' ? 'eride-pro-sr' : null))
+        data.goals.forEach((g) => (g.photoPosition ??= null))
         data.profile ??= { displayName: null, onboarded: data.goals.length > 0 }
         return data
       }
@@ -71,6 +72,7 @@ export class LocalStore implements DataStore {
       createdAt: new Date().toISOString(),
       seedKey: input.catalogId === 'eride-pro-sr' ? 'ride_pro_sr' : null,
       catalogId: input.catalogId ?? null,
+      photoPosition: input.photoPosition ?? null,
     }
     this.mutate((d) => {
       d.goals.push(goal)

@@ -5,7 +5,7 @@ import type { Deposit } from '../lib/types'
 import { MonthlyBars } from '../components/Charts'
 
 /** Wpłaty: sumy w miesiącach i pełna lista, pogrupowana po miesiącach (od najnowszej). */
-export function DepositsPage({ onAdd, onEdit, onDelete }: { onAdd: () => void; onEdit: (d: Deposit) => void; onDelete: (d: Deposit) => void }) {
+export function DepositsPage({ onAdd, onWithdraw, onEdit, onDelete }: { onAdd: () => void; onWithdraw: () => void; onEdit: (d: Deposit) => void; onDelete: (d: Deposit) => void }) {
   const { t, i18n } = useTranslation()
   const { currentGoal, currentDeposits: deposits, currentStats: stats } = useData()
   if (!currentGoal || !stats) return null
@@ -23,11 +23,12 @@ export function DepositsPage({ onAdd, onEdit, onDelete }: { onAdd: () => void; o
           <h1>{t('view.deposits')}</h1>
           <p className="sub">
             {deposits.length
-              ? t('deposits.sub', { count: deposits.length, total: formatMoneyShort(stats.total), name: currentGoal.name })
+              ? t('deposits.sub', { count: stats.count, total: formatMoneyShort(stats.total), name: currentGoal.name })
               : t('deposits.subEmpty', { name: currentGoal.name })}
           </p>
         </div>
         <div className="actions desk">
+          <button type="button" className="btn outline" onClick={onWithdraw} disabled={stats.total <= 0}>{t('deposit.kindOut')}</button>
           <button type="button" className="btn primary" onClick={onAdd}>{t('home.addDeposit')}</button>
         </div>
       </div>
@@ -44,7 +45,7 @@ export function DepositsPage({ onAdd, onEdit, onDelete }: { onAdd: () => void; o
         <section className="panel">
           <div className="panel-head">
             <h2>{t('deposits.list')}</h2>
-            <span className="meta">{t('history.count', { count: deposits.length })}</span>
+            <span className="meta">{t('history.count', { count: stats.count })}</span>
           </div>
           {deposits.length === 0 ? (
             <div className="empty">
@@ -74,8 +75,8 @@ export function DepositsPage({ onAdd, onEdit, onDelete }: { onAdd: () => void; o
                     ...items.map((d) => (
                       <tr key={d.id}>
                         <td className="date">{formatDate(d.date, i18n.language)}</td>
-                        <td className="note">{d.note || <span className="muted">—</span>}</td>
-                        <td className="n money num">{formatMoney(d.amount)}</td>
+                        <td className="note">{d.note || (d.amount < 0 ? t('deposit.kindOut') : <span className="muted">—</span>)}</td>
+                        <td className={`n money num ${d.amount < 0 ? 'neg' : ''}`}>{d.amount < 0 ? '−' : ''}{formatMoney(Math.abs(d.amount))}</td>
                         <td className="n acts">
                           <span className="row-actions">
                             <button type="button" className="btn ghost sm" onClick={() => onEdit(d)}>{t('common.edit')}</button>

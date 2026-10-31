@@ -9,7 +9,10 @@ Styl: na iPhonie i zegarku **Liquid Glass** – natywny w iOS 26 / watchOS 26
 **minimalistyczny**: boczne menu na tle strony (na telefonie górny pasek i menu
 na cały ekran), czarno-szare elementy, font Geist, liczby tabelaryczne. Jedyny kolor
 to barwa marki wybranego e-bike'a – tylko na danych (pasek postępu i linia oszczędności),
-przyciemniona tak, by miała kontrast min. 3:1. Pod paskiem postępu „drabinka cen”:
+przyciemniona tak, by miała kontrast min. 3:1.
+Web ma też wypłaty (zapisywane jako ujemne kwoty), kadrowanie zdjęcia przeciąganiem
+(kolumna `goals.photo_position`, CSS `object-position`) i ciche dźwięki z Web Audio
+(wyłączane w Ustawieniach). Pod paskiem postępu „drabinka cen”:
 tańsze modele tej samej marki. Jasny i ciemny motyw.
 
 ```

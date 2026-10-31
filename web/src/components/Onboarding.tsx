@@ -8,6 +8,7 @@ import { GoalModal } from './GoalModal'
 import { LanguagePicker } from './LanguagePicker'
 import { LegalFooter } from './Legal'
 import { Brand } from './Shell'
+import { play } from '../lib/sound'
 
 /**
  * Powitanie: 1 imię → 2 wybór e-bike'ów (najpopularniejsze na górze) albo własny.
@@ -68,6 +69,7 @@ export function Onboarding() {
         main = created.id
       }
       if (main) selectGoal(main)
+      play('bike')
       await updateProfile({ onboarded: true })
     } catch (err) {
       setError(t('onboarding.saveError', { message: err instanceof Error ? err.message : String(err) }))

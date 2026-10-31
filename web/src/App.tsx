@@ -10,6 +10,7 @@ import type { DataStore } from './data/store'
 import type { Deposit } from './lib/types'
 import { formatMoney, today } from './lib/format'
 import { dataHue } from './lib/hue'
+import { play } from './lib/sound'
 import { Sidebar, TopBar, type View } from './components/Shell'
 import { DepositModal } from './components/DepositModal'
 import { AddGoalModal, GoalModal } from './components/GoalModal'
@@ -82,7 +83,7 @@ function Shell() {
 }
 
 type Sheet =
-  | { kind: 'deposit'; deposit?: Deposit }
+  | { kind: 'deposit'; deposit?: Deposit; out?: boolean }
   | { kind: 'editGoal'; goalId: string }
   | { kind: 'addGoal' }
   | { kind: 'deleteDeposit'; deposit: Deposit }
@@ -124,6 +125,7 @@ function Dashboard() {
   const quickDeposit = async (amount: number) => {
     if (!currentGoal) return
     await data.addDeposit({ goalId: currentGoal.id, amount, date: today(), note: null })
+    play('deposit')
     data.showToast(t('deposit.added', { amount: formatMoney(amount) }))
   }
 
@@ -156,6 +158,7 @@ function Dashboard() {
           {view === 'overview' && (
             <OverviewPage
               onAddDeposit={() => setSheet({ kind: 'deposit' })}
+              onWithdraw={() => setSheet({ kind: 'deposit', out: true })}
               onQuickDeposit={(amount) => void quickDeposit(amount)}
               onEditGoal={() => currentGoal && setSheet({ kind: 'editGoal', goalId: currentGoal.id })}
               onEditDeposit={(deposit) => setSheet({ kind: 'deposit', deposit })}
@@ -165,6 +168,7 @@ function Dashboard() {
           {view === 'deposits' && (
             <DepositsPage
               onAdd={() => setSheet({ kind: 'deposit' })}
+              onWithdraw={() => setSheet({ kind: 'deposit', out: true })}
               onEdit={(deposit) => setSheet({ kind: 'deposit', deposit })}
               onDelete={(deposit) => setSheet({ kind: 'deleteDeposit', deposit })}
             />
@@ -183,7 +187,7 @@ function Dashboard() {
         </main>
       </div>
 
-      {sheet?.kind === 'deposit' && currentGoal && <DepositModal goal={currentGoal} deposit={sheet.deposit} onClose={close} />}
+      {sheet?.kind === 'deposit' && currentGoal && <DepositModal goal={currentGoal} deposit={sheet.deposit} initialKind={sheet.out ? 'out' : 'in'} onClose={close} />}
       {sheet?.kind === 'editGoal' && editingGoal && <GoalModal key={editingGoal.id} goal={editingGoal} onClose={close} />}
       {sheet?.kind === 'addGoal' && <AddGoalModal onClose={close} />}
       {sheet?.kind === 'deleteDeposit' && (
@@ -193,6 +197,7 @@ function Dashboard() {
           onCancel={close}
           onConfirm={() => {
             void data.deleteDeposit(sheet.deposit.id)
+            play('remove')
             close()
           }}
         />

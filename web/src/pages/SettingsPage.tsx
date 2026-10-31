@@ -6,6 +6,7 @@ import { useAuth } from '../state/AuthContext'
 import { useData } from '../state/DataContext'
 import { Segmented } from '../components/Segmented'
 import { ConfirmDialog } from '../components/Modal'
+import { play, setSoundsEnabled, soundsEnabled } from '../lib/sound'
 
 /** Ustawienia w dwóch kolumnach: opis sekcji po lewej, panel po prawej. */
 export function SettingsPage({ theme, onTheme }: { theme: ThemeMode; onTheme: (mode: ThemeMode) => void }) {
@@ -68,8 +69,9 @@ function ProfileSection() {
 
 function AppearanceSection({ theme, onTheme }: { theme: ThemeMode; onTheme: (mode: ThemeMode) => void }) {
   const { t, i18n } = useTranslation()
+  const [sounds, setSounds] = useState(soundsEnabled)
   return (
-    <Section title={t('settings.appearance')} description={t('settings.languageHint')}>
+    <Section title={t('settings.appearance')} description={t('settings.appearanceDesc')}>
       <div className="field">
         <span className="label">{t('settings.theme')}</span>
         <Segmented
@@ -91,6 +93,22 @@ function AppearanceSection({ theme, onTheme }: { theme: ThemeMode; onTheme: (mod
           ]}
         />
       </div>
+      <label className="check-row">
+        <span>
+          <span style={{ fontWeight: 500 }}>{t('settings.sounds')}</span>
+          <span className="small muted" style={{ display: 'block' }}>{t('settings.soundsDesc')}</span>
+        </span>
+        <input
+          type="checkbox"
+          className="switch"
+          checked={sounds}
+          onChange={(e) => {
+            setSoundsEnabled(e.target.checked)
+            setSounds(e.target.checked)
+            if (e.target.checked) play('deposit')
+          }}
+        />
+      </label>
     </Section>
   )
 }

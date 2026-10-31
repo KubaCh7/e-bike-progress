@@ -10,6 +10,8 @@ export interface Goal {
   seedKey: string | null
   /** Model z katalogu, z którego powstał cel (null = własny e-bike). */
   catalogId: string | null
+  /** Kadr zdjęcia "x% y%" (CSS object-position); null = środek. */
+  photoPosition: string | null
 }
 
 /** Pojedyncza wpłata. */
@@ -17,7 +19,7 @@ export interface Deposit {
   id: string
   goalId: string
   amount: number
-  /** Dzień wpłaty "yyyy-mm-dd". */
+  /** Kwota > 0 to wpłata, < 0 to wypłata. Dzień "yyyy-mm-dd". */
   date: string
   note: string | null
   createdAt: string
@@ -29,6 +31,7 @@ export interface GoalInput {
   photoURL?: string | null
   isDefault?: boolean
   catalogId?: string | null
+  photoPosition?: string | null
 }
 
 export interface DepositInput {

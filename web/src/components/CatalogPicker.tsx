@@ -5,6 +5,7 @@ import { bikeName, type BikeCategory, type CatalogBike } from '../lib/types'
 import { formatMoneyShort } from '../lib/format'
 import { Segmented } from './Segmented'
 import { CheckIcon } from './Icons'
+import { play } from '../lib/sound'
 
 type Filter = 'all' | BikeCategory
 type Sort = 'popular' | 'brand' | 'price'
@@ -95,7 +96,10 @@ export function CatalogPicker({
                 className="cat-row"
                 aria-pressed={multi ? isSelected : undefined}
                 disabled={isDisabled}
-                onClick={() => onToggle(bike)}
+                onClick={() => {
+                  play('tick')
+                  onToggle(bike)
+                }}
               >
                 {multi ? <span className="box" aria-hidden="true">{isSelected && <CheckIcon size={12} strokeWidth={2.5} />}</span> : <span className="box-slot" />}
                 <span className="rank small">{group.ranked ? `${i + 1}.` : ''}</span>

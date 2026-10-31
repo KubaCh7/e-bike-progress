@@ -14,6 +14,7 @@ interface GoalRow {
   is_default: boolean
   seed_key: string | null
   catalog_id: string | null
+  photo_position: string | null
   created_at: string
 }
 
@@ -49,6 +50,7 @@ const toGoal = (r: GoalRow): Goal => ({
   createdAt: r.created_at,
   seedKey: r.seed_key,
   catalogId: r.catalog_id ?? (r.seed_key === 'ride_pro_sr' ? 'eride-pro-sr' : null),
+  photoPosition: r.photo_position ?? null,
 })
 
 const toDeposit = (r: DepositRow): Deposit => ({
@@ -121,6 +123,7 @@ export class SupabaseStore implements DataStore {
           photo_url: input.photoURL ?? null,
           is_default: false,
           catalog_id: input.catalogId ?? null,
+          photo_position: input.photoPosition ?? null,
           seed_key: input.catalogId === 'eride-pro-sr' ? 'ride_pro_sr' : null,
         })
         .select()
@@ -136,6 +139,7 @@ export class SupabaseStore implements DataStore {
     if (patch.targetAmount !== undefined) update.target_amount = patch.targetAmount
     if (patch.photoURL !== undefined) update.photo_url = patch.photoURL
     if (patch.catalogId !== undefined) update.catalog_id = patch.catalogId
+    if (patch.photoPosition !== undefined) update.photo_position = patch.photoPosition
     if (Object.keys(update).length) check(await this.client.from('goals').update(update).eq('id', id))
     if (patch.isDefault) await this.setDefaultGoal(id)
   }

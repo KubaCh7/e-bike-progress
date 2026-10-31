@@ -1,5 +1,6 @@
 import Foundation
 import WatchConnectivity
+import WidgetKit
 import Observation
 
 /// Komunikacja iPhone → Apple Watch. Zegarek nie łączy się z backendem –
@@ -25,8 +26,11 @@ final class PhoneConnectivity: NSObject {
 
     /// Wysyła aktualny stan na zegarek (applicationContext + wiadomość, jeśli osiągalny).
     func pushSnapshot() {
-        guard WCSession.isSupported(), WCSession.default.activationState == .activated,
-              var snapshot = snapshotProvider?() else { return }
+        guard var snapshot = snapshotProvider?() else { return }
+        // widżety iPhone'a (ekran blokady, ekran początkowy, Mac) czytają stan z App Group
+        SnapshotStore.save(snapshot)
+        WidgetCenter.shared.reloadAllTimelines()
+        guard WCSession.isSupported(), WCSession.default.activationState == .activated else { return }
         snapshot.processedWatchIDs = processedIDs
         guard let data = SnapshotStore.encode(snapshot) else { return }
         let payload: [String: Any] = [WatchMessageKey.snapshot: data]

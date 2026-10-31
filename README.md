@@ -19,7 +19,8 @@ tańsze modele tej samej marki. Jasny i ciemny motyw.
 /ios          projekt Xcode
   EBikeProgress/          aplikacja iOS (SwiftUI, MVVM, SwiftData, Supabase)
   EBikeProgressWatch/     aplikacja watchOS (WatchConnectivity)
-  EBikeProgressWidgets/   komplikacja (WidgetKit)
+  EBikeProgressWidgets/   komplikacja Apple Watch (WidgetKit)
+  EBikeProgressPhoneWidgets/ widżety iPhone'a: ekran blokady, ekran początkowy, Mac (WidgetKit)
   Shared/                 wspólne: statystyki, formatowanie PLN, tłumaczenia, payload zegarka
   Config/                 xcconfig, Info.plist, entitlements (Secrets.xcconfig poza repo)
 /web          Vite + React + TypeScript + Supabase JS + i18next (PWA), wykresy SVG bez zależności
@@ -39,6 +40,7 @@ tańsze modele tej samej marki. Jasny i ciemny motyw.
 | Język PL / EN bez restartu, motyw jasny / ciemny / systemowy | ✅ | ✅ | język z iPhone'a |
 | Synchronizacja | Supabase + SwiftData offline | Supabase + Realtime | przez iPhone'a |
 | Komplikacja z % postępu | | | ✅ |
+| Widżet: ekran blokady (jak „Baterie”), ekran początkowy, biurko Maca | ✅ | | |
 
 Format kwot zawsze polski: **12 500,00 zł** (PLN).
 
@@ -149,7 +151,7 @@ grafikę `web/public/ride_pro_sr_placeholder.svg`.
 1. **Xcode → Settings → Accounts** → dodaj swoje Apple ID (wystarczy darmowe konto,
    ale patrz uwagi niżej).
 2. W projekcie zaznacz po kolei targety **EBikeProgress**, **EBikeProgressWatch**,
-   **EBikeProgressWidgets** → *Signing & Capabilities* → *Automatically manage signing*,
+   **EBikeProgressWidgets**, **EBikeProgressPhoneWidgets** → *Signing & Capabilities* → *Automatically manage signing*,
    *Team* = Twój zespół (albo ustaw `DEVELOPMENT_TEAM` w `Secrets.xcconfig`).
 3. Podłącz iPhone kablem (lub w tej samej sieci Wi-Fi po pierwszym sparowaniu),
    na telefonie potwierdź **„Ufaj temu komputerowi”**.
@@ -159,6 +161,24 @@ grafikę `web/public/ride_pro_sr_placeholder.svg`.
 5. W Xcode wybierz schemat **EBikeProgress** i swój iPhone jako cel → **Run (⌘R)**.
 6. Przy darmowym koncie przy pierwszym uruchomieniu: *Ustawienia → Ogólne →
    VPN i urządzenia zarządzane* → Twój certyfikat deweloperski → **Ufaj**.
+
+### Widżety na iPhonie i Macu
+
+Widżet pokazuje nazwę głównego e-bike'a i ile już zebrane (odświeża się po każdej wpłacie).
+
+- **Ekran blokady**: przytrzymaj ekran blokady → *Dostosuj* → *Ekran blokady* → pole
+  widżetów → **e-bike**. Okrągły wariant wygląda jak widżet „Baterie” (ikona e-bike'a
+  w pierścieniu postępu), prostokątny pokazuje nazwę, kwotę „zebrane / cena” i pasek.
+- **Ekran początkowy (odblokowany)**: przytrzymaj puste miejsce → *Edytuj* → *Dodaj widżet*
+  → **e-bike** → mały (pierścień, nazwa, kwota) lub średni (zdjęcie, kwota, ile brakuje).
+- **Mac (macOS 14 Sonoma lub nowszy)**: widżety iPhone'a działają na Macu bez osobnej
+  aplikacji – Mac i iPhone muszą być na tym samym Apple ID. Na Macu: kliknij biurko
+  prawym przyciskiem → *Edytuj widżety* → sekcja **iPhone** → **e-bike** i przeciągnij
+  na biurko (lub do Centrum powiadomień). W *Ustawieniach systemowych → Biurko i Dock*
+  musi być włączone *Używaj widżetów iPhone'a*.
+
+Widżety czytają stan z App Group (`$(APP_GROUP_ID)`), dlatego target **EBikeProgress**
+ma teraz też capability *App Groups*.
 
 ### Uruchomienie na Apple Watch
 
@@ -178,8 +198,8 @@ grafikę `web/public/ride_pro_sr_placeholder.svg`.
   maks. 3 aplikacje na urządzeniu. **Sign in with Apple nie jest dostępne** – usuń
   capability *Sign in with Apple* w targecie EBikeProgress (lub plik
   `Config/EBikeProgress.entitlements`) i loguj się e-mailem.
-  Jeśli podpisywanie zgłosi problem z *App Groups* (komplikacja), usuń tę capability
-  z targetów zegarka – aplikacja zadziała, a komplikacja pokaże dane przykładowe.
+  Jeśli podpisywanie zgłosi problem z *App Groups* (komplikacja i widżety), usuń tę
+  capability – aplikacja zadziała, a widżety pokażą dane przykładowe.
 - **Apple Developer Program (99 USD/rok)**: wszystkie funkcje, w tym Sign in with Apple
   i TestFlight.
 

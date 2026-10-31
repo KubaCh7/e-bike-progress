@@ -2,7 +2,7 @@ import SwiftUI
 
 @main
 struct EBikeProgressWatchApp: App {
-    @State private var connectivity = WatchConnectivityManager()
+    @State private var connectivity: WatchConnectivityManager
     @State private var model: WatchViewModel
 
     init() {

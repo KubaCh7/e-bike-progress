@@ -3,7 +3,6 @@ import SwiftUI
 /// Dodawanie wpłaty: Digital Crown lub szybkie przyciski, data = dziś.
 struct AddDepositPage: View {
     @Environment(WatchViewModel.self) private var model
-    @State private var crownValue: Double = 100
 
     var body: some View {
         @Bindable var model = model

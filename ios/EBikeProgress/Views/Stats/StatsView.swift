@@ -105,7 +105,7 @@ struct StatsView: View {
             case .monthly:
                 ForEach(points) { point in
                     BarMark(x: .value("Miesiąc", point.date, unit: .month), y: .value("Suma", point.value))
-                        .clipShape(UnevenRoundedRectangle(topLeadingRadius: 4, topTrailingRadius: 4))
+                        .cornerRadius(4)
                         .foregroundStyle(.teal.opacity(selected == nil || selected?.date == point.date ? 1 : 0.4))
                 }
             }

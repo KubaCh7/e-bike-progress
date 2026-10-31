@@ -14,6 +14,7 @@ import { play } from './lib/sound'
 import { Sidebar, TopBar, type View } from './components/Shell'
 import { DepositModal } from './components/DepositModal'
 import { AddGoalModal, GoalModal } from './components/GoalModal'
+import { PriceDialog } from './components/PriceDialog'
 import { AuthScreen } from './components/AuthScreen'
 import { Onboarding } from './components/Onboarding'
 import { ConfirmDialog } from './components/Modal'
@@ -86,6 +87,7 @@ type Sheet =
   | { kind: 'deposit'; deposit?: Deposit; out?: boolean }
   | { kind: 'editGoal'; goalId: string }
   | { kind: 'addGoal' }
+  | { kind: 'price'; goalId: string }
   | { kind: 'deleteDeposit'; deposit: Deposit }
   | null
 
@@ -129,6 +131,7 @@ function Dashboard() {
     data.showToast(t('deposit.added', { amount: formatMoney(amount) }))
   }
 
+  const priceGoal = sheet?.kind === 'price' ? data.goals.find((g) => g.id === sheet.goalId) : undefined
   const editingGoal = sheet?.kind === 'editGoal' ? data.goals.find((g) => g.id === sheet.goalId) : undefined
   const titles: Record<View, string> = {
     overview: currentGoal?.name ?? t('view.overview'),
@@ -161,6 +164,7 @@ function Dashboard() {
               onWithdraw={() => setSheet({ kind: 'deposit', out: true })}
               onQuickDeposit={(amount) => void quickDeposit(amount)}
               onEditGoal={() => currentGoal && setSheet({ kind: 'editGoal', goalId: currentGoal.id })}
+              onChangePrice={() => currentGoal && setSheet({ kind: 'price', goalId: currentGoal.id })}
               onEditDeposit={(deposit) => setSheet({ kind: 'deposit', deposit })}
               onShowDeposits={() => setView('deposits')}
             />
@@ -190,6 +194,7 @@ function Dashboard() {
       {sheet?.kind === 'deposit' && currentGoal && <DepositModal goal={currentGoal} deposit={sheet.deposit} initialKind={sheet.out ? 'out' : 'in'} onClose={close} />}
       {sheet?.kind === 'editGoal' && editingGoal && <GoalModal key={editingGoal.id} goal={editingGoal} onClose={close} />}
       {sheet?.kind === 'addGoal' && <AddGoalModal onClose={close} />}
+      {sheet?.kind === 'price' && priceGoal && <PriceDialog goal={priceGoal} onClose={close} />}
       {sheet?.kind === 'deleteDeposit' && (
         <ConfirmDialog
           title={t('history.confirmDelete')}

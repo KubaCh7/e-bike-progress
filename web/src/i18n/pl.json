@@ -249,5 +249,15 @@
   "photo.cropHint": "Przeciągnij, aby ustawić kadr",
   "photo.cropText": "Przeciągnij zdjęcie w górę, w dół, w lewo lub w prawo (albo użyj strzałek), żeby e-bike dobrze się mieścił.",
   "photo.center": "Wyśrodkuj",
-  "chart.tapHint": "Dotknij lub najedź na słupek, aby zobaczyć kwotę."
+  "chart.tapHint": "Dotknij lub najedź na słupek, aby zobaczyć kwotę.",
+  "price.title": "Zmień cenę",
+  "price.text": "Znalazłeś taniej albo cena się zmieniła? Wpisz nową cenę – zapiszemy ją dopiero po potwierdzeniu.",
+  "price.new": "Nowa cena",
+  "price.old": "Dotychczasowa cena",
+  "price.current": "Teraz: {{amount}}",
+  "price.diff": "Różnica",
+  "price.confirmTitle": "Potwierdź zmianę ceny",
+  "price.confirmText": "Na pewno zmienić cenę e-bike'a {{name}}? Postęp i prognoza przeliczą się od nowa.",
+  "price.confirm": "Tak, zmień cenę",
+  "price.changed": "Nowa cena: {{amount}}"
 }

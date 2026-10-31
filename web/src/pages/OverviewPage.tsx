@@ -20,6 +20,7 @@ export function OverviewPage({
   onWithdraw,
   onQuickDeposit,
   onEditGoal,
+  onChangePrice,
   onEditDeposit,
   onShowDeposits,
 }: {
@@ -27,6 +28,7 @@ export function OverviewPage({
   onWithdraw: () => void
   onQuickDeposit: (amount: number) => void
   onEditGoal: () => void
+  onChangePrice: () => void
   onEditDeposit: (d: Deposit) => void
   onShowDeposits: () => void
 }) {
@@ -79,6 +81,7 @@ export function OverviewPage({
                     {formatMoneyShort(stats.total)}
                     <small>{t('overview.ofPrice', { amount: formatMoneyShort(stats.target) })}</small>
                   </div>
+                  <button type="button" className="link-button small" onClick={onChangePrice}>{t('price.title')}</button>
                 </div>
                 <div className="plan-left">
                   <div className="muted">{stats.isAchieved ? t('overview.done') : t('overview.left')}</div>

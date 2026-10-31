@@ -245,5 +245,15 @@
   "photo.cropHint": "Drag to frame",
   "photo.cropText": "Drag the photo up, down, left or right (or use the arrow keys) so the e-bike fits well.",
   "photo.center": "Center",
-  "chart.tapHint": "Tap or hover a bar to see the amount."
+  "chart.tapHint": "Tap or hover a bar to see the amount.",
+  "price.title": "Change price",
+  "price.text": "Found it cheaper or the price changed? Enter the new price – it is saved only after you confirm.",
+  "price.new": "New price",
+  "price.old": "Current price",
+  "price.current": "Now: {{amount}}",
+  "price.diff": "Difference",
+  "price.confirmTitle": "Confirm the new price",
+  "price.confirmText": "Change the price of the {{name}}? Progress and the forecast will be recalculated.",
+  "price.confirm": "Yes, change the price",
+  "price.changed": "New price: {{amount}}"
 }

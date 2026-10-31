@@ -1,7 +1,8 @@
 import { useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { bikeName, DEFAULT_GOAL, SUGGESTED_PHOTO_URL, type CatalogBike, type Goal } from '../lib/types'
-import { formatNumber, parseAmount } from '../lib/format'
+import { formatMoney, formatNumber, parseAmount } from '../lib/format'
+import { PriceDialog } from './PriceDialog'
 import { useData } from '../state/DataContext'
 import { play } from '../lib/sound'
 import { Modal, ConfirmDialog } from './Modal'
@@ -53,6 +54,7 @@ export function GoalModal({
   )
   const [position, setPosition] = useState<string | null>(goal?.photoPosition ?? null)
   const [busy, setBusy] = useState(false)
+  const [priceOpen, setPriceOpen] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
 
   const catalogId = goal?.catalogId ?? preset?.id ?? null
@@ -74,7 +76,6 @@ export function GoalModal({
           goal.id,
           {
             name: trimmed,
-            targetAmount: price,
             ...(photoURL !== undefined && { photoURL }),
             photoPosition: position,
             ...(makeDefault && !goal.isDefault && { isDefault: true }),
@@ -91,6 +92,8 @@ export function GoalModal({
       setBusy(false)
     }
   }
+
+  if (priceOpen && goal) return <PriceDialog goal={goal} onClose={onClose} />
 
   if (confirmDelete && goal) {
     return (
@@ -125,15 +128,25 @@ export function GoalModal({
           <label htmlFor="goal-name">{t('goals.name')}</label>
           <input id="goal-name" className="input" value={name} maxLength={120} placeholder={t('goals.namePlaceholder')} onChange={(e) => setName(e.target.value)} />
         </div>
-        <div className="field">
-          <label htmlFor="goal-price">{t('goals.price')}</label>
-          <div className="input-affix">
-            <input id="goal-price" className="input num" inputMode="decimal" placeholder="30 000,00" value={priceText} onChange={(e) => setPriceText(e.target.value)} />
-            <span className="affix">zł</span>
+        {goal ? (
+          <div className="field">
+            <span className="label">{t('goals.price')}</span>
+            <div className="check-row">
+              <span className="num">{formatMoney(goal.targetAmount)}</span>
+              <button type="button" className="btn sm outline" onClick={() => setPriceOpen(true)}>{t('price.title')}</button>
+            </div>
           </div>
-          {priceText !== '' && (price === null || price <= 0) && <span className="hint error">{t('goals.invalidPrice')}</span>}
-          {preset && <span className="hint">{t('catalog.priceNote')}</span>}
-        </div>
+        ) : (
+        <div className="field">
+            <label htmlFor="goal-price">{t('goals.price')}</label>
+            <div className="input-affix">
+              <input id="goal-price" className="input num" inputMode="decimal" placeholder="30 000,00" value={priceText} onChange={(e) => setPriceText(e.target.value)} />
+              <span className="affix">zł</span>
+            </div>
+            {priceText !== '' && (price === null || price <= 0) && <span className="hint error">{t('goals.invalidPrice')}</span>}
+            {preset && <span className="hint">{t('catalog.priceNote')}</span>}
+          </div>
+        )}
         {!goal?.isDefault && (
           <label className="check-row">
             <span>

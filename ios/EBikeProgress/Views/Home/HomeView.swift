@@ -4,8 +4,6 @@ import SwiftUI
 struct HomeView: View {
     @Environment(GoalsViewModel.self) private var viewModel
     @State private var showDepositForm = false
-    @State private var showGoalsManager = false
-    @State private var showNewGoal = false
     @State private var editingDeposit: Deposit?
     @State private var showPhotoSheet = false
 
@@ -22,7 +20,7 @@ struct HomeView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    GoalSwitcherMenu(onManage: { showGoalsManager = true }, onAdd: { showNewGoal = true })
+                    GoalSwitcherMenu()
                 }
             }
             .navigationBarTitleDisplayMode(.inline)

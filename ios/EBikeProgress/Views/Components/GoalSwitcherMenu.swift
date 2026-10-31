@@ -3,8 +3,8 @@ import SwiftUI
 /// Selektor celu u góry ekranu (w pasku nawigacji – szklany w iOS 26).
 struct GoalSwitcherMenu: View {
     @Environment(GoalsViewModel.self) private var viewModel
-    var onManage: () -> Void = {}
-    var onAdd: () -> Void = {}
+    @State private var showManager = false
+    @State private var showNewGoal = false
 
     var body: some View {
         Menu {
@@ -22,8 +22,8 @@ struct GoalSwitcherMenu: View {
                 }
             }
             Divider()
-            Button(L10n.tr("goals.switcher.add"), systemImage: "plus", action: onAdd)
-            Button(L10n.tr("goals.switcher.manage"), systemImage: "list.bullet", action: onManage)
+            Button(L10n.tr("goals.switcher.add"), systemImage: "plus") { showNewGoal = true }
+            Button(L10n.tr("goals.switcher.manage"), systemImage: "list.bullet") { showManager = true }
         } label: {
             HStack(spacing: 6) {
                 if viewModel.currentGoal?.isDefault == true {
@@ -41,5 +41,7 @@ struct GoalSwitcherMenu: View {
             .padding(.horizontal, 6)
         }
         .accessibilityLabel(L10n.tr("goals.switcher.label"))
+        .sheet(isPresented: $showManager) { GoalsManagerView() }
+        .sheet(isPresented: $showNewGoal) { GoalEditorView(goal: nil) }
     }
 }

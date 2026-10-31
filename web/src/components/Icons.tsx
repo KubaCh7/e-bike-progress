@@ -9,7 +9,7 @@ const base = (size = 20): SVGProps<SVGSVGElement> => ({
   viewBox: '0 0 24 24',
   fill: 'none',
   stroke: 'currentColor',
-  strokeWidth: 2,
+  strokeWidth: 1.5,
   strokeLinecap: 'round',
   strokeLinejoin: 'round',
   'aria-hidden': true,
@@ -62,7 +62,6 @@ export const BikeIcon = ({ size, ...p }: IconProps) => (
     <circle cx="5.5" cy="17.5" r="3.5" />
     <circle cx="18.5" cy="17.5" r="3.5" />
     <path d="M15 6h2l1.5 11.5M5.5 17.5 9 10h7M9 10 7.5 6H6M12 17.5 9 10" />
-    <path d="m13 2-2 4h3l-2 4" stroke="#facc15" />
   </svg>
 )
 export const CalendarIcon = ({ size, ...p }: IconProps) => (
@@ -112,4 +111,7 @@ export const BoltIcon = ({ size, ...p }: IconProps) => (
 )
 export const ArrowRightIcon = ({ size, ...p }: IconProps) => (
   <svg {...base(size)} {...p}><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+)
+export const MenuIcon = ({ size, ...p }: IconProps) => (
+  <svg {...base(size)} {...p}><path d="M4 7h16M4 12h16M4 17h16" /></svg>
 )

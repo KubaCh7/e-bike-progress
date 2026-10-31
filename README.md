@@ -4,10 +4,13 @@ Aplikacja do odkładania pieniędzy na rower elektryczny w trzech wersjach:
 **iPhone**, **Apple Watch** i **web (komputer / PWA)**. Domyślny, główny cel to
 **e-ride pro SR za 30 000 zł**, ale możesz dodać dowolny własny e-bike.
 
-Styl: **Liquid Glass** – natywny w iOS 26 / watchOS 26 (`.glassEffect()`,
-`GlassEffectContainer`, `.buttonStyle(.glass)`, morphing przycisków) i odtworzony
-w CSS na webie (`backdrop-filter: blur() saturate()`, półprzezroczyste warstwy,
-jasna ramka z połyskiem, rozmyte kolorowe tło, fallback bez blur). Jasny i ciemny motyw.
+Styl: na iPhonie i zegarku **Liquid Glass** – natywny w iOS 26 / watchOS 26
+(`.glassEffect()`, `GlassEffectContainer`, `.buttonStyle(.glass)`). Web jest
+**minimalistyczny**: boczne menu na tle strony (na telefonie górny pasek i menu
+na cały ekran), czarno-szare elementy, font Geist, liczby tabelaryczne. Jedyny kolor
+to barwa marki wybranego e-bike'a – tylko na danych (pasek postępu i linia oszczędności),
+przyciemniona tak, by miała kontrast min. 3:1. Pod paskiem postępu „drabinka cen”:
+tańsze modele tej samej marki. Jasny i ciemny motyw.
 
 ```
 /ios          projekt Xcode
@@ -16,7 +19,7 @@ jasna ramka z połyskiem, rozmyte kolorowe tło, fallback bez blur). Jasny i cie
   EBikeProgressWidgets/   komplikacja (WidgetKit)
   Shared/                 wspólne: statystyki, formatowanie PLN, tłumaczenia, payload zegarka
   Config/                 xcconfig, Info.plist, entitlements (Secrets.xcconfig poza repo)
-/web          Vite + React + TypeScript + Supabase JS + Recharts + i18next (PWA)
+/web          Vite + React + TypeScript + Supabase JS + i18next (PWA), wykresy SVG bez zależności
 /supabase     migracje SQL: tabele, RLS, domyślny cel SR, Storage, Realtime
 ```
 
@@ -27,7 +30,7 @@ jasna ramka z połyskiem, rozmyte kolorowe tło, fallback bez blur). Jasny i cie
 | Postęp celu (zdjęcie, uzbierane, pozostało, %, pasek / pierścień) | ✅ | ✅ | ✅ pierścień |
 | Dodawanie wpłat (kwota, data, notatka) | ✅ | ✅ | ✅ Digital Crown / szybkie przyciski, data = dziś |
 | Historia od najnowszej, edycja, usuwanie | ✅ | ✅ | ostatnie wpłaty |
-| Statystyki: średnia, suma w miesiącu, prognoza, wykres | ✅ Swift Charts | ✅ Recharts | – |
+| Statystyki: średnia, suma w miesiącu, prognoza, wykres | ✅ Swift Charts | ✅ SVG (`src/lib/charts.js`) | – |
 | Własne cele: nazwa, cena, zdjęcie, cel główny | ✅ | ✅ | główny cel |
 | Zdjęcia: galeria, aparat (iPhone), drag & drop (web), kompresja | ✅ | ✅ | miniatura |
 | Język PL / EN bez restartu, motyw jasny / ciemny / systemowy | ✅ | ✅ | język z iPhone'a |

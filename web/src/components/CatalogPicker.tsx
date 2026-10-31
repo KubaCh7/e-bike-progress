@@ -3,9 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { useData } from '../state/DataContext'
 import { bikeName, type BikeCategory, type CatalogBike } from '../lib/types'
 import { formatMoneyShort } from '../lib/format'
-import { BikeImage } from './BikeImage'
 import { Segmented } from './Segmented'
-import { CheckIcon, SearchIcon } from './Icons'
+import { CheckIcon } from './Icons'
 
 type Filter = 'all' | BikeCategory
 type Sort = 'popular' | 'brand' | 'price'
@@ -14,17 +13,19 @@ const TOP = 8
 const rank = (b: CatalogBike) => b.popularity ?? 100
 
 /**
- * Katalog e-bike'ów: najpopularniejsze na górze (TOP z numerami), potem reszta.
- * Sortowanie: popularność / marka A–Z (sekcje) / cena. Filtr kategorii i wyszukiwarka.
+ * Katalog e-bike'ów jako lista: najpopularniejsze na górze (z miejscem w rankingu), potem reszta.
+ * Sortowanie: popularność / marka A–Z (grupy) / cena. Filtr kategorii i wyszukiwarka.
  */
 export function CatalogPicker({
   selected,
   onToggle,
   disabledIds = [],
+  multi = true,
 }: {
   selected: string[]
   onToggle: (bike: CatalogBike) => void
   disabledIds?: string[]
+  multi?: boolean
 }) {
   const { t } = useTranslation()
   const { catalog } = useData()
@@ -39,34 +40,35 @@ export function CatalogPicker({
       .filter((b) => !q || bikeName(b).toLowerCase().includes(q))
   }, [catalog, query, filter])
 
-  const sections = useMemo(() => {
-    if (sort === 'price') return [{ key: 'price', title: null as string | null, color: null as string | null, top: false, bikes: [...bikes].sort((a, b) => a.price - b.price) }]
+  const groups = useMemo(() => {
+    if (sort === 'price') return [{ key: 'price', title: t('catalog.byPrice'), ranked: false, bikes: [...bikes].sort((a, b) => a.price - b.price) }]
     if (sort === 'brand') {
       const byBrand = new Map<string, CatalogBike[]>()
       for (const bike of bikes) byBrand.set(bike.brand, [...(byBrand.get(bike.brand) ?? []), bike])
       return [...byBrand.entries()]
         .sort(([a], [b]) => a.localeCompare(b, 'pl', { numeric: true }))
-        .map(([brand, list]) => ({ key: brand, title: brand, color: list[0].color, top: false, bikes: list.sort((a, b) => rank(a) - rank(b)) }))
+        .map(([brand, list]) => ({ key: brand, title: brand, ranked: false, bikes: list.sort((a, b) => a.price - b.price) }))
     }
     const popular = [...bikes].sort((a, b) => rank(a) - rank(b) || a.price - b.price)
-    const top = popular.slice(0, TOP)
-    const rest = popular.slice(TOP)
     return [
-      { key: 'top', title: t('catalog.top'), color: null, top: true, bikes: top },
-      ...(rest.length ? [{ key: 'rest', title: t('catalog.rest'), color: null, top: false, bikes: rest }] : []),
+      { key: 'top', title: t('catalog.top'), ranked: true, bikes: popular.slice(0, TOP) },
+      ...(popular.length > TOP ? [{ key: 'rest', title: t('catalog.rest'), ranked: false, bikes: popular.slice(TOP) }] : []),
     ]
   }, [bikes, sort, t])
 
+  const categoryLabel = (c: BikeCategory) => t(`catalog.${c}`)
+
   return (
-    <div className="catalog">
-      <div className="catalog__tools">
-        <label className="search glass--clear r-pill">
-          <SearchIcon size={18} />
-          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder={t('catalog.search')} aria-label={t('catalog.search')} />
-        </label>
+    <div className={`catalog ${multi ? '' : 'single'}`}>
+      <div className="catalog-tools">
+        <input className="input search" type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder={t('catalog.search')} aria-label={t('catalog.search')} />
+        <select className="input" value={filter} onChange={(e) => setFilter(e.target.value as Filter)} aria-label={t('catalog.category')}>
+          {(['all', 'moto', 'emtb', 'city'] as Filter[]).map((f) => (
+            <option key={f} value={f}>{t(`catalog.${f}`)}</option>
+          ))}
+        </select>
         <Segmented
           label={t('catalog.sort')}
-          className="glass--clear"
           value={sort}
           onChange={setSort}
           options={[
@@ -75,58 +77,36 @@ export function CatalogPicker({
             { value: 'price', label: t('catalog.sortPrice') },
           ]}
         />
-        <Segmented
-          label={t('catalog.category')}
-          className="glass--clear"
-          value={filter}
-          onChange={setFilter}
-          options={[
-            { value: 'all', label: t('catalog.all') },
-            { value: 'moto', label: t('catalog.moto') },
-            { value: 'emtb', label: t('catalog.emtb') },
-            { value: 'city', label: t('catalog.city') },
-          ]}
-        />
       </div>
 
-      {sections.map((section) => (
-        <section key={section.key} className="catalog__section">
-          {section.title && (
-            <h3 className="catalog__title">
-              {section.color && <span className="catalog__dot" style={{ background: section.color }} />}
-              <span>{section.title}</span>
-              <span className="catalog__count">{section.bikes.length}</span>
-            </h3>
-          )}
-          <div className={`catalog__grid ${section.top ? 'catalog__grid--top' : ''}`}>
-            {section.bikes.map((bike, i) => {
-              const isSelected = selected.includes(bike.id)
-              const isDisabled = disabledIds.includes(bike.id)
-              const place = section.top ? i + 1 : null
-              return (
-                <button
-                  key={bike.id}
-                  type="button"
-                  className={`bike-card ${section.top ? 'bike-card--top' : ''}`}
-                  aria-pressed={isSelected}
-                  disabled={isDisabled}
-                  onClick={() => onToggle(bike)}
-                  style={{ ['--brand' as string]: bike.color, animationDelay: `${Math.min(i, 12) * 35}ms` }}
-                >
-                  <span className="bike-card__art">
-                    <BikeImage bike={bike} />
-                    {place && <span className="plate display">#{place}</span>}
-                    {isSelected && <span className="bike-card__check"><CheckIcon size={16} /></span>}
-                  </span>
-                  <span className="bike-card__brand display">{bike.brand}</span>
-                  <span className="bike-card__model">{bike.model}</span>
-                  <span className="bike-card__price num">
-                    {isDisabled ? t('catalog.added') : `≈ ${formatMoneyShort(bike.price)}`}
-                  </span>
-                </button>
-              )
-            })}
-          </div>
+      {groups.map((group) => (
+        <section key={group.key} className="catalog-group">
+          <h3>
+            <span>{group.title}</span>
+            <span className="num">{group.bikes.length}</span>
+          </h3>
+          {group.bikes.map((bike, i) => {
+            const isSelected = selected.includes(bike.id)
+            const isDisabled = disabledIds.includes(bike.id)
+            return (
+              <button
+                key={bike.id}
+                type="button"
+                className="cat-row"
+                aria-pressed={multi ? isSelected : undefined}
+                disabled={isDisabled}
+                onClick={() => onToggle(bike)}
+              >
+                {multi ? <span className="box" aria-hidden="true">{isSelected && <CheckIcon size={12} strokeWidth={2.5} />}</span> : <span className="box-slot" />}
+                <span className="rank small">{group.ranked ? `${i + 1}.` : ''}</span>
+                <span className="name">
+                  <b className="ellipsis">{sort === 'brand' ? bike.model : bikeName(bike)}</b>
+                  <span className="small muted">{categoryLabel(bike.category)}</span>
+                </span>
+                <span className="price">{isDisabled ? <span className="muted">{t('catalog.added')}</span> : formatMoneyShort(bike.price)}</span>
+              </button>
+            )
+          })}
         </section>
       ))}
 

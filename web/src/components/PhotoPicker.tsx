@@ -2,7 +2,6 @@ import { useEffect, useRef, useState, type DragEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { compressImage } from '../lib/image'
 import { GoalPhoto } from './GoalPhoto'
-import { ImageIcon, LinkIcon, SparkIcon, TrashIcon } from './Icons'
 
 export type PhotoChoice =
   | { kind: 'keep' }
@@ -79,7 +78,7 @@ export function PhotoPicker({
 
   return (
     <div className="field">
-      <span className="field__label">{t('goals.photo')}</span>
+      <span className="label">{t('goals.photo')}</span>
       <div
         className="dropzone"
         data-active={dragging}
@@ -95,36 +94,36 @@ export function PhotoPicker({
         onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && inputRef.current?.click()}
         aria-label={t('photo.drop')}
       >
-        <div className="dropzone__preview">
+        <div className="dropzone-preview">
           {choice.kind === 'file' ? <GoalPhoto photoURL={null} catalogId={catalogId} src={preview} alt="" /> : <GoalPhoto photoURL={shownURL} catalogId={catalogId} alt="" />}
         </div>
-        <span className="faint small">{processing ? t('photo.processing') : t('photo.drop')}</span>
+        <span className="small muted">{processing ? t('photo.processing') : t('photo.drop')}</span>
         <input ref={inputRef} type="file" accept="image/*" hidden onChange={(e) => void handleFile(e.target.files?.[0])} />
       </div>
 
-      {showSuggested && <p className="field__hint">{t('photo.suggestionHint')}</p>}
-      <div className="quick">
+      {showSuggested && <p className="hint">{t('photo.suggestionHint')}</p>}
+      <div className="chips">
         {showSuggested && (
-          <button type="button" className="btn btn--sm btn--volt" onClick={() => onChange({ kind: 'suggested' })}>
-            <SparkIcon size={16} /> {t('photo.useSuggested')}
+          <button type="button" className="btn sm outline" onClick={() => onChange({ kind: 'suggested' })}>
+            {t('photo.useSuggested')}
           </button>
         )}
-        <button type="button" className="btn btn--sm glass--clear" onClick={() => inputRef.current?.click()}>
-          <ImageIcon size={16} /> {t('photo.uploadOwn')}
+        <button type="button" className="btn sm outline" onClick={() => inputRef.current?.click()}>
+          {t('photo.uploadOwn')}
         </button>
-        <button type="button" className="btn btn--sm glass--clear" onClick={() => setLinkOpen((v) => !v)} aria-expanded={linkOpen}>
-          <LinkIcon size={16} /> {t('photo.fromLink')}
+        <button type="button" className="btn sm outline" onClick={() => setLinkOpen((v) => !v)} aria-expanded={linkOpen}>
+          {t('photo.fromLink')}
         </button>
         {hasPhoto && (
-          <button type="button" className="btn btn--sm btn--plain btn--danger" onClick={() => onChange({ kind: 'remove' })}>
-            <TrashIcon size={16} /> {t('photo.remove')}
+          <button type="button" className="btn sm danger" onClick={() => onChange({ kind: 'remove' })}>
+            {t('photo.remove')}
           </button>
         )}
       </div>
       {linkOpen && (
         <div className="link-row">
           <input
-            className="search glass--clear r-pill"
+            className="input"
             type="url"
             inputMode="url"
             placeholder="https://…/zdjecie.jpg"
@@ -141,7 +140,7 @@ export function PhotoPicker({
           />
           <button
             type="button"
-            className="btn btn--sm btn--volt"
+            className="btn primary"
             disabled={!linkValid}
             onClick={() => {
               onChange({ kind: 'url', url: link.trim() })
@@ -152,8 +151,8 @@ export function PhotoPicker({
           </button>
         </div>
       )}
-      {linkOpen && <span className="field__hint">{t('photo.linkHint')}</span>}
-      {error && <span className="field__error">{error}</span>}
+      {linkOpen && <span className="hint">{t('photo.linkHint')}</span>}
+      {error && <span className="hint error">{error}</span>}
     </div>
   )
 }

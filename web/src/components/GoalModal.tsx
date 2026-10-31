@@ -6,7 +6,6 @@ import { useData } from '../state/DataContext'
 import { Modal, ConfirmDialog } from './Modal'
 import { PhotoPicker, type PhotoChoice } from './PhotoPicker'
 import { CatalogPicker } from './CatalogPicker'
-import { PlusIcon, StarIcon, TrashIcon } from './Icons'
 
 /**
  * Dodawanie e-bike'a: najpierw katalog popularnych modeli (lub "Własny"),
@@ -22,10 +21,11 @@ export function AddGoalModal({ onClose }: { onClose: () => void }) {
   const owned = goals.map((g) => g.catalogId).filter((id): id is string => !!id)
   return (
     <Modal title={t('nav.addGoal')} onClose={onClose} wide>
-      <button type="button" className="btn glass--clear custom-btn" onClick={() => setPreset(null)}>
-        <PlusIcon size={18} /> {t('catalog.custom')}
-      </button>
-      <CatalogPicker selected={[]} disabledIds={owned} onToggle={(bike) => setPreset(bike)} />
+      <div className="form-actions" style={{ marginBottom: 16 }}>
+        <button type="button" className="btn outline" onClick={() => setPreset(null)}>{t('catalog.custom')}</button>
+        <span className="small muted">{t('catalog.customHint')}</span>
+      </div>
+      <CatalogPicker multi={false} selected={[]} disabledIds={owned} onToggle={(bike) => setPreset(bike)} />
     </Modal>
   )
 }
@@ -43,7 +43,7 @@ export function GoalModal({
   onBack?: () => void
 }) {
   const { t } = useTranslation()
-  const { createGoal, updateGoal, deleteGoal, setDefaultGoal, showToast, goals } = useData()
+  const { createGoal, updateGoal, deleteGoal, showToast, goals } = useData()
   const [name, setName] = useState(goal?.name ?? (preset ? bikeName(preset) : ''))
   const [priceText, setPriceText] = useState(goal ? formatNumber(goal.targetAmount) : preset ? formatNumber(preset.price) : '')
   const [makeDefault, setMakeDefault] = useState(goal?.isDefault ?? goals.length === 0)
@@ -114,42 +114,38 @@ export function GoalModal({
           onChange={setPhoto}
         />
 
-        <div className="group glass--clear r-l">
-          <label className="row">
-            <span className="row__label">{t('goals.name')}</span>
-            <input className="row__input" value={name} maxLength={120} placeholder={t('goals.namePlaceholder')} onChange={(e) => setName(e.target.value)} />
-          </label>
-          <label className="row">
-            <span className="row__label">{t('goals.price')}</span>
-            <input className="row__input num" inputMode="decimal" placeholder="30 000,00" value={priceText} onChange={(e) => setPriceText(e.target.value)} />
-            <span className="faint">zł</span>
-          </label>
-          {!goal?.isDefault && (
-            <label className="row">
-              <span className="row__label"><StarIcon size={14} className="star" /> {t('goals.makeDefault')}</span>
-              <input type="checkbox" className="switch" checked={makeDefault} onChange={(e) => setMakeDefault(e.target.checked)} />
-            </label>
-          )}
+        <div className="field">
+          <label htmlFor="goal-name">{t('goals.name')}</label>
+          <input id="goal-name" className="input" value={name} maxLength={120} placeholder={t('goals.namePlaceholder')} onChange={(e) => setName(e.target.value)} />
         </div>
-        {priceText !== '' && (price === null || price <= 0) && <p className="error small">{t('goals.invalidPrice')}</p>}
-        {preset && <p className="faint small">{t('catalog.priceNote')}</p>}
+        <div className="field">
+          <label htmlFor="goal-price">{t('goals.price')}</label>
+          <div className="input-affix">
+            <input id="goal-price" className="input num" inputMode="decimal" placeholder="30 000,00" value={priceText} onChange={(e) => setPriceText(e.target.value)} />
+            <span className="affix">zł</span>
+          </div>
+          {priceText !== '' && (price === null || price <= 0) && <span className="hint error">{t('goals.invalidPrice')}</span>}
+          {preset && <span className="hint">{t('catalog.priceNote')}</span>}
+        </div>
+        {!goal?.isDefault && (
+          <label className="check-row">
+            <span>
+              <span style={{ fontWeight: 500 }}>{t('goals.makeDefault')}</span>
+              <span className="hint small muted" style={{ display: 'block' }}>{t('bikes.mainHint')}</span>
+            </span>
+            <input type="checkbox" className="switch" checked={makeDefault} onChange={(e) => setMakeDefault(e.target.checked)} />
+          </label>
+        )}
 
-        <div className="form__actions">
+        <div className="form-actions">
           {onBack && !goal && (
-            <button type="button" className="btn glass--clear" onClick={onBack}>{t('common.back')}</button>
+            <button type="button" className="btn ghost" onClick={onBack}>{t('common.back')}</button>
           )}
           {goal && (
-            <button type="button" className="btn btn--plain btn--danger" onClick={() => setConfirmDelete(true)}>
-              <TrashIcon size={16} /> {t('goals.delete')}
-            </button>
-          )}
-          {goal && !goal.isDefault && (
-            <button type="button" className="btn btn--plain" onClick={() => void setDefaultGoal(goal.id).then(onClose)}>
-              <StarIcon size={16} className="star" /> {t('goals.setDefault')}
-            </button>
+            <button type="button" className="btn danger" onClick={() => setConfirmDelete(true)}>{t('goals.delete')}</button>
           )}
           <span className="spacer" />
-          <button type="submit" className="btn btn--volt" disabled={!valid || busy}>{t('common.save')}</button>
+          <button type="submit" className="btn primary" disabled={!valid || busy}>{t('common.save')}</button>
         </div>
       </form>
     </Modal>

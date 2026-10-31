@@ -18,7 +18,7 @@ export function applyTheme(mode: ThemeMode) {
   if (mode === 'system') delete root.dataset.theme
   else root.dataset.theme = mode
   const dark = mode === 'dark' || (mode === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#050607' : '#ecebe4')
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#000000' : '#f8f8f8')
 }
 
 export function useTheme() {
@@ -42,3 +42,24 @@ export function useTheme() {
 }
 
 applyTheme(read())
+
+/** true, gdy aktywny jest ciemny motyw (atrybut data-theme albo ustawienie systemu). */
+export function useIsDark() {
+  const check = () => {
+    const forced = document.documentElement.dataset.theme
+    return forced ? forced === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches
+  }
+  const [dark, setDark] = useState(check)
+  useEffect(() => {
+    const update = () => setDark(check())
+    const observer = new MutationObserver(update)
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] })
+    const media = window.matchMedia('(prefers-color-scheme: dark)')
+    media.addEventListener('change', update)
+    return () => {
+      observer.disconnect()
+      media.removeEventListener('change', update)
+    }
+  }, [])
+  return dark
+}

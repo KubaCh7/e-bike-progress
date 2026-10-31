@@ -7,10 +7,10 @@ import { CatalogPicker } from './CatalogPicker'
 import { GoalModal } from './GoalModal'
 import { LanguagePicker } from './LanguagePicker'
 import { LegalFooter } from './Legal'
-import { ArrowLeftIcon, ArrowRightIcon, BoltIcon, PlusIcon } from './Icons'
+import { Brand } from './Shell'
 
 /**
- * Powitanie: 01 imię → 02 wybór e-bike'ów (najpopularniejsze na górze) albo własny.
+ * Powitanie: 1 imię → 2 wybór e-bike'ów (najpopularniejsze na górze) albo własny.
  * Pierwszy wybrany model zostaje celem głównym.
  */
 export function Onboarding() {
@@ -70,7 +70,6 @@ export function Onboarding() {
       if (main) selectGoal(main)
       await updateProfile({ onboarded: true })
     } catch (err) {
-      // wcześniej błąd był połykany i przycisk "nic nie robił"
       setError(t('onboarding.saveError', { message: err instanceof Error ? err.message : String(err) }))
     } finally {
       setBusy(false)
@@ -79,70 +78,66 @@ export function Onboarding() {
 
   const total = selected.reduce((sum, id) => sum + (catalog.find((b) => b.id === id)?.price ?? 0), 0)
   const displayName = name.trim() || profile?.displayName || ''
+  const count = selected.length + goals.length
 
   if (step === 'name') {
     return (
-      <main className="onboarding onboarding--name">
-        <LanguagePicker />
-        <form key="name" className="hello" onSubmit={saveName}>
-          <span className="step display">01 / 02</span>
-          <h1 className="headline display">{t('onboarding.helloTitle')}</h1>
+      <div className="solo">
+        <div className="solo-top">
+          <Brand />
+          <LanguagePicker />
+        </div>
+        <main className="solo-main">
+          <p className="step small">{t('onboarding.step', { step: 1, of: 2 })}</p>
+          <h1>{t('onboarding.helloTitle')}</h1>
           <p className="lead">{t('onboarding.helloText')}</p>
-          <input
-            className="name-input display"
-            value={name}
-            maxLength={60}
-            autoFocus
-            placeholder={t('profile.namePlaceholder')}
-            onChange={(e) => setName(e.target.value)}
-            aria-label={t('profile.name')}
-          />
-          {error && <p className="error" role="alert">{error}</p>}
-          <button type="submit" className="btn btn--volt btn--lg" disabled={!name.trim()}>
-            {t('common.next')} <ArrowRightIcon size={20} />
-          </button>
-        </form>
+          <form className="form" onSubmit={saveName}>
+            <div className="field">
+              <label htmlFor="ob-name">{t('profile.name')}</label>
+              <input id="ob-name" className="input" value={name} maxLength={60} autoFocus autoComplete="given-name" onChange={(e) => setName(e.target.value)} />
+            </div>
+            {error && <p className="error" role="alert">{error}</p>}
+            <button type="submit" className="btn primary block" disabled={!name.trim()}>{t('common.next')}</button>
+          </form>
+        </main>
         <LegalFooter />
-      </main>
+      </div>
     )
   }
 
   return (
-    <main className="onboarding">
-      <header className="onboarding__head">
-        <button type="button" className="btn btn--icon glass--clear" onClick={() => setStep('name')} aria-label={t('common.back')}>
-          <ArrowLeftIcon size={18} />
-        </button>
-        <span className="step display">02 / 02</span>
-      </header>
-
-      <div className="onboarding__hero">
-        <h1 className="headline display">
-          {displayName ? t('onboarding.bikesTitle', { name: displayName }) : t('onboarding.bikesTitleNoName')}
-        </h1>
+    <div className="solo">
+      <div className="solo-top">
+        <Brand />
+        <LanguagePicker />
+      </div>
+      <main className="solo-main wide">
+        <button type="button" className="link-button small" onClick={() => setStep('name')}>{t('common.back')}</button>
+        <p className="step small" style={{ marginTop: 16 }}>{t('onboarding.step', { step: 2, of: 2 })}</p>
+        <h1>{displayName ? t('onboarding.bikesTitle', { name: displayName }) : t('onboarding.bikesTitleNoName')}</h1>
         <p className="lead">{t('onboarding.bikesText')}</p>
-        <button type="button" className="btn glass--clear custom-btn" onClick={() => setCustomOpen(true)}>
-          <PlusIcon size={18} /> {t('catalog.custom')}
-        </button>
-      </div>
-
-      <CatalogPicker selected={selected} disabledIds={owned} onToggle={toggle} />
-
-      <div className="tray glass r-pill" role="region" aria-live="polite">
-        <div className="tray__info">
-          <span className="tray__count display">{selected.length + goals.length}</span>
-          <span className="tray__text">
-            {t('onboarding.selectedLabel')}
-            {total > 0 && <span className="num"> · {formatMoneyShort(total)}</span>}
-          </span>
+        <div style={{ margin: '16px 0 20px' }}>
+          <button type="button" className="btn outline" onClick={() => setCustomOpen(true)}>{t('catalog.custom')}</button>
         </div>
-        <button type="button" className="btn btn--volt" disabled={busy} onClick={() => void finish()}>
-          {busy ? t('common.loading') : t('onboarding.start')} {!busy && <BoltIcon size={16} />}
-        </button>
-      </div>
-      {error && <p className="tray-error glass r-l" role="alert">{error}</p>}
+
+        <section className="panel">
+          <CatalogPicker selected={selected} disabledIds={owned} onToggle={toggle} />
+        </section>
+
+        <div className="tray" role="region" aria-live="polite" aria-label={t('onboarding.selectedLabel')}>
+          <span>
+            {t('onboarding.selected', { count })}
+            {total > 0 && <span className="muted num"> · {formatMoneyShort(total)}</span>}
+          </span>
+          <button type="button" className="btn primary" disabled={busy} onClick={() => void finish()}>
+            {busy ? t('common.loading') : t('onboarding.start')}
+          </button>
+        </div>
+        {error && <p className="error" role="alert">{error}</p>}
+      </main>
+      <LegalFooter />
 
       {customOpen && <GoalModal preset={null} onClose={() => setCustomOpen(false)} />}
-    </main>
+    </div>
   )
 }

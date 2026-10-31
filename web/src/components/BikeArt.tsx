@@ -1,33 +1,12 @@
 import type { BikeCategory } from '../lib/types'
 
 /**
- * Ilustracja e-bike'a (bez pobierania zdjęć): sylwetka liniowa na tle poświaty
- * w kolorze marki – jak motocykl w świetle reflektora.
+ * Płaska ilustracja e-bike'a (gdy nie ma zdjęcia): sama sylwetka liniowa w kolorze tekstu,
+ * bez poświaty i gradientów.
  */
-export function BikeArt({ category, color, label }: { category: BikeCategory; color: string; label?: string }) {
-  const id = `art-${color.replace('#', '')}-${category}`
+export function BikeArt({ category, label }: { category: BikeCategory; color?: string; label?: string }) {
   return (
-    <svg className="bike-art" viewBox="0 0 400 260" role="img" aria-label={label} preserveAspectRatio="xMidYMid slice">
-      <defs>
-        <radialGradient id={`${id}-glow`} cx="0.5" cy="0.62" r="0.62">
-          <stop offset="0" stopColor={color} stopOpacity="0.85" />
-          <stop offset="0.55" stopColor={color} stopOpacity="0.22" />
-          <stop offset="1" stopColor={color} stopOpacity="0" />
-        </radialGradient>
-        <radialGradient id={`${id}-floor`} cx="0.5" cy="0.5" r="0.5">
-          <stop offset="0" stopColor="#000" stopOpacity="0.45" />
-          <stop offset="1" stopColor="#000" stopOpacity="0" />
-        </radialGradient>
-        <filter id={`${id}-blur`} x="-20%" y="-20%" width="140%" height="140%">
-          <feGaussianBlur stdDeviation="6" />
-        </filter>
-      </defs>
-      <rect width="400" height="260" fill={`url(#${id}-glow)`} />
-      <ellipse cx="200" cy="236" rx="170" ry="16" fill={`url(#${id}-floor)`} />
-      {/* poświata pod liniami */}
-      <g className="bike-art__lines" fill="none" strokeLinecap="round" strokeLinejoin="round" style={{ stroke: color }} filter={`url(#${id}-blur)`} opacity="0.9">
-        {category === 'moto' ? <Moto /> : category === 'emtb' ? <Mtb /> : <City />}
-      </g>
+    <svg className="bike-art" viewBox="0 0 400 260" role="img" aria-label={label} preserveAspectRatio="xMidYMid meet">
       <g className="bike-art__lines" fill="none" strokeLinecap="round" strokeLinejoin="round">
         {category === 'moto' ? <Moto /> : category === 'emtb' ? <Mtb /> : <City />}
       </g>

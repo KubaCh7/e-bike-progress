@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { useAuth } from '../state/AuthContext'
 import { Segmented } from './Segmented'
 import { LanguagePicker } from './LanguagePicker'
-import { BoltIcon } from './Icons'
 import { LegalFooter } from './Legal'
+import { Brand } from './Shell'
 
 type Mode = 'signIn' | 'signUp'
 
@@ -43,81 +43,75 @@ export function AuthScreen() {
   }
 
   return (
-    <main className="auth">
-      <LanguagePicker />
-      <div className="auth__poster" aria-hidden="true">
-        <span className="display">E-BIKE</span>
-        <span className="display outline">PROGRESS</span>
+    <div className="solo">
+      <div className="solo-top">
+        <Brand />
+        <LanguagePicker />
       </div>
-      <form className="auth__card glass r-xl" onSubmit={submit}>
-        <div className="auth__brand">
-          <span className="mark"><BoltIcon size={18} /></span>
-          <div>
-            <h1 className="auth__title display">{t('app.title')}</h1>
-            <p className="lead small">{t('auth.subtitle')}</p>
-          </div>
-        </div>
+      <main className="solo-main">
+        <h1>{isSignUp ? t('auth.signUpTitle') : t('auth.signInTitle')}</h1>
+        <p className="lead">{t('auth.subtitle')}</p>
 
-        <Segmented
-          block
-          className="glass--clear"
-          label={t('auth.mode')}
-          value={mode}
-          onChange={(m) => {
-            setMode(m)
-            setError(null)
-            setInfo(null)
-          }}
-          options={[
-            { value: 'signIn', label: t('auth.signIn') },
-            { value: 'signUp', label: t('auth.signUp') },
-          ]}
-        />
+        <form className="form" onSubmit={submit}>
+          <Segmented
+            block
+            label={t('auth.mode')}
+            value={mode}
+            onChange={(m) => {
+              setMode(m)
+              setError(null)
+              setInfo(null)
+            }}
+            options={[
+              { value: 'signIn', label: t('auth.signIn') },
+              { value: 'signUp', label: t('auth.signUp') },
+            ]}
+          />
 
-        <div className="group glass--clear r-l">
           {isSignUp && (
-            <label className="row">
-              <span className="row__label">{t('profile.name')}</span>
-              <input className="row__input" autoComplete="given-name" maxLength={60} placeholder={t('profile.namePlaceholder')} value={name} onChange={(e) => setName(e.target.value)} />
-            </label>
+            <div className="field">
+              <label htmlFor="auth-name">{t('profile.name')}</label>
+              <input id="auth-name" className="input" autoComplete="given-name" maxLength={60} value={name} onChange={(e) => setName(e.target.value)} />
+            </div>
           )}
-          <label className="row">
-            <span className="row__label">{t('auth.email')}</span>
-            <input className="row__input" type="email" autoComplete="email" placeholder={t('auth.emailPlaceholder')} value={email} onChange={(e) => setEmail(e.target.value)} />
-          </label>
-          <label className="row">
-            <span className="row__label">{t('auth.passwordShort')}</span>
+          <div className="field">
+            <label htmlFor="auth-email">{t('auth.email')}</label>
+            <input id="auth-email" className="input" type="email" autoComplete="email" placeholder={t('auth.emailPlaceholder')} value={email} onChange={(e) => setEmail(e.target.value)} />
+          </div>
+          <div className="field">
+            <label htmlFor="auth-password">{t('auth.passwordShort')}</label>
             <input
-              className="row__input"
+              id="auth-password"
+              className="input"
               type="password"
               autoComplete={isSignUp ? 'new-password' : 'current-password'}
-              placeholder={t('auth.passwordHint')}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-          </label>
-        </div>
+            <span className="hint">{t('auth.passwordHint')}</span>
+          </div>
 
-        {error && <p className="error small center" role="alert">{error}</p>}
-        {info && <p className="positive small center" role="status">{info}</p>}
+          {error && <p className="error" role="alert">{error}</p>}
+          {info && <p className="notice" role="status">{info}</p>}
 
-        {isSignUp && (
-          <p className="consent">
-            {t('auth.consent')} <a href="#regulamin">{t('legal.terms')}</a> {t('auth.consentAnd')} <a href="#prywatnosc">{t('legal.privacyGen')}</a>.
-          </p>
-        )}
-        <button type="submit" className="btn btn--volt btn--lg btn--block" disabled={!canSubmit}>
-          {busy ? t('common.loading') : isSignUp ? t('auth.signUp') : t('auth.signIn')}
-        </button>
+          {isSignUp && (
+            <p className="small muted">
+              {t('auth.consent')} <a href="#regulamin">{t('legal.terms')}</a> {t('auth.consentAnd')} <a href="#prywatnosc">{t('legal.privacyGen')}</a>.
+            </p>
+          )}
+          <button type="submit" className="btn primary block" disabled={!canSubmit}>
+            {busy ? t('common.loading') : isSignUp ? t('auth.signUp') : t('auth.signIn')}
+          </button>
 
-        <div className="divider small faint">{t('auth.or')}</div>
+          <div className="divider">{t('auth.or')}</div>
 
-        <button type="button" className="btn btn--apple btn--block" onClick={() => auth.signInWithApple().catch((e: Error) => setError(e.message))}>
-          {t('auth.apple')}
-        </button>
-        <button type="button" className="btn btn--plain btn--block faint" onClick={auth.continueLocal}>{t('auth.continueOffline')}</button>
-      </form>
+          <button type="button" className="btn outline block" onClick={() => auth.signInWithApple().catch((e: Error) => setError(e.message))}>
+            {t('auth.apple')}
+          </button>
+          <button type="button" className="btn ghost block" onClick={auth.continueLocal}>{t('auth.continueOffline')}</button>
+        </form>
+      </main>
       <LegalFooter />
-    </main>
+    </div>
   )
 }

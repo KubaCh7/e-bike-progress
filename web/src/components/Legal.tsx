@@ -29,8 +29,8 @@ export function LegalSheet() {
   return (
     <Modal title={content[doc].title} onClose={close} wide>
       <Segmented
-        block
-        className="glass--clear"
+        tabs
+        className="fill-phone"
         label={t('legal.title')}
         value={doc}
         onChange={(d) => {
@@ -71,15 +71,25 @@ function linkify(text: string) {
   )
 }
 
-/** Stopka z linkami do dokumentów prawnych. */
-export function LegalFooter() {
+/** Linki do dokumentów prawnych (menu boczne, ekrany logowania). */
+export function LegalLinks() {
   const { t } = useTranslation()
   return (
-    <footer className="legal-footer">
+    <div className="footer-links">
       <a href="#prywatnosc">{t('legal.privacy')}</a>
       <a href="#regulamin">{t('legal.terms')}</a>
       <a href="#informacje">{t('legal.notices')}</a>
-      <span>© 2026 e-bike progress · {t('legal.independent')}</span>
+    </div>
+  )
+}
+
+/** Stopka ekranów logowania i powitania. */
+export function LegalFooter() {
+  const { t } = useTranslation()
+  return (
+    <footer className="solo-foot">
+      <LegalLinks />
+      <p className="small muted" style={{ textAlign: 'center', marginTop: 8 }}>© 2026 e-bike progress · {t('legal.independent')}</p>
     </footer>
   )
 }

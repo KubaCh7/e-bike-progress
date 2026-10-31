@@ -55,6 +55,10 @@ final class AppCoordinator {
         watch.snapshotProvider = { [weak self] in
             self?.makeWatchSnapshot()
         }
+        watch.widgetPhotoProvider = { [weak self] in
+            guard let goal = self?.goals.defaultGoal ?? self?.goals.goals.first, let image = goal.uiImage else { return (nil, nil) }
+            return (ImageProcessor.jpeg(image, maxDimension: 700, quality: 0.8), goal.photoPosition)
+        }
         watch.depositHandler = { [weak self] deposit in
             self?.addDepositFromWatch(deposit) ?? false
         }

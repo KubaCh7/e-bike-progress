@@ -12,6 +12,8 @@ final class PhoneConnectivity: NSObject {
     @ObservationIgnored var snapshotProvider: (() -> WatchSnapshot?)?
     /// Zapisuje wpłatę z zegarka; zwraca true, gdy się udało.
     @ObservationIgnored var depositHandler: ((WatchNewDeposit) -> Bool)?
+    /// Zdjęcie głównego celu dla widżetów (JPEG) i jego kadr.
+    @ObservationIgnored var widgetPhotoProvider: (() -> (Data?, String?))?
 
     private(set) var isPaired = false
     private(set) var isWatchAppInstalled = false
@@ -29,6 +31,9 @@ final class PhoneConnectivity: NSObject {
         guard var snapshot = snapshotProvider?() else { return }
         // widżety iPhone'a (ekran blokady, ekran początkowy, Mac) czytają stan z App Group
         SnapshotStore.save(snapshot)
+        if let (photo, position) = widgetPhotoProvider?() {
+            WidgetPhotoStore.save(photo, position: position)
+        }
         WidgetCenter.shared.reloadAllTimelines()
         guard WCSession.isSupported(), WCSession.default.activationState == .activated else { return }
         snapshot.processedWatchIDs = processedIDs

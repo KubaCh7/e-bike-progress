@@ -1,12 +1,11 @@
-# Publikacja wersji web na GitHub Pages.
+# Alternatywna publikacja wersji web na GitHub Pages (główny hosting: Vercel).
+# Uruchamiana ręcznie: Actions → Deploy web → Run workflow.
 # Wymaga: Settings → Pages → Source: "GitHub Actions"
 # oraz sekretów repo: VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY.
+# Aby publikować automatycznie po każdym pushu, dodaj z powrotem wyzwalacz `push`.
 name: Deploy web (GitHub Pages)
 
 on:
-  push:
-    branches: [main]
-    paths: ['web/**', '.github/workflows/deploy-web.yml']
   workflow_dispatch:
 
 permissions:

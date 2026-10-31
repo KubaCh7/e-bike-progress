@@ -3,7 +3,7 @@ BUNDLE_ID_PREFIX = com.kubach7
 SUPABASE_HOST =
 SUPABASE_ANON_KEY =
 // Numer wydania – zwiększany przy każdej nowej wersji (aplikacja porównuje go z Supabase)
-APP_BUILD = 2
+APP_BUILD = 3
 APP_GROUP_ID = group.$(BUNDLE_ID_PREFIX).ebikeprogress
 
 #include? "Secrets.xcconfig"

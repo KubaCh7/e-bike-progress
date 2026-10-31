@@ -6,7 +6,7 @@ struct MainTabView: View {
 
     var body: some View {
         TabView(selection: $selection) {
-            Tab(L10n.tr("tab.home"), systemImage: "bicycle", value: AppTab.home) {
+            Tab(L10n.tr("tab.home"), image: "MotoIcon", value: AppTab.home) {
                 HomeView()
             }
             Tab(L10n.tr("tab.history"), systemImage: "list.bullet.rectangle", value: AppTab.history) {
@@ -20,5 +20,7 @@ struct MainTabView: View {
             }
         }
         .tabBarMinimizeBehavior(.onScrollDown)
+        // czarno-białe zakładki (w ciemnym motywie białe)
+        .tint(.primary)
     }
 }

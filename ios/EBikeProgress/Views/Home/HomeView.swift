@@ -18,7 +18,7 @@ struct HomeView: View {
                     content(for: goal)
                 } else {
                     ContentUnavailableView {
-                        Label(L10n.tr("home.noGoals"), systemImage: "bicycle")
+                        Label { Text(L10n.tr("home.noGoals")) } icon: { Image("MotoIcon") }
                     } actions: {
                         Button(L10n.tr("goals.switcher.add"), systemImage: "plus") { showAddGoal = true }
                             .buttonStyle(.primaryFlat)

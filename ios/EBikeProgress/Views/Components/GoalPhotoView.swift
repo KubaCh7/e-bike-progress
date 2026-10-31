@@ -63,8 +63,10 @@ struct PhotoPlaceholder: View {
         ZStack {
             Color(.tertiarySystemFill)
             VStack(spacing: 8) {
-                Image(systemName: "bicycle")
-                    .font(.system(size: 24, weight: .medium))
+                Image("MotoIcon")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 36)
                     .foregroundStyle(.primary)
                     .frame(width: 56, height: 56)
                     .background(Color(.secondarySystemGroupedBackground), in: .circle)

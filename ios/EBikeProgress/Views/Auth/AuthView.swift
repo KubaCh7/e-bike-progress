@@ -95,8 +95,10 @@ struct AuthView: View {
 
     private var header: some View {
         VStack(spacing: 12) {
-            Image(systemName: "bicycle")
-                .font(.system(size: 44, weight: .semibold))
+            Image("MotoIcon")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 66)
                 .frame(width: 96, height: 96)
                 .circleBackground()
             Text("e-bike progress")

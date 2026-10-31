@@ -61,10 +61,12 @@ struct SavingsWidgetView: View {
         // Ekran blokady – okrągły jak w widżecie „Baterie”: ikona e-bike'a w pierścieniu i procent
         case .accessoryCircular:
             Gauge(value: entry.progress) {
-                Image(systemName: "bicycle")
+                Image("MotoIcon")
             } currentValueLabel: {
-                Image(systemName: "bicycle")
-                    .font(.system(size: 18, weight: .semibold))
+                Image("MotoIcon")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 27)
             }
             .gaugeStyle(.accessoryCircularCapacity)
             .widgetAccentable()
@@ -94,10 +96,12 @@ struct SavingsWidgetView: View {
                     Circle().stroke(.quaternary, lineWidth: 6)
                     Circle()
                         .trim(from: 0, to: entry.progress)
-                        .stroke(.green, style: StrokeStyle(lineWidth: 6, lineCap: .round))
+                        .stroke(.primary, style: StrokeStyle(lineWidth: 6, lineCap: .round))
                         .rotationEffect(.degrees(-90))
-                    Image(systemName: "bicycle")
-                        .font(.system(size: 20, weight: .semibold))
+                    Image("MotoIcon")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 30)
                 }
                 .frame(width: 58, height: 58)
                 Spacer(minLength: 0)
@@ -123,8 +127,10 @@ struct SavingsWidgetView: View {
                     if let data = entry.thumbnail, let image = UIImage(data: data) {
                         Image(uiImage: image).resizable().scaledToFill()
                     } else {
-                        Image(systemName: "bicycle")
-                            .font(.system(size: 34, weight: .semibold))
+                        Image("MotoIcon")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 51)
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                             .background(.quaternary)
                     }
@@ -144,7 +150,7 @@ struct SavingsWidgetView: View {
                         .font(.caption.monospacedDigit())
                         .foregroundStyle(.secondary)
                     ProgressView(value: entry.progress)
-                        .tint(.green)
+                        .tint(.primary)
                     Text(verbatim: "\(entry.percentNumber)% · \(L10n.tr("widget.of", Money.formatShort(entry.target)))")
                         .font(.caption2.monospacedDigit())
                         .foregroundStyle(.secondary)

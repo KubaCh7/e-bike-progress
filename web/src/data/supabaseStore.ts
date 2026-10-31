@@ -178,6 +178,33 @@ export class SupabaseStore implements DataStore {
     check(await this.client.from('deposits').update({ deleted_at: new Date().toISOString() }).eq('id', id))
   }
 
+  async exportData() {
+    const [goals, deposits, profile, user] = await Promise.all([
+      this.client.from('goals').select('*'),
+      this.client.from('deposits').select('*'),
+      this.client.from('profiles').select('*'),
+      this.client.auth.getUser(),
+    ])
+    return {
+      exportedAt: new Date().toISOString(),
+      account: { id: this.userId, email: user.data.user?.email ?? null, createdAt: user.data.user?.created_at ?? null },
+      profile: check(profile),
+      goals: check(goals),
+      deposits: check(deposits),
+    }
+  }
+
+  async deleteAccount() {
+    // 1) zdjęcia z prywatnego folderu użytkownika w Storage
+    const { data: files } = await this.client.storage.from(BUCKET).list(this.userId, { limit: 1000 })
+    if (files?.length) {
+      await this.client.storage.from(BUCKET).remove(files.map((f) => `${this.userId}/${f.name}`))
+    }
+    // 2) konto + profil + cele + wpłaty (funkcja delete_my_account w bazie)
+    check(await this.client.rpc('delete_my_account'))
+    await this.client.auth.signOut()
+  }
+
   async uploadPhoto(goalId: string, photo: Blob) {
     // ta sama ścieżka co na iPhonie: <user_id>/<goal_id>.jpg
     const path = `${this.userId}/${goalId}.jpg`

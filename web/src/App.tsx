@@ -18,6 +18,7 @@ import { AuthScreen } from './components/AuthScreen'
 import { Onboarding } from './components/Onboarding'
 import { ConfirmDialog } from './components/Modal'
 import { CheckIcon } from './components/Icons'
+import { LegalFooter, LegalSheet } from './components/Legal'
 import { HomePage } from './pages/HomePage'
 import { HistoryPage } from './pages/HistoryPage'
 import { StatsPage } from './pages/StatsPage'
@@ -27,6 +28,7 @@ export default function App() {
   return (
     <AuthProvider>
       <AuthGate />
+      <LegalSheet />
     </AuthProvider>
   )
 }
@@ -164,6 +166,7 @@ function Dashboard() {
             />
           )}
         </main>
+        <LegalFooter />
       </div>
 
       {sheet?.kind === 'deposit' && currentGoal && <DepositModal goal={currentGoal} deposit={sheet.deposit} onClose={close} />}

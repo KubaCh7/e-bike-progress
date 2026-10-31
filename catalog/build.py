@@ -33,6 +33,7 @@ rows = ",\n".join(
     f"{opt(b.get('image_url'))}, {opt(b.get('image_credit'))}, {opt(b.get('image_source'))}, {b.get('popularity', 100)})"
     for i, b in enumerate(bikes)
 )
+ids = ", ".join(q(b["id"]) for b in bikes)
 sql = f"""-- =====================================================================
 -- Katalog e-bike'ów (wygenerowane przez catalog/build.py – nie edytuj ręcznie)
 -- =====================================================================
@@ -53,6 +54,10 @@ on conflict (id) do update
         image_source = excluded.image_source,
         popularity = excluded.popularity,
         active = true;
+
+-- modele spoza pliku (np. usunięte marki) ukrywamy – cele użytkowników zostają
+update public.bike_catalog set active = false
+ where id not in ({ids});
 """
-(root / "supabase/migrations/20261031000012_seed_bike_catalog_v3.sql").write_text(sql, encoding="utf-8")
+(root / "supabase/migrations/20261031000013_seed_bike_catalog_v4.sql").write_text(sql, encoding="utf-8")
 print(f"{len(bikes)} modeli → web, iOS, SQL")

@@ -4,6 +4,7 @@ import { useAuth } from '../state/AuthContext'
 import { Segmented } from './Segmented'
 import { LanguagePicker } from './LanguagePicker'
 import { BoltIcon } from './Icons'
+import { LegalFooter } from './Legal'
 
 type Mode = 'signIn' | 'signUp'
 
@@ -100,6 +101,11 @@ export function AuthScreen() {
         {error && <p className="error small center" role="alert">{error}</p>}
         {info && <p className="positive small center" role="status">{info}</p>}
 
+        {isSignUp && (
+          <p className="consent">
+            {t('auth.consent')} <a href="#regulamin">{t('legal.terms')}</a> {t('auth.consentAnd')} <a href="#prywatnosc">{t('legal.privacyGen')}</a>.
+          </p>
+        )}
         <button type="submit" className="btn btn--volt btn--lg btn--block" disabled={!canSubmit}>
           {busy ? t('common.loading') : isSignUp ? t('auth.signUp') : t('auth.signIn')}
         </button>
@@ -111,6 +117,7 @@ export function AuthScreen() {
         </button>
         <button type="button" className="btn btn--plain btn--block faint" onClick={auth.continueLocal}>{t('auth.continueOffline')}</button>
       </form>
+      <LegalFooter />
     </main>
   )
 }

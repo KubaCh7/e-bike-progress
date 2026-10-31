@@ -11,6 +11,8 @@ interface DataValue {
   catalog: CatalogBike[]
   catalogById(id: string | null | undefined): CatalogBike | undefined
   updateProfile(patch: Partial<Profile>): Promise<void>
+  exportData(): Promise<void>
+  deleteAccount(): Promise<void>
   loading: boolean
   error: string | null
   currentGoal: Goal | null
@@ -110,6 +112,21 @@ export function DataProvider({ store, children }: { store: DataStore; children: 
       profile,
       catalog,
       catalogById: (id) => (id ? catalog.find((b) => b.id === id) : undefined),
+      exportData: async () => {
+        const data = await store.exportData()
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = `e-bike-progress-dane-${new Date().toISOString().slice(0, 10)}.json`
+        a.click()
+        URL.revokeObjectURL(url)
+      },
+      deleteAccount: async () => {
+        await store.deleteAccount()
+        localStorage.removeItem(SELECTED_KEY)
+        window.location.reload()
+      },
       updateProfile: async (patch) => {
         setProfile((p) => ({ displayName: null, onboarded: false, ...p, ...patch }))
         await run(() => store.updateProfile(patch))

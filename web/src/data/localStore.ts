@@ -119,6 +119,14 @@ export class LocalStore implements DataStore {
     this.mutate((d) => (d.deposits = d.deposits.filter((x) => x.id !== id)))
   }
 
+  async exportData() {
+    return { ...this.read(), exportedAt: new Date().toISOString(), mode: 'local' }
+  }
+
+  async deleteAccount() {
+    localStorage.removeItem(KEY)
+  }
+
   async uploadPhoto(_goalId: string, photo: Blob) {
     return blobToDataURL(photo)
   }

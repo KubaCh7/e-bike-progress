@@ -20,6 +20,10 @@ export interface DataStore {
   uploadPhoto(goalId: string, photo: Blob): Promise<string>
   /** Zamienia photoURL na adres do <img> (null = brak zdjęcia). */
   resolvePhoto(photoURL: string | null): Promise<string | null>
+  /** RODO: kopia wszystkich danych użytkownika (prawo do przenoszenia danych). */
+  exportData(): Promise<Record<string, unknown>>
+  /** RODO: trwałe usunięcie konta, celów, wpłat i zdjęć. */
+  deleteAccount(): Promise<void>
   /** Nasłuch zmian z innych urządzeń (iPhone). Zwraca funkcję wyrejestrowania. */
   subscribe?(onChange: () => void): () => void
 }

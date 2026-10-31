@@ -6,6 +6,7 @@ import { formatMoneyShort } from '../lib/format'
 import { CatalogPicker } from './CatalogPicker'
 import { GoalModal } from './GoalModal'
 import { LanguagePicker } from './LanguagePicker'
+import { LegalFooter } from './Legal'
 import { ArrowLeftIcon, ArrowRightIcon, BoltIcon, PlusIcon } from './Icons'
 
 /**
@@ -101,6 +102,7 @@ export function Onboarding() {
             {t('common.next')} <ArrowRightIcon size={20} />
           </button>
         </form>
+        <LegalFooter />
       </main>
     )
   }

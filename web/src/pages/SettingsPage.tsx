@@ -6,6 +6,7 @@ import { useAuth } from '../state/AuthContext'
 import { useData } from '../state/DataContext'
 import { formatMoneyShort, formatNumber, formatPercent, parseAmount } from '../lib/format'
 import { Segmented } from '../components/Segmented'
+import { ConfirmDialog } from '../components/Modal'
 import { GoalPhoto } from '../components/GoalPhoto'
 import { ChevronDownIcon, LogoutIcon, PlusIcon, StarIcon } from '../components/Icons'
 
@@ -171,6 +172,11 @@ function AppearanceSection({ theme, onTheme }: { theme: ThemeMode; onTheme: (mod
 function AccountSection() {
   const { t } = useTranslation()
   const auth = useAuth()
+  const { exportData, deleteAccount } = useData()
+  const [confirmDelete, setConfirmDelete] = useState(false)
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const isLocal = auth.status !== 'signedIn'
   return (
     <div className="form">
       <div className="group glass--clear r-l">
@@ -195,6 +201,39 @@ function AccountSection() {
         auth.isConfigured && (
           <button type="button" className="btn btn--volt btn--block" onClick={auth.showSignIn}>{t('auth.signIn')}</button>
         )
+      )}
+
+      <p className="field__label">{t('account.privacy')}</p>
+      <div className="group glass--clear r-l">
+        <a className="row row--link" href="#prywatnosc">{t('legal.privacy')}</a>
+        <a className="row row--link" href="#regulamin">{t('legal.terms')}</a>
+        <a className="row row--link" href="#informacje">{t('legal.notices')}</a>
+      </div>
+      <button type="button" className="btn glass--clear btn--block" onClick={() => void exportData()}>
+        {t('account.export')}
+      </button>
+      <button type="button" className="btn btn--plain btn--danger btn--block" onClick={() => setConfirmDelete(true)}>
+        {isLocal ? t('account.deleteLocal') : t('account.delete')}
+      </button>
+      {error && <p className="error" role="alert">{error}</p>}
+      {confirmDelete && (
+        <ConfirmDialog
+          title={isLocal ? t('account.deleteLocalConfirm') : t('account.deleteConfirm')}
+          confirmLabel={busy ? t('common.loading') : t('account.deleteYes')}
+          onCancel={() => setConfirmDelete(false)}
+          onConfirm={async () => {
+            setBusy(true)
+            setError(null)
+            try {
+              await deleteAccount()
+            } catch (e) {
+              setError(e instanceof Error ? e.message : String(e))
+              setConfirmDelete(false)
+            } finally {
+              setBusy(false)
+            }
+          }}
+        />
       )}
     </div>
   )

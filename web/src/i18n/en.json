@@ -157,5 +157,20 @@
   "catalog.sortPopular": "Popular",
   "onboarding.bikesTitleNoName": "What are you saving for?",
   "onboarding.selectedLabel": "e-bikes selected",
-  "onboarding.saveError": "Could not save: {{message}}"
+  "onboarding.saveError": "Could not save: {{message}}",
+  "legal.title": "Documents",
+  "legal.privacy": "Privacy policy",
+  "legal.privacyGen": "Privacy policy",
+  "legal.terms": "Terms",
+  "legal.notices": "Legal notices",
+  "legal.independent": "independent project, not affiliated with manufacturers",
+  "auth.consent": "By creating an account you accept the",
+  "auth.consentAnd": "and",
+  "account.privacy": "Privacy & data",
+  "account.export": "Download my data (JSON)",
+  "account.delete": "Delete account and all data",
+  "account.deleteLocal": "Delete data from this browser",
+  "account.deleteConfirm": "Are you sure? This permanently deletes your account, goals, deposits and photos. This cannot be undone.",
+  "account.deleteLocalConfirm": "Delete all data stored in this browser?",
+  "account.deleteYes": "Delete forever"
 }

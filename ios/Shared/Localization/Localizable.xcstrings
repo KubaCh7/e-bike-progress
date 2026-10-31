@@ -1,6 +1,57 @@
 {
   "sourceLanguage": "pl",
   "strings": {
+    "account.delete": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete account and all data"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Usuń konto i wszystkie dane"
+          }
+        }
+      }
+    },
+    "account.deleteConfirm": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Are you sure? This permanently deletes your account, goals, deposits and photos. This cannot be undone."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Na pewno? To trwale usunie konto, cele, wpłaty i zdjęcia. Tego nie da się cofnąć."
+          }
+        }
+      }
+    },
+    "account.deleteYes": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete forever"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Usuń na zawsze"
+          }
+        }
+      }
+    },
     "auth.account": {
       "extractionState": "manual",
       "localizations": {
@@ -1442,6 +1493,57 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cel: %@"
+          }
+        }
+      }
+    },
+    "legal.notices": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Legal notices"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Informacje prawne"
+          }
+        }
+      }
+    },
+    "legal.privacy": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Privacy policy"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Polityka prywatności"
+          }
+        }
+      }
+    },
+    "legal.terms": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terms"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Regulamin"
           }
         }
       }

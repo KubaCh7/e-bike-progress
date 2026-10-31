@@ -146,6 +146,29 @@ final class AuthViewModel {
         onSignedOut?()
     }
 
+    /// RODO / App Store: trwałe usunięcie konta, zdjęć w Storage i wszystkich danych.
+    func deleteAccount() async -> Bool {
+        guard let client, case .signedIn(let userID, _) = state else { return false }
+        isWorking = true
+        errorMessage = nil
+        defer { isWorking = false }
+        do {
+            let folder = userID.uuidString.lowercased()
+            let files = try await client.storage.from(AppConstants.photoBucket).list(path: folder)
+            if !files.isEmpty {
+                _ = try await client.storage.from(AppConstants.photoBucket).remove(paths: files.map { "\(folder)/\($0.name)" })
+            }
+            try await client.rpc("delete_my_account").execute()
+            try? await client.auth.signOut()
+            state = .signedOut
+            onSignedOut?()
+            return true
+        } catch {
+            errorMessage = error.localizedDescription
+            return false
+        }
+    }
+
     func continueOffline() {
         offlineMode = true
     }

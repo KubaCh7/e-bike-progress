@@ -15,7 +15,8 @@ struct SettingsView: View {
     @Environment(UpdateChecker.self) private var updates
     @Environment(\.openURL) private var openURL
     @State private var section: SettingsSection = .profile
-    @State private var nameDraft = 
+    @State private var nameDraft = ""
+    @State private var confirmDeleteAccount = false
     @Environment(AuthViewModel.self) private var auth
     @Environment(SyncService.self) private var sync
     @Environment(NetworkMonitor.self) private var network
@@ -136,6 +137,14 @@ struct SettingsView: View {
                 Button(L10n.tr("auth.signOut"), systemImage: "rectangle.portrait.and.arrow.right", role: .destructive) {
                     Task { await auth.signOut() }
                 }
+                Button(L10n.tr("account.delete"), systemImage: "trash", role: .destructive) {
+                    confirmDeleteAccount = true
+                }
+                .confirmationDialog(L10n.tr("account.deleteConfirm"), isPresented: $confirmDeleteAccount, titleVisibility: .visible) {
+                    Button(L10n.tr("account.deleteYes"), role: .destructive) {
+                        Task { _ = await auth.deleteAccount() }
+                    }
+                }
             } else {
                 Text(L10n.tr("auth.offlineHint"))
                     .font(.footnote)
@@ -197,6 +206,9 @@ struct SettingsView: View {
     private var aboutSection: some View {
         Section {
             LabeledContent(L10n.tr("settings.version"), value: Bundle.main.appVersion)
+            Link(L10n.tr("legal.privacy"), destination: LegalLinks.privacy)
+            Link(L10n.tr("legal.terms"), destination: LegalLinks.terms)
+            Link(L10n.tr("legal.notices"), destination: LegalLinks.notices)
             if updates.isUpdateAvailable, let url = updates.updateURL {
                 Button(L10n.tr("update.install"), systemImage: "arrow.down.circle") { openURL(url) }
                     .buttonStyle(.glassProminent)
@@ -227,4 +239,12 @@ extension Bundle {
         let build = object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "1"
         return "\(version) (\(build))"
     }
+}
+
+/// Dokumenty prawne (strona web) – polityka prywatności, regulamin, informacje prawne.
+enum LegalLinks {
+    static let base = "https://e-bike-progress.vercel.app/"
+    static let privacy = URL(string: base + "#prywatnosc")!
+    static let terms = URL(string: base + "#regulamin")!
+    static let notices = URL(string: base + "#informacje")!
 }

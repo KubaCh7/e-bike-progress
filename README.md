@@ -194,9 +194,10 @@ grafikę `web/public/ride_pro_sr_placeholder.svg`.
 ## Katalog e-bike'ów, imię i aktualizacje
 
 - **Powitanie**: po założeniu konta (z imieniem) lub pierwszym uruchomieniu aplikacja pyta
-  o imię i pokazuje katalog **49 popularnych modeli** – E-Ride Pro SR/SS, Sur-Ron (Light Bee X,
-  Ultra Bee, Storm Bee…), Talaria (Sting R MX4, XXX, Komodo…), 79Bike Falcon (M, Pro, Pro Limited, M GT), Stark Varg, KTM Freeride E,
-  Segway, Super73, Specialized Turbo Levo, Trek Rail, Cube Stereo Hybrid, Kross i inne – albo
+  o imię i pokazuje katalog **55 modeli z 8 marek** – pełne linie E-Ride Pro (Mini R, Pro-S,
+  SS 2.0/2.5/3.0/4.0, SE, SR), Sur-Ron (Hyper Bee, Light Bee X/L1e, Light Bee 2, Ultra Bee HP, Storm Bee), Talaria
+  (X3, XXX, Sting MX3/MX4/SX4/MX5/MX5 Pro, Dragon, Komodo), Stark Varg (MX/EX/SM, Alpha, Factory Edition),
+  KTM (SX-E 2/3/5, Freeride E), Segway, 79Bike Falcon i Super73 – albo
   **własny e-bike** (sortowanie po marce A–Z lub cenie). Pierwszy wybrany model zostaje celem głównym; gdy nic nie wybierzesz, celem jest e-ride pro SR.
 - Ceny są orientacyjne (polskie ogłoszenia, X 2026; gdzie ich brak – przeliczone z EUR/USD)
   i można je zmienić przy dodawaniu.
@@ -223,6 +224,18 @@ grafikę `web/public/ride_pro_sr_placeholder.svg`.
   ```
   Aplikacja na Apple Watch aktualizuje się automatycznie razem z aplikacją na iPhonie.
   Wersja web (PWA) aktualizuje się sama po każdym wdrożeniu na Vercel.
+
+## Kwestie prawne
+
+Strona zawiera **Politykę prywatności (RODO)**, **Regulamin** i **Informacje prawne** (znaki towarowe,
+charakter cen, licencje zdjęć i fontów) – stopka i *Ustawienia → Konto*, linki `#prywatnosc`,
+`#regulamin`, `#informacje` (tekst w `web/src/legal/content.ts`). Użytkownik może **pobrać swoje dane**
+(JSON) i **usunąć konto** (funkcja `delete_my_account` + usunięcie zdjęć ze Storage) – także w aplikacji iOS,
+czego wymaga App Store przy logowaniu przez konto.
+
+Dane administratora ustaw w Vercel → *Settings → Environment Variables*: `VITE_LEGAL_OWNER`
+(imię i nazwisko) i `VITE_LEGAL_CONTACT` (e-mail kontaktowy), a potem *Redeploy*.
+Dokumenty to rzetelny szablon, nie porada prawna.
 
 ## Architektura iOS (MVVM)
 

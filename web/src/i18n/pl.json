@@ -159,5 +159,20 @@
   "catalog.sortPopular": "Popularne",
   "onboarding.bikesTitleNoName": "Na co zbierasz?",
   "onboarding.selectedLabel": "wybrane e-bike'i",
-  "onboarding.saveError": "Nie udało się zapisać: {{message}}"
+  "onboarding.saveError": "Nie udało się zapisać: {{message}}",
+  "legal.title": "Dokumenty",
+  "legal.privacy": "Polityka prywatności",
+  "legal.privacyGen": "Politykę prywatności",
+  "legal.terms": "Regulamin",
+  "legal.notices": "Informacje prawne",
+  "legal.independent": "niezależny projekt, niepowiązany z producentami",
+  "auth.consent": "Zakładając konto, akceptujesz",
+  "auth.consentAnd": "i",
+  "account.privacy": "Prywatność i dane",
+  "account.export": "Pobierz moje dane (JSON)",
+  "account.delete": "Usuń konto i wszystkie dane",
+  "account.deleteLocal": "Usuń dane z tej przeglądarki",
+  "account.deleteConfirm": "Na pewno? To trwale usunie konto, cele, wpłaty i zdjęcia. Tego nie da się cofnąć.",
+  "account.deleteLocalConfirm": "Usunąć wszystkie dane zapisane w tej przeglądarce?",
+  "account.deleteYes": "Usuń na zawsze"
 }

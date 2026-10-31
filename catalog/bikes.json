@@ -1,7 +1,77 @@
 {
-  "version": 1,
-  "note": "Orientacyjne ceny nowych egzemplarzy w Polsce (PLN, X 2026) – z polskich ogłoszeń dealerów, a przy ich braku przeliczone z cen EUR/USD. Użytkownik może zmienić cenę po wyborze. Zdjęcia: tylko na wolnych licencjach (Wikimedia Commons) – pozostałe modele mają ilustrację; własne zdjęcie można wgrać lub podać link.",
+  "version": 2,
+  "note": "Orientacyjne ceny nowych egzemplarzy w Polsce (PLN, X 2026): z polskich ofert dealerów (E-Ride, Sur-Ron), a przy ich braku przeliczone z cen EUR/USD z VAT. Nie stanowią oferty handlowej. Zdjęcia tylko na wolnych licencjach (Wikimedia Commons).",
   "bikes": [
+    {
+      "id": "eride-mini",
+      "brand": "E-Ride",
+      "model": "Pro Mini R",
+      "category": "moto",
+      "price": 15900,
+      "color": "#14b8a6",
+      "popularity": 16,
+      "featured": false
+    },
+    {
+      "id": "eride-pro-s",
+      "brand": "E-Ride",
+      "model": "Pro-S",
+      "category": "moto",
+      "price": 19900,
+      "color": "#14b8a6",
+      "popularity": 100,
+      "featured": false
+    },
+    {
+      "id": "eride-ss2",
+      "brand": "E-Ride",
+      "model": "Pro SS 2.0",
+      "category": "moto",
+      "price": 20900,
+      "color": "#14b8a6",
+      "popularity": 29,
+      "featured": false
+    },
+    {
+      "id": "eride-se",
+      "brand": "E-Ride",
+      "model": "Pro SE",
+      "category": "moto",
+      "price": 21900,
+      "color": "#14b8a6",
+      "popularity": 28,
+      "featured": false
+    },
+    {
+      "id": "eride-ss25",
+      "brand": "E-Ride",
+      "model": "Pro SS 2.5",
+      "category": "moto",
+      "price": 23500,
+      "color": "#14b8a6",
+      "popularity": 12,
+      "featured": false
+    },
+    {
+      "id": "eride-pro-ss3",
+      "brand": "E-Ride",
+      "model": "Pro SS 3.0",
+      "category": "moto",
+      "price": 25900,
+      "color": "#14b8a6",
+      "popularity": 3,
+      "featured": true
+    },
+    {
+      "id": "eride-ss4",
+      "brand": "E-Ride",
+      "model": "Pro SS 4.0",
+      "category": "moto",
+      "price": 25900,
+      "color": "#14b8a6",
+      "popularity": 18,
+      "featured": false
+    },
     {
       "id": "eride-pro-sr",
       "brand": "E-Ride",
@@ -9,18 +79,18 @@
       "category": "moto",
       "price": 30000,
       "color": "#14b8a6",
-      "featured": true,
-      "popularity": 4
+      "popularity": 4,
+      "featured": true
     },
     {
-      "id": "eride-pro-ss3",
-      "brand": "E-Ride",
-      "model": "Pro SS 3.0",
+      "id": "surron-hyperbee",
+      "brand": "Sur-Ron",
+      "model": "Hyper Bee",
       "category": "moto",
-      "price": 26000,
-      "color": "#14b8a6",
-      "featured": true,
-      "popularity": 3
+      "price": 13900,
+      "color": "#f97316",
+      "popularity": 11,
+      "featured": false
     },
     {
       "id": "surron-lbx",
@@ -29,31 +99,61 @@
       "category": "moto",
       "price": 22900,
       "color": "#f97316",
+      "popularity": 1,
       "featured": true,
       "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Sur-Ron_Electric_Dirt_Bike_1a.jpg?width=960",
       "image_credit": "Wikimedia Commons",
-      "image_source": "https://commons.wikimedia.org/wiki/File:Sur-Ron_Electric_Dirt_Bike_1a.jpg",
-      "popularity": 1
+      "image_source": "https://commons.wikimedia.org/wiki/File:Sur-Ron_Electric_Dirt_Bike_1a.jpg"
+    },
+    {
+      "id": "surron-l1e",
+      "brand": "Sur-Ron",
+      "model": "Light Bee L1e",
+      "category": "moto",
+      "price": 22900,
+      "color": "#f97316",
+      "popularity": 24,
+      "featured": false
     },
     {
       "id": "surron-lb2",
       "brand": "Sur-Ron",
-      "model": "Light Bee 2",
+      "model": "Light Bee 2 X",
       "category": "moto",
-      "price": 29500,
+      "price": 28900,
       "color": "#f97316",
-      "popularity": 12,
+      "popularity": 8,
+      "featured": true
+    },
+    {
+      "id": "surron-lb2-l3e",
+      "brand": "Sur-Ron",
+      "model": "Light Bee 2 L3e",
+      "category": "moto",
+      "price": 29900,
+      "color": "#f97316",
+      "popularity": 100,
       "featured": false
     },
     {
       "id": "surron-ultrabee",
       "brand": "Sur-Ron",
-      "model": "Ultra Bee",
+      "model": "Ultra Bee HP X",
       "category": "moto",
-      "price": 28500,
+      "price": 30900,
       "color": "#f97316",
-      "featured": true,
-      "popularity": 6
+      "popularity": 6,
+      "featured": true
+    },
+    {
+      "id": "surron-ultrabee-t",
+      "brand": "Sur-Ron",
+      "model": "Ultra Bee HP T",
+      "category": "moto",
+      "price": 32900,
+      "color": "#f97316",
+      "popularity": 100,
+      "featured": false
     },
     {
       "id": "surron-stormbee",
@@ -66,23 +166,23 @@
       "featured": false
     },
     {
-      "id": "talaria-sting-mx4",
+      "id": "talaria-x3",
       "brand": "Talaria",
-      "model": "Sting R MX4",
+      "model": "X3 Concept",
       "category": "moto",
-      "price": 23900,
+      "price": 11900,
       "color": "#3b82f6",
-      "featured": true,
-      "popularity": 2
+      "popularity": 15,
+      "featured": false
     },
     {
-      "id": "talaria-sting-mx3",
+      "id": "talaria-x3-l1e",
       "brand": "Talaria",
-      "model": "Sting MX3",
+      "model": "X3 L1E",
       "category": "moto",
-      "price": 19900,
+      "price": 15900,
       "color": "#3b82f6",
-      "popularity": 14,
+      "popularity": 100,
       "featured": false
     },
     {
@@ -92,8 +192,78 @@
       "category": "moto",
       "price": 16900,
       "color": "#3b82f6",
-      "featured": true,
-      "popularity": 5
+      "popularity": 5,
+      "featured": true
+    },
+    {
+      "id": "talaria-xxx-l1e",
+      "brand": "Talaria",
+      "model": "XXX L1E",
+      "category": "moto",
+      "price": 17900,
+      "color": "#3b82f6",
+      "popularity": 100,
+      "featured": false
+    },
+    {
+      "id": "talaria-sting-mx3",
+      "brand": "Talaria",
+      "model": "Sting MX3",
+      "category": "moto",
+      "price": 19900,
+      "color": "#3b82f6",
+      "popularity": 20,
+      "featured": false
+    },
+    {
+      "id": "talaria-sting-mx4",
+      "brand": "Talaria",
+      "model": "Sting R MX4",
+      "category": "moto",
+      "price": 23900,
+      "color": "#3b82f6",
+      "popularity": 2,
+      "featured": true
+    },
+    {
+      "id": "talaria-sting-sx4",
+      "brand": "Talaria",
+      "model": "Sting R SX4",
+      "category": "moto",
+      "price": 23900,
+      "color": "#3b82f6",
+      "popularity": 100,
+      "featured": false
+    },
+    {
+      "id": "talaria-mx5",
+      "brand": "Talaria",
+      "model": "Sting MX5",
+      "category": "moto",
+      "price": 24900,
+      "color": "#3b82f6",
+      "popularity": 10,
+      "featured": false
+    },
+    {
+      "id": "talaria-mx5-pro",
+      "brand": "Talaria",
+      "model": "Sting MX5 Pro",
+      "category": "moto",
+      "price": 27900,
+      "color": "#3b82f6",
+      "popularity": 27,
+      "featured": false
+    },
+    {
+      "id": "talaria-dragon",
+      "brand": "Talaria",
+      "model": "Dragon",
+      "category": "moto",
+      "price": 25900,
+      "color": "#3b82f6",
+      "popularity": 26,
+      "featured": false
     },
     {
       "id": "talaria-komodo",
@@ -106,19 +276,39 @@
       "featured": false
     },
     {
+      "id": "stark-varg-mx",
+      "brand": "Stark",
+      "model": "Varg MX 1.2",
+      "category": "moto",
+      "price": 49000,
+      "color": "#a3e635",
+      "popularity": 22,
+      "featured": false
+    },
+    {
+      "id": "stark-varg-mx-alpha",
+      "brand": "Stark",
+      "model": "Varg MX Alpha",
+      "category": "moto",
+      "price": 52900,
+      "color": "#a3e635",
+      "popularity": 100,
+      "featured": false
+    },
+    {
       "id": "stark-varg-ex",
       "brand": "Stark",
-      "model": "Varg EX 60",
+      "model": "Varg EX",
       "category": "moto",
       "price": 54000,
       "color": "#a3e635",
-      "featured": false,
-      "popularity": 9
+      "popularity": 9,
+      "featured": false
     },
     {
       "id": "stark-varg-ex-alpha",
       "brand": "Stark",
-      "model": "Varg EX Alpha 80",
+      "model": "Varg EX Alpha",
       "category": "moto",
       "price": 61500,
       "color": "#a3e635",
@@ -126,13 +316,73 @@
       "featured": false
     },
     {
-      "id": "stark-varg-mx",
+      "id": "stark-varg-sm",
       "brand": "Stark",
-      "model": "Varg MX",
+      "model": "Varg SM",
       "category": "moto",
-      "price": 49000,
+      "price": 56900,
+      "color": "#a3e635",
+      "popularity": 33,
+      "featured": false
+    },
+    {
+      "id": "stark-varg-sm-alpha",
+      "brand": "Stark",
+      "model": "Varg SM Alpha",
+      "category": "moto",
+      "price": 61900,
       "color": "#a3e635",
       "popularity": 100,
+      "featured": false
+    },
+    {
+      "id": "stark-varg-mx-fe",
+      "brand": "Stark",
+      "model": "Varg MX Factory Edition",
+      "category": "moto",
+      "price": 65900,
+      "color": "#a3e635",
+      "popularity": 100,
+      "featured": false
+    },
+    {
+      "id": "stark-varg-ex-fe",
+      "brand": "Stark",
+      "model": "Varg EX Factory Edition",
+      "category": "moto",
+      "price": 69900,
+      "color": "#a3e635",
+      "popularity": 100,
+      "featured": false
+    },
+    {
+      "id": "ktm-sx-e2",
+      "brand": "KTM",
+      "model": "SX-E 2",
+      "category": "moto",
+      "price": 16900,
+      "color": "#f59e0b",
+      "popularity": 100,
+      "featured": false
+    },
+    {
+      "id": "ktm-sx-e3",
+      "brand": "KTM",
+      "model": "SX-E 3",
+      "category": "moto",
+      "price": 20900,
+      "color": "#f59e0b",
+      "popularity": 100,
+      "featured": false
+    },
+    {
+      "id": "ktm-sx-e5",
+      "brand": "KTM",
+      "model": "SX-E 5",
+      "category": "moto",
+      "price": 23900,
+      "color": "#f59e0b",
+      "popularity": 25,
       "featured": false
     },
     {
@@ -142,20 +392,30 @@
       "category": "moto",
       "price": 47000,
       "color": "#f59e0b",
+      "popularity": 13,
+      "featured": false,
       "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/KTM_Freeride_E-XC_(RGB).jpg?width=960",
       "image_credit": "KTM AG / Wikimedia Commons",
-      "image_source": "https://commons.wikimedia.org/wiki/File:KTM_Freeride_E-XC_(RGB).jpg",
-      "popularity": 13,
+      "image_source": "https://commons.wikimedia.org/wiki/File:KTM_Freeride_E-XC_(RGB).jpg"
+    },
+    {
+      "id": "segway-xafari",
+      "brand": "Segway",
+      "model": "Xafari",
+      "category": "city",
+      "price": 10900,
+      "color": "#94a3b8",
+      "popularity": 100,
       "featured": false
     },
     {
-      "id": "segway-x260",
+      "id": "segway-xyber",
       "brand": "Segway",
-      "model": "X260",
-      "category": "moto",
-      "price": 19900,
-      "color": "#64748b",
-      "popularity": 11,
+      "model": "Xyber",
+      "category": "city",
+      "price": 13900,
+      "color": "#94a3b8",
+      "popularity": 100,
       "featured": false
     },
     {
@@ -164,18 +424,18 @@
       "model": "X160",
       "category": "moto",
       "price": 15900,
-      "color": "#64748b",
-      "popularity": 24,
+      "color": "#94a3b8",
+      "popularity": 30,
       "featured": false
     },
     {
-      "id": "rerode-r1",
-      "brand": "Rerode",
-      "model": "R1",
+      "id": "segway-x260",
+      "brand": "Segway",
+      "model": "X260",
       "category": "moto",
-      "price": 17500,
-      "color": "#ef4444",
-      "popularity": 100,
+      "price": 19900,
+      "color": "#94a3b8",
+      "popularity": 14,
       "featured": false
     },
     {
@@ -185,7 +445,7 @@
       "category": "moto",
       "price": 17900,
       "color": "#8b5cf6",
-      "popularity": 16,
+      "popularity": 31,
       "featured": false
     },
     {
@@ -195,8 +455,8 @@
       "category": "moto",
       "price": 18900,
       "color": "#8b5cf6",
-      "featured": true,
-      "popularity": 7
+      "popularity": 7,
+      "featured": true
     },
     {
       "id": "79bike-falcon-pro-ltd",
@@ -211,39 +471,19 @@
     {
       "id": "79bike-falcon-m-gt",
       "brand": "79Bike",
-      "model": "Falcon M GT",
+      "model": "Falcon GT",
       "category": "moto",
       "price": 21900,
       "color": "#8b5cf6",
-      "popularity": 100,
+      "popularity": 17,
       "featured": false
     },
     {
-      "id": "kuberg-freerider",
-      "brand": "Kuberg",
-      "model": "Freerider",
-      "category": "moto",
-      "price": 17000,
-      "color": "#0ea5e9",
-      "popularity": 100,
-      "featured": false
-    },
-    {
-      "id": "super73-rx",
+      "id": "super73-mzft",
       "brand": "Super73",
-      "model": "RX",
+      "model": "MZFT (A-Series)",
       "category": "city",
-      "price": 19500,
-      "color": "#eab308",
-      "popularity": 15,
-      "featured": false
-    },
-    {
-      "id": "super73-s2",
-      "brand": "Super73",
-      "model": "S2",
-      "category": "city",
-      "price": 14900,
+      "price": 9900,
       "color": "#eab308",
       "popularity": 100,
       "featured": false
@@ -253,254 +493,68 @@
       "brand": "Super73",
       "model": "Z Miami",
       "category": "city",
-      "price": 7900,
+      "price": 11900,
       "color": "#eab308",
       "popularity": 100,
       "featured": false
     },
     {
-      "id": "spec-levo4-comp",
-      "brand": "Specialized",
-      "model": "Turbo Levo 4 Comp Alloy",
-      "category": "emtb",
-      "price": 28255,
-      "color": "#dc2626",
-      "featured": true,
-      "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Specialized_Turbo_Levo_FSR.jpg?width=960",
-      "image_credit": "Rm1911 / Wikimedia Commons",
-      "image_source": "https://commons.wikimedia.org/wiki/File:Specialized_Turbo_Levo_FSR.jpg",
-      "popularity": 8
-    },
-    {
-      "id": "spec-levo4-expert",
-      "brand": "Specialized",
-      "model": "Turbo Levo 4 Expert",
-      "category": "emtb",
-      "price": 44900,
-      "color": "#dc2626",
-      "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Specialized_Turbo_Levo_2018.jpg?width=960",
-      "image_credit": "Delete1985 / Wikimedia Commons",
-      "image_source": "https://commons.wikimedia.org/wiki/File:Specialized_Turbo_Levo_2018.jpg",
-      "popularity": 100,
-      "featured": false
-    },
-    {
-      "id": "spec-kenevo-sl2",
-      "brand": "Specialized",
-      "model": "Turbo Kenevo SL 2",
-      "category": "emtb",
-      "price": 39900,
-      "color": "#dc2626",
-      "popularity": 100,
-      "featured": false
-    },
-    {
-      "id": "spec-vado4",
-      "brand": "Specialized",
-      "model": "Turbo Vado 4.0",
+      "id": "super73-zx",
+      "brand": "Super73",
+      "model": "ZX",
       "category": "city",
-      "price": 17999,
-      "color": "#dc2626",
+      "price": 11900,
+      "color": "#eab308",
       "popularity": 100,
       "featured": false
     },
     {
-      "id": "trek-rail-97",
-      "brand": "Trek",
-      "model": "Rail 9.7",
-      "category": "emtb",
-      "price": 37900,
-      "color": "#1d4ed8",
-      "popularity": 17,
-      "featured": false
-    },
-    {
-      "id": "trek-fuel-exe-97",
-      "brand": "Trek",
-      "model": "Fuel EXe 9.7",
-      "category": "emtb",
-      "price": 31900,
-      "color": "#1d4ed8",
+      "id": "super73-m1d",
+      "brand": "Super73",
+      "model": "M1D (A-Series)",
+      "category": "city",
+      "price": 11900,
+      "color": "#eab308",
       "popularity": 100,
       "featured": false
     },
     {
-      "id": "cube-stereo-hybrid-one44",
-      "brand": "Cube",
-      "model": "Stereo Hybrid ONE44",
-      "category": "emtb",
-      "price": 16999,
-      "color": "#0f172a",
-      "featured": false,
-      "popularity": 10
-    },
-    {
-      "id": "cube-stereo-hybrid-one77",
-      "brand": "Cube",
-      "model": "Stereo Hybrid ONE77 HPC",
-      "category": "emtb",
-      "price": 23999,
-      "color": "#0f172a",
+      "id": "super73-b1g",
+      "brand": "Super73",
+      "model": "B1G (A-Series)",
+      "category": "city",
+      "price": 12500,
+      "color": "#eab308",
       "popularity": 100,
       "featured": false
     },
     {
-      "id": "haibike-allmtn-cf9",
-      "brand": "Haibike",
-      "model": "AllMtn CF 9",
-      "category": "emtb",
-      "price": 22999,
-      "color": "#06b6d4",
-      "popularity": 20,
+      "id": "super73-s2",
+      "brand": "Super73",
+      "model": "S2",
+      "category": "city",
+      "price": 14900,
+      "color": "#eab308",
+      "popularity": 32,
       "featured": false
     },
     {
-      "id": "orbea-rise-m20",
-      "brand": "Orbea",
-      "model": "Rise M20",
-      "category": "emtb",
-      "price": 28999,
-      "color": "#be123c",
+      "id": "super73-rx",
+      "brand": "Super73",
+      "model": "RX",
+      "category": "city",
+      "price": 19500,
+      "color": "#eab308",
       "popularity": 21,
       "featured": false
     },
     {
-      "id": "canyon-spectral-on-cf8",
-      "brand": "Canyon",
-      "model": "Spectral:ON CF 8",
-      "category": "emtb",
-      "price": 25999,
-      "color": "#475569",
-      "popularity": 22,
-      "featured": false
-    },
-    {
-      "id": "canyon-strive-on",
-      "brand": "Canyon",
-      "model": "Strive:ON CFR",
-      "category": "emtb",
-      "price": 29999,
-      "color": "#475569",
-      "popularity": 100,
-      "featured": false
-    },
-    {
-      "id": "giant-trance-x-e",
-      "brand": "Giant",
-      "model": "Trance X E+",
-      "category": "emtb",
-      "price": 23999,
-      "color": "#2563eb",
-      "popularity": 100,
-      "featured": false
-    },
-    {
-      "id": "scott-patron-910",
-      "brand": "Scott",
-      "model": "Patron eRIDE 910",
-      "category": "emtb",
-      "price": 32999,
-      "color": "#f43f5e",
-      "popularity": 100,
-      "featured": false
-    },
-    {
-      "id": "yt-decoy-mx",
-      "brand": "YT",
-      "model": "Decoy MX Core 3",
-      "category": "emtb",
-      "price": 29999,
-      "color": "#facc15",
-      "popularity": 100,
-      "featured": false
-    },
-    {
-      "id": "merida-eone-sixty",
-      "brand": "Merida",
-      "model": "eOne-Sixty 875",
-      "category": "emtb",
-      "price": 21999,
-      "color": "#16a34a",
-      "popularity": 100,
-      "featured": false
-    },
-    {
-      "id": "santacruz-heckler-9",
-      "brand": "Santa Cruz",
-      "model": "Heckler 9",
-      "category": "emtb",
-      "price": 39999,
-      "color": "#7c3aed",
-      "popularity": 100,
-      "featured": false
-    },
-    {
-      "id": "ducati-mig-s",
-      "brand": "Ducati",
-      "model": "MIG-S",
-      "category": "emtb",
-      "price": 24999,
-      "color": "#b91c1c",
-      "popularity": 100,
-      "featured": false
-    },
-    {
-      "id": "kross-soil-boost",
-      "brand": "Kross",
-      "model": "Soil Boost 3.0",
-      "category": "emtb",
-      "price": 11999,
-      "color": "#ea580c",
-      "popularity": 18,
-      "featured": false
-    },
-    {
-      "id": "kross-level-boost",
-      "brand": "Kross",
-      "model": "Level Boost 2.0",
-      "category": "emtb",
-      "price": 8999,
-      "color": "#ea580c",
-      "popularity": 100,
-      "featured": false
-    },
-    {
-      "id": "kross-trans-hybrid",
-      "brand": "Kross",
-      "model": "Trans Hybrid 5.0",
+      "id": "super73-r-adventure",
+      "brand": "Super73",
+      "model": "R Adventure",
       "category": "city",
-      "price": 8999,
-      "color": "#ea580c",
-      "popularity": 100,
-      "featured": false
-    },
-    {
-      "id": "vanmoof-s5",
-      "brand": "VanMoof",
-      "model": "S5",
-      "category": "city",
-      "price": 14999,
-      "color": "#0284c7",
-      "popularity": 100,
-      "featured": false
-    },
-    {
-      "id": "cowboy-4",
-      "brand": "Cowboy",
-      "model": "4",
-      "category": "city",
-      "price": 12999,
-      "color": "#334155",
-      "popularity": 100,
-      "featured": false
-    },
-    {
-      "id": "engwe-ep2-pro",
-      "brand": "Engwe",
-      "model": "EP-2 Pro",
-      "category": "city",
-      "price": 4999,
-      "color": "#22c55e",
+      "price": 19900,
+      "color": "#eab308",
       "popularity": 100,
       "featured": false
     }

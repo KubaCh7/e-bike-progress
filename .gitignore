@@ -1,0 +1,52 @@
+# --- macOS ---
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# --- Xcode / Swift ---
+DerivedData/
+build/
+*.xcuserstate
+xcuserdata/
+*.xcscmblueprint
+*.xccheckout
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+.swiftpm/
+.build/
+Packages/
+timeline.xctimeline
+playground.xcworkspace
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+
+# Sekrety iOS (w repo tylko *.example.xcconfig)
+ios/Config/Secrets.xcconfig
+
+# --- Node / web ---
+node_modules/
+dist/
+dev-dist/
+*.log
+npm-debug.log*
+.vite/
+.vercel/
+
+# --- Env ---
+.env
+.env.*
+!.env.example
+
+# --- Supabase CLI ---
+supabase/.branches/
+supabase/.temp/
+
+# --- Edytory ---
+.idea/
+.vscode/*
+!.vscode/extensions.json

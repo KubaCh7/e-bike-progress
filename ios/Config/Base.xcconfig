@@ -1,0 +1,7 @@
+// Wspólna konfiguracja projektu. Sekrety są w Secrets.xcconfig (poza repo).
+BUNDLE_ID_PREFIX = com.kubach7
+SUPABASE_HOST =
+SUPABASE_ANON_KEY =
+APP_GROUP_ID = group.$(BUNDLE_ID_PREFIX).ebikeprogress
+
+#include? "Secrets.xcconfig"

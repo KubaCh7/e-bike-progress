@@ -30,7 +30,7 @@ struct GoalRow: Codable, Sendable {
 }
 
 /// Wiersz tabeli `deposits` w Supabase.
-struct DepositRow: Codable, Sendable {
+struct RemoteDepositRow: Codable, Sendable {
     let id: UUID
     var userID: UUID
     var goalID: UUID

@@ -104,7 +104,7 @@ final class SyncService {
             .order("updated_at")
             .execute()
             .value
-        let depositRows: [DepositRow] = try await client.from("deposits")
+        let depositRows: [RemoteDepositRow] = try await client.from("deposits")
             .select()
             .gt("updated_at", value: since)
             .order("updated_at")
@@ -118,7 +118,7 @@ final class SyncService {
         repository.save()
 
         // zapamiętaj najnowszy updated_at (surowy tekst – bez utraty mikrosekund)
-        let newest = (goalRows.compactMap(\.updatedAt) + depositRows.compactMap(\.updatedAt))
+        let newest = (goalRows.compactMap { $0.updatedAt } + depositRows.compactMap { $0.updatedAt })
             .max { (PGDate.parseTimestamp($0) ?? .distantPast) < (PGDate.parseTimestamp($1) ?? .distantPast) }
         if let newest {
             UserDefaults.standard.set(newest, forKey: lastPullKey(userID))
@@ -198,7 +198,7 @@ final class SyncService {
         context.delete(localSeed)
     }
 
-    private func apply(depositRow row: DepositRow) -> Bool {
+    private func apply(depositRow row: RemoteDepositRow) -> Bool {
         if let local = repository.deposit(id: row.id) {
             if row.deletedAt != nil {
                 context.delete(local)
@@ -270,7 +270,7 @@ final class SyncService {
         let depositsToSend = pendingDeposits.filter { $0.goal?.pendingDelete != true }
         if !depositsToSend.isEmpty {
             let rows = depositsToSend.map { deposit in
-                DepositRow(
+                RemoteDepositRow(
                     id: deposit.id,
                     userID: userID,
                     goalID: deposit.goalID,

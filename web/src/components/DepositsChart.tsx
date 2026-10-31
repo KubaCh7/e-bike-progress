@@ -13,7 +13,7 @@ function useChartColors() {
   const read = () => {
     const css = getComputedStyle(document.documentElement)
     const v = (name: string) => css.getPropertyValue(name).trim()
-    return { line: v('--chart-line'), fill: v('--chart-fill'), grid: v('--chart-grid'), target: v('--chart-target'), text: v('--text-3') }
+    return { line: v('--chart-line'), fill: v('--chart-fill'), grid: v('--chart-grid'), target: v('--chart-target'), text: v('--ink-3') }
   }
   const [colors, setColors] = useState(read)
   useEffect(() => {

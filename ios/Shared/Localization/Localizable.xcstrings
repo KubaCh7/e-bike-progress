@@ -426,6 +426,23 @@
         }
       }
     },
+    "catalog.rest": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "More bikes"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pozostałe"
+          }
+        }
+      }
+    },
     "catalog.search": {
       "extractionState": "manual",
       "localizations": {
@@ -466,13 +483,30 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Brand A–Z"
+            "value": "Brand"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Marka A–Z"
+            "value": "Marka"
+          }
+        }
+      }
+    },
+    "catalog.sortPopular": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Popular"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Popularne"
           }
         }
       }
@@ -490,6 +524,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cena"
+          }
+        }
+      }
+    },
+    "catalog.top": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Most popular"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Najpopularniejsze"
           }
         }
       }

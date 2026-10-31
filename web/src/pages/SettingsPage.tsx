@@ -76,7 +76,7 @@ function ProfileSection() {
           <input className="row__input" value={name} maxLength={60} placeholder={t('profile.namePlaceholder')} onChange={(e) => setName(e.target.value)} />
         </label>
       </div>
-      <button type="submit" className="btn btn--prominent btn--block" disabled={!changed}>{t('common.save')}</button>
+      <button type="submit" className="btn btn--volt btn--block" disabled={!changed}>{t('common.save')}</button>
     </form>
   )
 }
@@ -131,7 +131,7 @@ function GoalsSection({ onEditGoal, onAddGoal }: { onEditGoal: (id: string) => v
             </label>
           </div>
           <p className="faint small">{t('settings.targetFor', { name: currentGoal.name })}</p>
-          {canSave && <button type="submit" className="btn btn--prominent btn--block">{t('common.save')}</button>}
+          {canSave && <button type="submit" className="btn btn--volt btn--block">{t('common.save')}</button>}
         </form>
       )}
     </div>
@@ -193,7 +193,7 @@ function AccountSection() {
         </button>
       ) : (
         auth.isConfigured && (
-          <button type="button" className="btn btn--prominent btn--block" onClick={auth.showSignIn}>{t('auth.signIn')}</button>
+          <button type="button" className="btn btn--volt btn--block" onClick={auth.showSignIn}>{t('auth.signIn')}</button>
         )
       )}
     </div>

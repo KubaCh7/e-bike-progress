@@ -105,7 +105,7 @@ export function PhotoPicker({
       {showSuggested && <p className="field__hint">{t('photo.suggestionHint')}</p>}
       <div className="quick">
         {showSuggested && (
-          <button type="button" className="btn btn--sm btn--prominent" onClick={() => onChange({ kind: 'suggested' })}>
+          <button type="button" className="btn btn--sm btn--volt" onClick={() => onChange({ kind: 'suggested' })}>
             <SparkIcon size={16} /> {t('photo.useSuggested')}
           </button>
         )}
@@ -141,7 +141,7 @@ export function PhotoPicker({
           />
           <button
             type="button"
-            className="btn btn--sm btn--prominent"
+            className="btn btn--sm btn--volt"
             disabled={!linkValid}
             onClick={() => {
               onChange({ kind: 'url', url: link.trim() })

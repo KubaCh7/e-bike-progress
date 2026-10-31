@@ -28,6 +28,7 @@ interface CatalogRow {
   image_url: string | null
   image_credit: string | null
   image_source: string | null
+  popularity: number | null
 }
 
 interface DepositRow {
@@ -94,9 +95,9 @@ export class SupabaseStore implements DataStore {
   }
 
   async loadCatalog(): Promise<CatalogBike[]> {
-    const { data, error } = await this.client.from('bike_catalog').select('id, brand, model, category, price, color, featured, image_url, image_credit, image_source').order('sort')
+    const { data, error } = await this.client.from('bike_catalog').select('id, brand, model, category, price, color, featured, image_url, image_credit, image_source, popularity').order('popularity').order('sort')
     if (error || !data?.length) return BUNDLED_CATALOG
-    return (data as CatalogRow[]).map((r) => ({ ...r, price: Number(r.price) }))
+    return (data as CatalogRow[]).map((r) => ({ ...r, price: Number(r.price), popularity: r.popularity ?? 100 }))
   }
 
   async load() {

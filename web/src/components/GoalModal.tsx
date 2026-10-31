@@ -6,7 +6,7 @@ import { useData } from '../state/DataContext'
 import { Modal, ConfirmDialog } from './Modal'
 import { PhotoPicker, type PhotoChoice } from './PhotoPicker'
 import { CatalogPicker } from './CatalogPicker'
-import { StarIcon, TrashIcon } from './Icons'
+import { PlusIcon, StarIcon, TrashIcon } from './Icons'
 
 /**
  * Dodawanie e-bike'a: najpierw katalog popularnych modeli (lub "Własny"),
@@ -22,7 +22,10 @@ export function AddGoalModal({ onClose }: { onClose: () => void }) {
   const owned = goals.map((g) => g.catalogId).filter((id): id is string => !!id)
   return (
     <Modal title={t('nav.addGoal')} onClose={onClose} wide>
-      <CatalogPicker selected={[]} disabledIds={owned} onToggle={(bike) => setPreset(bike)} onCustom={() => setPreset(null)} />
+      <button type="button" className="btn glass--clear custom-btn" onClick={() => setPreset(null)}>
+        <PlusIcon size={18} /> {t('catalog.custom')}
+      </button>
+      <CatalogPicker selected={[]} disabledIds={owned} onToggle={(bike) => setPreset(bike)} />
     </Modal>
   )
 }
@@ -146,7 +149,7 @@ export function GoalModal({
             </button>
           )}
           <span className="spacer" />
-          <button type="submit" className="btn btn--prominent" disabled={!valid || busy}>{t('common.save')}</button>
+          <button type="submit" className="btn btn--volt" disabled={!valid || busy}>{t('common.save')}</button>
         </div>
       </form>
     </Modal>

@@ -8,15 +8,24 @@ struct CatalogGridView: View {
     var onCustom: () -> Void
 
     enum SortOrder: String, CaseIterable, Identifiable {
-        case brand, price
+        case popular, brand, price
         var id: String { rawValue }
-        var title: String { self == .brand ? L10n.tr("catalog.sortBrand") : L10n.tr("catalog.sortPrice") }
+        var title: String {
+            switch self {
+            case .popular: L10n.tr("catalog.sortPopular")
+            case .brand: L10n.tr("catalog.sortBrand")
+            case .price: L10n.tr("catalog.sortPrice")
+            }
+        }
     }
+
+    /// Ile modeli trafia do sekcji "Najpopularniejsze".
+    private let topCount = 8
 
     @Environment(CatalogStore.self) private var catalog
     @State private var query = ""
     @State private var category: BikeCategory?
-    @State private var sort: SortOrder = .brand
+    @State private var sort: SortOrder = .popular
 
     private let columns = [GridItem(.adaptive(minimum: 158), spacing: 12)]
 
@@ -27,16 +36,23 @@ struct CatalogGridView: View {
         }
     }
 
-    /// Sekcje: marka A–Z (modele od najtańszego) albo jedna lista wg ceny.
+    /// Sekcje: najpopularniejsze na górze, marka A–Z albo jedna lista wg ceny.
     private var groups: [(brand: String?, bikes: [CatalogBike])] {
         switch sort {
+        case .popular:
+            let popular = bikes.sorted { ($0.rank, $0.price) < ($1.rank, $1.price) }
+            let top = Array(popular.prefix(topCount))
+            let rest = Array(popular.dropFirst(topCount))
+            var result: [(brand: String?, bikes: [CatalogBike])] = [(L10n.tr("catalog.top"), top)]
+            if !rest.isEmpty { result.append((L10n.tr("catalog.rest"), rest)) }
+            return result
         case .price:
             return [(nil, bikes.sorted { $0.price < $1.price })]
         case .brand:
             let byBrand = Dictionary(grouping: bikes, by: \.brand)
             return byBrand.keys
                 .sorted { $0.localizedStandardCompare($1) == .orderedAscending }
-                .map { ($0, byBrand[$0, default: []].sorted { $0.price < $1.price }) }
+                .map { ($0, byBrand[$0, default: []].sorted { $0.rank < $1.rank }) }
         }
     }
 
@@ -84,8 +100,13 @@ struct CatalogGridView: View {
                 }
                 GlassEffectContainer(spacing: 12) {
                     LazyVGrid(columns: columns, spacing: 12) {
-                        ForEach(group.bikes) { bike in
-                            BikeCard(bike: bike, isSelected: selected.contains(bike.id), isDisabled: disabledIDs.contains(bike.id))
+                        ForEach(Array(group.bikes.enumerated()), id: \.element.id) { index, bike in
+                            BikeCard(
+                                bike: bike,
+                                place: sort == .popular && group.brand == L10n.tr("catalog.top") ? index + 1 : nil,
+                                isSelected: selected.contains(bike.id),
+                                isDisabled: disabledIDs.contains(bike.id)
+                            )
                                 .onTapGesture { if !disabledIDs.contains(bike.id) { onToggle(bike) } }
                         }
                     }
@@ -105,6 +126,8 @@ struct CatalogGridView: View {
 /// Karta modelu z katalogu – marka wyraźnie, w kolorze marki.
 struct BikeCard: View {
     let bike: CatalogBike
+    /// Miejsce w rankingu (#1, #2…) – tylko w sekcji "Najpopularniejsze".
+    var place: Int?
     var isSelected = false
     var isDisabled = false
 
@@ -113,6 +136,17 @@ struct BikeCard: View {
             CatalogBikeImage(bike: bike)
                 .aspectRatio(16 / 10, contentMode: .fit)
                 .clipShape(.rect(cornerRadius: 18))
+                .overlay(alignment: .topLeading) {
+                    if let place {
+                        Text(verbatim: "#\(place)")
+                            .font(.system(.title3, design: .rounded).weight(.black))
+                            .foregroundStyle(.black)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 2)
+                            .background(place == 1 ? Color(hex: "#d4ff3a") ?? .yellow : .white, in: .rect(cornerRadius: 8))
+                            .padding(8)
+                    }
+                }
                 .overlay(alignment: .topTrailing) {
                     if isSelected {
                         Image(systemName: "checkmark.circle.fill")

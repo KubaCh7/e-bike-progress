@@ -62,6 +62,8 @@ export interface CatalogBike {
   image_credit?: string | null
   /** Strona pliku z licencją. */
   image_source?: string | null
+  /** Ranking popularności (1 = najpopularniejszy). */
+  popularity?: number
 }
 
 export const DEFAULT_GOAL = {

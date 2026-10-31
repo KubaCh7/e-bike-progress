@@ -87,7 +87,7 @@ function Shell() {
         <main className="center-screen">
           <div className="alert glass">
             <p className="alert__title">{t('common.error', { message: error })}</p>
-            <button type="button" className="btn btn--prominent" onClick={() => void refresh()}>{t('common.retry')}</button>
+            <button type="button" className="btn btn--volt" onClick={() => void refresh()}>{t('common.retry')}</button>
           </div>
         </main>
       </>

@@ -1,14 +1,14 @@
 import { useTranslation } from 'react-i18next'
 import { useData } from '../state/DataContext'
-import { formatDate, formatMoney, formatMoneyShort, formatPercent } from '../lib/format'
+import { formatDate, formatMoney, formatMoneyShort, localeFor } from '../lib/format'
 import type { Deposit } from '../lib/types'
 import { GoalPhoto } from '../components/GoalPhoto'
-import { ProgressBar } from '../components/ProgressBar'
-import { CameraIcon, PlusIcon } from '../components/Icons'
+import { BatteryCells } from '../components/BatteryCells'
+import { BoltIcon, CameraIcon } from '../components/Icons'
 
 const QUICK = [100, 200, 500]
 
-/** Start: zdjęcie celu, procent, pasek postępu, uzbierane / pozostało, szybka wpłata. */
+/** Start: plakat z e-bike'iem, ogromny procent, bateria z ogniw, kwoty, szybka wpłata. */
 export function HomePage({
   onAddDeposit,
   onQuickDeposit,
@@ -23,38 +23,54 @@ export function HomePage({
   const { t, i18n } = useTranslation()
   const { currentGoal: goal, currentStats: stats, currentDeposits } = useData()
   if (!goal || !stats) return null
+  const pct = Math.round(stats.progress * 100)
+  const forecast = stats.isAchieved
+    ? t('stats.forecastAchieved')
+    : stats.forecastDate
+      ? new Intl.DateTimeFormat(localeFor(i18n.language), { month: 'short', year: 'numeric' }).format(stats.forecastDate)
+      : '—'
 
   return (
     <div className="page page--home">
-      <section className="hero">
-        <div className="hero__photo glass r-xl">
+      <section className="poster">
+        <div className="poster__stage">
           <GoalPhoto goal={goal} alt={goal.name} />
-          <button type="button" className="btn btn--icon glass--clear hero__edit" onClick={onEditGoal} aria-label={t('home.changePhoto')}>
+          <span className="poster__ghost display" aria-hidden="true">{pct}</span>
+          <button type="button" className="btn btn--icon glass--clear poster__edit" onClick={onEditGoal} aria-label={t('home.changePhoto')}>
             <CameraIcon size={18} />
           </button>
         </div>
 
-        <div className="hero__numbers">
-          <div className="hero__percent num">{formatPercent(stats.progress)}</div>
-          <ProgressBar progress={stats.progress} label={t('home.progress')} />
-          <p className="hero__line num">
-            <strong>{formatMoney(stats.total)}</strong>
-            <span className="faint"> / {formatMoneyShort(goal.targetAmount)}</span>
-          </p>
-          <p className="hero__remaining">
-            {stats.isAchieved ? (
-              <span className="positive">{t('home.achieved')}</span>
-            ) : (
-              <span className="faint">{t('home.remainingLine', { amount: formatMoney(stats.remaining) })}</span>
-            )}
-          </p>
-          <div className="hero__actions">
-            <button type="button" className="btn btn--prominent btn--lg" onClick={onAddDeposit}>
-              <PlusIcon /> {t('home.addDeposit')}
+        <div className="poster__panel">
+          <div className="eyebrow eyebrow--volt"><BoltIcon size={12} /> {t('home.charge')}</div>
+          <div className="mega display num" aria-label={`${pct}%`}>
+            {pct}
+            <span className="mega__unit">%</span>
+          </div>
+          <BatteryCells progress={stats.progress} label={t('home.progress')} />
+
+          <dl className="readout">
+            <div>
+              <dt>{t('home.saved')}</dt>
+              <dd className="display num">{formatMoneyShort(stats.total)}</dd>
+            </div>
+            <div>
+              <dt>{t('home.remaining')}</dt>
+              <dd className="display num">{formatMoneyShort(stats.remaining)}</dd>
+            </div>
+            <div>
+              <dt>{t('home.eta')}</dt>
+              <dd className="display num">{forecast}</dd>
+            </div>
+          </dl>
+
+          <div className="poster__actions">
+            <button type="button" className="btn btn--volt btn--lg" onClick={onAddDeposit}>
+              <BoltIcon size={18} /> {t('home.deposit')}
             </button>
             <div className="chips">
               {QUICK.map((amount) => (
-                <button key={amount} type="button" className="btn btn--sm glass--clear num" onClick={() => onQuickDeposit(amount)}>
+                <button key={amount} type="button" className="btn btn--sm glass--clear chip num" onClick={() => onQuickDeposit(amount)}>
                   +{amount}
                 </button>
               ))}
@@ -64,15 +80,15 @@ export function HomePage({
       </section>
 
       {currentDeposits.length > 0 && (
-        <section className="recent">
-          <h2 className="section-title">{t('home.recent')}</h2>
-          <ul className="list glass r-l">
-            {currentDeposits.slice(0, 3).map((d) => (
-              <li key={d.id}>
-                <button type="button" className="list__row" onClick={() => onEditDeposit(d)}>
-                  <span className="num strong">{formatMoney(d.amount)}</span>
-                  <span className="faint ellipsis">{d.note ?? ''}</span>
-                  <span className="faint small">{formatDate(d.date, i18n.language)}</span>
+        <section className="feed">
+          <h2 className="eyebrow">{t('home.recent')}</h2>
+          <ul className="feed__list">
+            {currentDeposits.slice(0, 4).map((d, i) => (
+              <li key={d.id} style={{ animationDelay: `${i * 60}ms` }}>
+                <button type="button" className="feed__row" onClick={() => onEditDeposit(d)}>
+                  <span className="feed__amount display num">+{formatMoney(d.amount)}</span>
+                  <span className="feed__note">{d.note ?? ''}</span>
+                  <span className="feed__date">{formatDate(d.date, i18n.language)}</span>
                 </button>
               </li>
             ))}

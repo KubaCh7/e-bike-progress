@@ -30,14 +30,14 @@ def opt(value):
 rows = ",\n".join(
     f"    ({q(b['id'])}, {q(b['brand'])}, {q(b['model'])}, {q(b['category'])}, {b['price']}, "
     f"{q(b['color'])}, {'true' if b.get('featured') else 'false'}, {i}, "
-    f"{opt(b.get('image_url'))}, {opt(b.get('image_credit'))}, {opt(b.get('image_source'))})"
+    f"{opt(b.get('image_url'))}, {opt(b.get('image_credit'))}, {opt(b.get('image_source'))}, {b.get('popularity', 100)})"
     for i, b in enumerate(bikes)
 )
 sql = f"""-- =====================================================================
 -- Katalog e-bike'ów (wygenerowane przez catalog/build.py – nie edytuj ręcznie)
 -- =====================================================================
 
-insert into public.bike_catalog (id, brand, model, category, price, color, featured, sort, image_url, image_credit, image_source)
+insert into public.bike_catalog (id, brand, model, category, price, color, featured, sort, image_url, image_credit, image_source, popularity)
 values
 {rows}
 on conflict (id) do update
@@ -51,7 +51,8 @@ on conflict (id) do update
         image_url = excluded.image_url,
         image_credit = excluded.image_credit,
         image_source = excluded.image_source,
+        popularity = excluded.popularity,
         active = true;
 """
-(root / "supabase/migrations/20261031000010_seed_bike_catalog_v2.sql").write_text(sql, encoding="utf-8")
+(root / "supabase/migrations/20261031000012_seed_bike_catalog_v3.sql").write_text(sql, encoding="utf-8")
 print(f"{len(bikes)} modeli → web, iOS, SQL")

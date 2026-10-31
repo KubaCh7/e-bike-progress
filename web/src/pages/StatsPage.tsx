@@ -35,7 +35,7 @@ export function StatsPage() {
     <div className="page page--stats">
       <div className="tiles">
         {tiles.map((tile) => (
-          <div key={tile.label} className={`tile glass r-l ${tile.big ? 'tile--big' : ''}`}>
+          <div key={tile.label} className={`tile ${tile.big ? 'tile--big' : ''}`}>
             <span className="faint small">{tile.label}</span>
             <span className="tile__value num cap">{tile.value}</span>
             {tile.detail && <span className="faint small">{tile.detail}</span>}

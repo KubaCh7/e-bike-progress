@@ -23,15 +23,18 @@ struct CatalogBike: Codable, Identifiable, Hashable, Sendable {
     var imageURL: String?
     /// Autor / źródło zdjęcia (wymagane przez licencję).
     var imageCredit: String?
+    /// Ranking popularności (1 = najpopularniejszy).
+    var popularity: Int?
 
     enum CodingKeys: String, CodingKey {
-        case id, brand, model, category, price, color, featured
+        case id, brand, model, category, price, color, featured, popularity
         case imageURL = "image_url"
         case imageCredit = "image_credit"
     }
 
     var displayName: String { "\(brand) \(model)" }
     var image: URL? { imageURL.flatMap(URL.init(string:)) }
+    var rank: Int { popularity ?? 100 }
     var tint: Color { Color(hex: color) ?? .teal }
 }
 

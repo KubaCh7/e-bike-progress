@@ -18,7 +18,7 @@ export function applyTheme(mode: ThemeMode) {
   if (mode === 'system') delete root.dataset.theme
   else root.dataset.theme = mode
   const dark = mode === 'dark' || (mode === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#0b1220' : '#0f766e')
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#050607' : '#ecebe4')
 }
 
 export function useTheme() {

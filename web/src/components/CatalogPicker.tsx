@@ -5,28 +5,32 @@ import { bikeName, type BikeCategory, type CatalogBike } from '../lib/types'
 import { formatMoneyShort } from '../lib/format'
 import { BikeImage } from './BikeImage'
 import { Segmented } from './Segmented'
-import { CheckIcon, PlusIcon, SearchIcon } from './Icons'
+import { CheckIcon, SearchIcon } from './Icons'
 
 type Filter = 'all' | BikeCategory
-type Sort = 'brand' | 'price'
+type Sort = 'popular' | 'brand' | 'price'
 
-/** Katalog popularnych e-bike'ów: wyszukiwarka, kategorie, sortowanie po marce (sekcje A–Z) lub cenie. */
+const TOP = 8
+const rank = (b: CatalogBike) => b.popularity ?? 100
+
+/**
+ * Katalog e-bike'ów: najpopularniejsze na górze (TOP z numerami), potem reszta.
+ * Sortowanie: popularność / marka A–Z (sekcje) / cena. Filtr kategorii i wyszukiwarka.
+ */
 export function CatalogPicker({
   selected,
   onToggle,
-  onCustom,
   disabledIds = [],
 }: {
   selected: string[]
   onToggle: (bike: CatalogBike) => void
-  onCustom: () => void
   disabledIds?: string[]
 }) {
   const { t } = useTranslation()
   const { catalog } = useData()
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState<Filter>('all')
-  const [sort, setSort] = useState<Sort>('brand')
+  const [sort, setSort] = useState<Sort>('popular')
 
   const bikes = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -35,38 +39,23 @@ export function CatalogPicker({
       .filter((b) => !q || bikeName(b).toLowerCase().includes(q))
   }, [catalog, query, filter])
 
-  // grupy: marka A–Z (modele wg ceny) albo jedna lista wg ceny
-  const groups = useMemo(() => {
-    if (sort === 'price') return [{ brand: null as string | null, bikes: [...bikes].sort((a, b) => a.price - b.price) }]
-    const byBrand = new Map<string, CatalogBike[]>()
-    for (const bike of bikes) byBrand.set(bike.brand, [...(byBrand.get(bike.brand) ?? []), bike])
-    return [...byBrand.entries()]
-      .sort(([a], [b]) => a.localeCompare(b, 'pl', { numeric: true }))
-      .map(([brand, list]) => ({ brand, bikes: list.sort((a, b) => a.price - b.price) }))
-  }, [bikes, sort])
-
-  const card = (bike: CatalogBike) => {
-    const isSelected = selected.includes(bike.id)
-    const isDisabled = disabledIds.includes(bike.id)
-    return (
-      <button
-        key={bike.id}
-        type="button"
-        className="bike-card glass--clear r-l"
-        aria-pressed={isSelected}
-        disabled={isDisabled}
-        onClick={() => onToggle(bike)}
-      >
-        <span className="bike-card__art">
-          <BikeImage bike={bike} />
-          {isSelected && <span className="bike-card__check"><CheckIcon size={16} /></span>}
-        </span>
-        <span className="bike-card__brand" style={{ ['--brand' as string]: bike.color }}>{bike.brand}</span>
-        <span className="bike-card__model">{bike.model}</span>
-        <span className="bike-card__price num">{isDisabled ? t('catalog.added') : t('catalog.from', { price: formatMoneyShort(bike.price) })}</span>
-      </button>
-    )
-  }
+  const sections = useMemo(() => {
+    if (sort === 'price') return [{ key: 'price', title: null as string | null, color: null as string | null, top: false, bikes: [...bikes].sort((a, b) => a.price - b.price) }]
+    if (sort === 'brand') {
+      const byBrand = new Map<string, CatalogBike[]>()
+      for (const bike of bikes) byBrand.set(bike.brand, [...(byBrand.get(bike.brand) ?? []), bike])
+      return [...byBrand.entries()]
+        .sort(([a], [b]) => a.localeCompare(b, 'pl', { numeric: true }))
+        .map(([brand, list]) => ({ key: brand, title: brand, color: list[0].color, top: false, bikes: list.sort((a, b) => rank(a) - rank(b)) }))
+    }
+    const popular = [...bikes].sort((a, b) => rank(a) - rank(b) || a.price - b.price)
+    const top = popular.slice(0, TOP)
+    const rest = popular.slice(TOP)
+    return [
+      { key: 'top', title: t('catalog.top'), color: null, top: true, bikes: top },
+      ...(rest.length ? [{ key: 'rest', title: t('catalog.rest'), color: null, top: false, bikes: rest }] : []),
+    ]
+  }, [bikes, sort, t])
 
   return (
     <div className="catalog">
@@ -75,6 +64,17 @@ export function CatalogPicker({
           <SearchIcon size={18} />
           <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder={t('catalog.search')} aria-label={t('catalog.search')} />
         </label>
+        <Segmented
+          label={t('catalog.sort')}
+          className="glass--clear"
+          value={sort}
+          onChange={setSort}
+          options={[
+            { value: 'popular', label: t('catalog.sortPopular') },
+            { value: 'brand', label: t('catalog.sortBrand') },
+            { value: 'price', label: t('catalog.sortPrice') },
+          ]}
+        />
         <Segmented
           label={t('catalog.category')}
           className="glass--clear"
@@ -87,41 +87,51 @@ export function CatalogPicker({
             { value: 'city', label: t('catalog.city') },
           ]}
         />
-        <Segmented
-          label={t('catalog.sort')}
-          className="glass--clear"
-          value={sort}
-          onChange={setSort}
-          options={[
-            { value: 'brand', label: t('catalog.sortBrand') },
-            { value: 'price', label: t('catalog.sortPrice') },
-          ]}
-        />
       </div>
 
-      <div className="catalog__grid">
-        <button type="button" className="bike-card bike-card--custom glass--clear r-l" onClick={onCustom}>
-          <span className="bike-card__plus"><PlusIcon size={28} /></span>
-          <span className="bike-card__model">{t('catalog.custom')}</span>
-          <span className="faint small">{t('catalog.customHint')}</span>
-        </button>
-      </div>
-
-      {groups.map((group) => (
-        <section key={group.brand ?? 'all'} className="catalog__group">
-          {group.brand && (
-            <h3 className="catalog__brand">
-              <span className="catalog__dot" style={{ background: group.bikes[0]?.color }} />
-              {group.brand}
-              <span className="faint small">{group.bikes.length}</span>
+      {sections.map((section) => (
+        <section key={section.key} className="catalog__section">
+          {section.title && (
+            <h3 className="catalog__title">
+              {section.color && <span className="catalog__dot" style={{ background: section.color }} />}
+              <span>{section.title}</span>
+              <span className="catalog__count">{section.bikes.length}</span>
             </h3>
           )}
-          <div className="catalog__grid">{group.bikes.map(card)}</div>
+          <div className={`catalog__grid ${section.top ? 'catalog__grid--top' : ''}`}>
+            {section.bikes.map((bike, i) => {
+              const isSelected = selected.includes(bike.id)
+              const isDisabled = disabledIds.includes(bike.id)
+              const place = section.top ? i + 1 : null
+              return (
+                <button
+                  key={bike.id}
+                  type="button"
+                  className={`bike-card ${section.top ? 'bike-card--top' : ''}`}
+                  aria-pressed={isSelected}
+                  disabled={isDisabled}
+                  onClick={() => onToggle(bike)}
+                  style={{ ['--brand' as string]: bike.color, animationDelay: `${Math.min(i, 12) * 35}ms` }}
+                >
+                  <span className="bike-card__art">
+                    <BikeImage bike={bike} />
+                    {place && <span className="plate display">#{place}</span>}
+                    {isSelected && <span className="bike-card__check"><CheckIcon size={16} /></span>}
+                  </span>
+                  <span className="bike-card__brand display">{bike.brand}</span>
+                  <span className="bike-card__model">{bike.model}</span>
+                  <span className="bike-card__price num">
+                    {isDisabled ? t('catalog.added') : `≈ ${formatMoneyShort(bike.price)}`}
+                  </span>
+                </button>
+              )
+            })}
+          </div>
         </section>
       ))}
 
-      {bikes.length === 0 && <p className="empty faint">{t('catalog.none')}</p>}
-      <p className="faint small">{t('catalog.priceNote')}</p>
+      {bikes.length === 0 && <p className="empty">{t('catalog.none')}</p>}
+      <p className="fineprint">{t('catalog.priceNote')}</p>
     </div>
   )
 }

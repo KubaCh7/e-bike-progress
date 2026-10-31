@@ -145,10 +145,19 @@
   "auth.passwordShort": "Hasło",
   "auth.passwordHint": "min. 6 znaków",
   "catalog.sort": "Sortowanie",
-  "catalog.sortBrand": "Marka A–Z",
+  "catalog.sortBrand": "Marka",
   "catalog.sortPrice": "Cena",
   "photo.fromLink": "Z linku",
   "photo.linkHint": "Wklej adres zdjęcia (https://…). Zdjęcie z internetu używaj tylko na własny użytek.",
   "common.ok": "OK",
-  "auth.emailPlaceholder": "ty@przyklad.pl"
+  "auth.emailPlaceholder": "ty@przyklad.pl",
+  "home.charge": "Naładowanie celu",
+  "home.eta": "Meta",
+  "home.deposit": "Wpłać",
+  "catalog.top": "Najpopularniejsze",
+  "catalog.rest": "Pozostałe",
+  "catalog.sortPopular": "Popularne",
+  "onboarding.bikesTitleNoName": "Na co zbierasz?",
+  "onboarding.selectedLabel": "wybrane e-bike'i",
+  "onboarding.saveError": "Nie udało się zapisać: {{message}}"
 }

@@ -74,7 +74,7 @@ export function DepositModal({ goal, deposit, onClose }: { goal: Goal; deposit?:
         </div>
         <p className="faint small center">{t('deposit.goalFooter', { name: goal.name })}</p>
 
-        <button type="submit" className="btn btn--prominent btn--lg btn--block" disabled={!valid || busy}>
+        <button type="submit" className="btn btn--volt btn--lg btn--block" disabled={!valid || busy}>
           {deposit ? t('common.save') : t('home.addDeposit')}
         </button>
       </form>

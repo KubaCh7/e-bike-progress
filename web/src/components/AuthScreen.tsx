@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useAuth } from '../state/AuthContext'
 import { Segmented } from './Segmented'
 import { LanguagePicker } from './LanguagePicker'
-import { BikeIcon } from './Icons'
+import { BoltIcon } from './Icons'
 
 type Mode = 'signIn' | 'signUp'
 
@@ -44,10 +44,18 @@ export function AuthScreen() {
   return (
     <main className="auth">
       <LanguagePicker />
+      <div className="auth__poster" aria-hidden="true">
+        <span className="display">E-BIKE</span>
+        <span className="display outline">PROGRESS</span>
+      </div>
       <form className="auth__card glass r-xl" onSubmit={submit}>
-        <div className="logo"><BikeIcon size={36} /></div>
-        <h1 className="title center">{t('app.title')}</h1>
-        <p className="faint center">{t('auth.subtitle')}</p>
+        <div className="auth__brand">
+          <span className="mark"><BoltIcon size={18} /></span>
+          <div>
+            <h1 className="auth__title display">{t('app.title')}</h1>
+            <p className="lead small">{t('auth.subtitle')}</p>
+          </div>
+        </div>
 
         <Segmented
           block
@@ -92,7 +100,7 @@ export function AuthScreen() {
         {error && <p className="error small center" role="alert">{error}</p>}
         {info && <p className="positive small center" role="status">{info}</p>}
 
-        <button type="submit" className="btn btn--prominent btn--lg btn--block" disabled={!canSubmit}>
+        <button type="submit" className="btn btn--volt btn--lg btn--block" disabled={!canSubmit}>
           {busy ? t('common.loading') : isSignUp ? t('auth.signUp') : t('auth.signIn')}
         </button>
 

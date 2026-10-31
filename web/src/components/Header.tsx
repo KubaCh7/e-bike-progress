@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useData } from '../state/DataContext'
 import { formatPercent } from '../lib/format'
 import { GoalPhoto } from './GoalPhoto'
-import { CheckIcon, ChevronDownIcon, PlusIcon, StarIcon } from './Icons'
+import { BoltIcon, CheckIcon, ChevronDownIcon, PlusIcon, StarIcon } from './Icons'
 
 /** Minimalny nagłówek: powitanie i szklany przełącznik celu. */
 export function Header({ onAddGoal, onProfile }: { onAddGoal: () => void; onProfile: () => void }) {
@@ -13,20 +13,25 @@ export function Header({ onAddGoal, onProfile }: { onAddGoal: () => void; onProf
 
   return (
     <header className="header">
-      <div className="header__hello">
-        <span className="faint">{name ? t('header.hello', { name }) : t('app.title')}</span>
-        {currentGoal && <GoalSwitcher onAddGoal={onAddGoal} />}
+      <div className="header__left">
+        <span className="mark" aria-hidden="true"><BoltIcon size={16} /></span>
+        <span className="eyebrow">{name ? t('header.hello', { name }) : t('app.title')}</span>
       </div>
-      <button type="button" className="avatar glass--clear r-pill" onClick={onProfile} aria-label={t('tab.settings')}>
-        {(name?.[0] ?? '🚲').toUpperCase()}
+      <button type="button" className="avatar" onClick={onProfile} aria-label={t('tab.settings')}>
+        {(name?.[0] ?? '·').toUpperCase()}
       </button>
+      {currentGoal && (
+        <div className="header__goal">
+          <GoalSwitcher onAddGoal={onAddGoal} />
+        </div>
+      )}
     </header>
   )
 }
 
 function GoalSwitcher({ onAddGoal }: { onAddGoal: () => void }) {
   const { t } = useTranslation()
-  const { goals, currentGoal, selectGoal, statsFor } = useData()
+  const { goals, currentGoal, selectGoal, statsFor, catalogById } = useData()
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
 
@@ -43,11 +48,23 @@ function GoalSwitcher({ onAddGoal }: { onAddGoal: () => void }) {
   }, [open])
 
   if (!currentGoal) return null
+  // "Sur-Ron Light Bee X" → marka nad nazwą modelu
+  const bike = catalogById(currentGoal.catalogId)
+  const goalModel = bike && currentGoal.name.toLowerCase().startsWith(bike.brand.toLowerCase())
+    ? currentGoal.name.slice(bike.brand.length).trim() || currentGoal.name
+    : currentGoal.name
   return (
     <div className="switcher" ref={ref}>
       <button type="button" className="switcher__button" onClick={() => setOpen((v) => !v)} aria-expanded={open} aria-haspopup="listbox">
-        <span className="switcher__name">{currentGoal.name}</span>
-        <ChevronDownIcon size={20} className={open ? 'rot' : ''} />
+        {bike ? (
+          <>
+            <span className="switcher__brand" style={{ color: bike.color }}>{bike.brand}</span>
+            <span className="switcher__name">{goalModel}</span>
+          </>
+        ) : (
+          <span className="switcher__name">{currentGoal.name}</span>
+        )}
+        <ChevronDownIcon size={26} className={`switcher__chev ${open ? 'rot' : ''}`} />
       </button>
       {open && (
         <div className="popover glass" role="listbox" aria-label={t('nav.chooseGoal')}>
@@ -70,7 +87,7 @@ function GoalSwitcher({ onAddGoal }: { onAddGoal: () => void }) {
                 </span>
                 <span className="faint num">{formatPercent(statsFor(goal).progress)}</span>
               </span>
-              {goal.id === currentGoal.id && <CheckIcon size={18} className="accent" />}
+              {goal.id === currentGoal.id && <CheckIcon size={18} className="volt-text" />}
             </button>
           ))}
           <button

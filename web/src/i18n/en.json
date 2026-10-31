@@ -143,10 +143,19 @@
   "auth.passwordShort": "Password",
   "auth.passwordHint": "min. 6 characters",
   "catalog.sort": "Sort",
-  "catalog.sortBrand": "Brand A–Z",
+  "catalog.sortBrand": "Brand",
   "catalog.sortPrice": "Price",
   "photo.fromLink": "From link",
   "photo.linkHint": "Paste an image address (https://…). Use photos from the internet for personal use only.",
   "common.ok": "OK",
-  "auth.emailPlaceholder": "you@example.com"
+  "auth.emailPlaceholder": "you@example.com",
+  "home.charge": "Goal charge",
+  "home.eta": "ETA",
+  "home.deposit": "Deposit",
+  "catalog.top": "Most popular",
+  "catalog.rest": "More bikes",
+  "catalog.sortPopular": "Popular",
+  "onboarding.bikesTitleNoName": "What are you saving for?",
+  "onboarding.selectedLabel": "e-bikes selected",
+  "onboarding.saveError": "Could not save: {{message}}"
 }

@@ -107,3 +107,9 @@ export const LinkIcon = ({ size, ...p }: IconProps) => (
 export const GlobeIcon = ({ size, ...p }: IconProps) => (
   <svg {...base(size)} {...p}><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18" /></svg>
 )
+export const BoltIcon = ({ size, ...p }: IconProps) => (
+  <svg {...base(size)} fill="currentColor" stroke="none" {...p}><path d="M13.5 2 4 13.5h6.5L9 22l11-13h-6.8z" /></svg>
+)
+export const ArrowRightIcon = ({ size, ...p }: IconProps) => (
+  <svg {...base(size)} {...p}><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+)

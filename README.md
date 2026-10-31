@@ -36,6 +36,9 @@ jasna ramka z połyskiem, rozmyte kolorowe tło, fallback bez blur). Jasny i cie
 
 Format kwot zawsze polski: **12 500,00 zł** (PLN).
 
+**Wersja web na żywo:** <https://e-bike-progress.vercel.app> (Vercel, automatyczne
+wdrożenie po każdym pushu na `main`; backend: projekt Supabase `e-bike-progress`, Frankfurt).
+
 ---
 
 ## 1. Konfiguracja Supabase (darmowy plan)

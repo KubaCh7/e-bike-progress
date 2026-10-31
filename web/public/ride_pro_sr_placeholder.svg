@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <!-- Grafika zastępcza e-ride pro SR. Podmień na własne zdjęcie (patrz README). -->
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f766e"/>
+      <stop offset="0.55" stop-color="#155e75"/>
+      <stop offset="1" stop-color="#4338ca"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.7" cy="0.25" r="0.6">
+      <stop offset="0" stop-color="#5eead4" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#5eead4" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="frame" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#f8fafc"/>
+      <stop offset="1" stop-color="#cbd5e1"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <rect width="1200" height="800" fill="url(#glow)"/>
+  <path d="M0 640 Q300 580 600 620 T1200 600 V800 H0Z" fill="#000" opacity="0.18"/>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <!-- koła -->
+    <circle cx="330" cy="560" r="150" stroke="#0b1220" stroke-width="34" opacity="0.85"/>
+    <circle cx="870" cy="560" r="150" stroke="#0b1220" stroke-width="34" opacity="0.85"/>
+    <circle cx="330" cy="560" r="118" stroke="#e2e8f0" stroke-width="4" opacity="0.6"/>
+    <circle cx="870" cy="560" r="118" stroke="#e2e8f0" stroke-width="4" opacity="0.6"/>
+    <!-- rama -->
+    <path d="M330 560 L520 360 L760 360 L870 560" stroke="url(#frame)" stroke-width="30"/>
+    <path d="M520 360 L600 565 L330 560" stroke="url(#frame)" stroke-width="26"/>
+    <path d="M760 360 L800 250 L860 240" stroke="#e2e8f0" stroke-width="20"/>
+    <path d="M520 360 L490 290" stroke="#e2e8f0" stroke-width="20"/>
+    <path d="M440 285 L560 285" stroke="#0b1220" stroke-width="24"/>
+  </g>
+  <!-- bateria -->
+  <rect x="560" y="330" width="170" height="52" rx="22" fill="#14b8a6" stroke="#0b1220" stroke-width="6" transform="rotate(0 645 356)"/>
+  <path d="M655 338 L632 362 H652 L640 378 L668 352 H648 Z" fill="#fde047"/>
+  <circle cx="600" cy="565" r="34" fill="#0b1220"/>
+  <text x="60" y="720" font-family="-apple-system, Segoe UI, sans-serif" font-size="64" font-weight="800" fill="#fff">e-ride pro SR</text>
+  <text x="62" y="764" font-family="-apple-system, Segoe UI, sans-serif" font-size="28" fill="#fff" opacity="0.8">miejsce na Twoje zdjęcie</text>
+</svg>

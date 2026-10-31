@@ -1,0 +1,21 @@
+import { formatPercent } from '../lib/format'
+
+/** Pasek postępu na szklanej kapsule. */
+export function ProgressBar({ progress, label }: { progress: number; label: string }) {
+  const pct = Math.min(Math.max(progress, 0), 1)
+  return (
+    <div
+      className="progress glass glass--pill"
+      role="progressbar"
+      aria-label={label}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-valuenow={Math.round(pct * 100)}
+      aria-valuetext={formatPercent(pct)}
+    >
+      <div className="progress__track">
+        <div className="progress__fill" style={{ width: `${pct > 0 ? Math.max(pct * 100, 3) : 0}%` }} />
+      </div>
+    </div>
+  )
+}

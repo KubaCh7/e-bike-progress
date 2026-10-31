@@ -7,6 +7,9 @@ struct MainTabView: View {
             Tab(L10n.tr("tab.home"), systemImage: "bicycle") {
                 HomeView()
             }
+            Tab(L10n.tr("tab.history"), systemImage: "list.bullet.rectangle") {
+                HistoryView()
+            }
         }
         .tabBarMinimizeBehavior(.onScrollDown)
     }

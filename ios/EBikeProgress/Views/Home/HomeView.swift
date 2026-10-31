@@ -6,6 +6,7 @@ struct HomeView: View {
     @State private var showDepositForm = false
     @State private var showGoalsManager = false
     @State private var showNewGoal = false
+    @State private var editingDeposit: Deposit?
 
     var body: some View {
         NavigationStack {
@@ -24,6 +25,16 @@ struct HomeView: View {
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
+            .sheet(isPresented: $showDepositForm) {
+                if let goal = viewModel.currentGoal {
+                    DepositFormView(goal: goal)
+                }
+            }
+            .sheet(item: $editingDeposit) { deposit in
+                if let goal = viewModel.currentGoal {
+                    DepositFormView(goal: goal, deposit: deposit)
+                }
+            }
         }
     }
 
@@ -112,7 +123,10 @@ struct HomeView: View {
                     .foregroundStyle(.secondary)
             } else {
                 ForEach(recent) { deposit in
-                    DepositRow(deposit: deposit)
+                    Button { editingDeposit = deposit } label: {
+                        DepositRow(deposit: deposit)
+                    }
+                    .buttonStyle(.plain)
                     if deposit.id != recent.last?.id { Divider() }
                 }
             }

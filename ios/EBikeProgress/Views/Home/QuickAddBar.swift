@@ -19,7 +19,7 @@ struct QuickAddBar: View {
                             onQuickAmount(amount)
                             withAnimation(.bouncy) { expanded = false }
                         } label: {
-                            Text("+\(Money.formatShort(amount))")
+                            Text(verbatim: "+\(Money.formatShort(amount))")
                                 .font(.subheadline.bold().monospacedDigit())
                                 .padding(.horizontal, 14)
                                 .frame(height: 52)

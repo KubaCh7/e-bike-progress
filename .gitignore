@@ -50,3 +50,6 @@ supabase/.temp/
 .idea/
 .vscode/*
 !.vscode/extensions.json
+
+# TypeScript
+*.tsbuildinfo

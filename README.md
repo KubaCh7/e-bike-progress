@@ -126,9 +126,9 @@ Otwórz `ios/EBikeProgress.xcodeproj`. Xcode sam pobierze pakiet **supabase-swif
 3. Dopóki slot jest pusty, aplikacja pokazuje grafikę zastępczą.
    W aplikacji: *zdjęcie celu → „Użyj sugerowanego zdjęcia”* albo *„Wgraj własne”*.
 
-Na webie podmień plik `web/public/ride_pro_sr_placeholder.svg` (możesz wstawić JPG
-pod tą samą nazwą z rozszerzeniem `.svg` → lepiej zmień stałą `SUGGESTED_PHOTO_SRC`
-w `web/src/data/store.ts` na np. `ride_pro_sr_placeholder.jpg` i wrzuć plik do `web/public/`).
+Na webie: wrzuć zdjęcie do `web/public/` (np. `ride_pro_sr.jpg`) i zmień stałą
+`SUGGESTED_PHOTO_SRC` w `web/src/data/store.ts` na tę nazwę – albo po prostu podmień
+grafikę `web/public/ride_pro_sr_placeholder.svg`.
 
 ### Uruchomienie na iPhonie (podpisywanie kodu, tryb deweloperski)
 

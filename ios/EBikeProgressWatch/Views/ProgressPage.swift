@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 /// Pierścień postępu głównego celu + kwoty.
 struct ProgressPage: View {

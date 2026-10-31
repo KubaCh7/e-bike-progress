@@ -83,3 +83,21 @@ export const WalletIcon = ({ size, ...p }: IconProps) => (
 export const LogoutIcon = ({ size, ...p }: IconProps) => (
   <svg {...base(size)} {...p}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" /></svg>
 )
+export const HomeIcon = ({ size, ...p }: IconProps) => (
+  <svg {...base(size)} {...p}><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" /></svg>
+)
+export const ListIcon = ({ size, ...p }: IconProps) => (
+  <svg {...base(size)} {...p}><path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01" /></svg>
+)
+export const ChartIcon = ({ size, ...p }: IconProps) => (
+  <svg {...base(size)} {...p}><path d="M3 3v18h18M7 15l4-4 3 3 5-6" /></svg>
+)
+export const SearchIcon = ({ size, ...p }: IconProps) => (
+  <svg {...base(size)} {...p}><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
+)
+export const ChevronDownIcon = ({ size, ...p }: IconProps) => (
+  <svg {...base(size)} {...p}><path d="m6 9 6 6 6-6" /></svg>
+)
+export const ArrowLeftIcon = ({ size, ...p }: IconProps) => (
+  <svg {...base(size)} {...p}><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
+)

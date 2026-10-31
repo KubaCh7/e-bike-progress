@@ -9,7 +9,7 @@ interface AuthValue {
   email: string | null
   isConfigured: boolean
   signIn(email: string, password: string): Promise<void>
-  signUp(email: string, password: string): Promise<boolean>
+  signUp(email: string, password: string, displayName: string): Promise<boolean>
   signInWithApple(): Promise<void>
   signOut(): Promise<void>
   continueLocal(): void
@@ -57,9 +57,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (error) throw error
         setLocal(false)
       },
-      async signUp(email, password) {
+      async signUp(email, password, displayName) {
         if (!supabase) return false
-        const { data, error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: window.location.href } })
+        // imię trafia do metadanych konta, a trigger zapisuje je w tabeli profiles
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: { emailRedirectTo: window.location.origin + import.meta.env.BASE_URL, data: { display_name: displayName } },
+        })
         if (error) throw error
         if (data.session) setLocal(false)
         return !data.session // true = trzeba potwierdzić e-mail

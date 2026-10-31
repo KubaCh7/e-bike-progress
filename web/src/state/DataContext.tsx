@@ -1,12 +1,16 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
-import type { DataStore } from '../data/store'
-import type { Deposit, DepositInput, Goal, GoalInput } from '../lib/types'
+import { BUNDLED_CATALOG, type DataStore } from '../data/store'
+import type { CatalogBike, Deposit, DepositInput, Goal, GoalInput, Profile } from '../lib/types'
 import { computeStats, type SavingsStats } from '../lib/stats'
 
 interface DataValue {
   store: DataStore
   goals: Goal[]
   deposits: Deposit[]
+  profile: Profile | null
+  catalog: CatalogBike[]
+  catalogById(id: string | null | undefined): CatalogBike | undefined
+  updateProfile(patch: Partial<Profile>): Promise<void>
   loading: boolean
   error: string | null
   currentGoal: Goal | null
@@ -34,6 +38,8 @@ const SELECTED_KEY = 'selectedGoalId'
 export function DataProvider({ store, children }: { store: DataStore; children: ReactNode }) {
   const [goals, setGoals] = useState<Goal[]>([])
   const [deposits, setDeposits] = useState<Deposit[]>([])
+  const [profile, setProfile] = useState<Profile | null>(null)
+  const [catalog, setCatalog] = useState<CatalogBike[]>(BUNDLED_CATALOG)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [selectedId, setSelectedId] = useState<string | null>(() => localStorage.getItem(SELECTED_KEY))
@@ -41,9 +47,10 @@ export function DataProvider({ store, children }: { store: DataStore; children: 
 
   const refresh = useCallback(async () => {
     try {
-      const data = await store.load()
+      const [data, prof] = await Promise.all([store.load(), store.loadProfile()])
       setGoals(data.goals)
       setDeposits(data.deposits)
+      setProfile(prof)
       setError(null)
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e))
@@ -55,6 +62,7 @@ export function DataProvider({ store, children }: { store: DataStore; children: 
   useEffect(() => {
     setLoading(true)
     void refresh()
+    void store.loadCatalog().then(setCatalog).catch(() => setCatalog(BUNDLED_CATALOG))
     const unsubscribe = store.subscribe?.(() => void refresh())
     const onFocus = () => void refresh()
     window.addEventListener('focus', onFocus)
@@ -99,6 +107,13 @@ export function DataProvider({ store, children }: { store: DataStore; children: 
       store,
       goals: sortedGoals,
       deposits,
+      profile,
+      catalog,
+      catalogById: (id) => (id ? catalog.find((b) => b.id === id) : undefined),
+      updateProfile: async (patch) => {
+        setProfile((p) => ({ displayName: null, onboarded: false, ...p, ...patch }))
+        await run(() => store.updateProfile(patch))
+      },
       loading,
       error,
       currentGoal,
@@ -142,7 +157,7 @@ export function DataProvider({ store, children }: { store: DataStore; children: 
       toast,
       showToast,
     }
-  }, [goals, deposits, loading, error, selectedId, store, refresh, run, toast, showToast])
+  }, [goals, deposits, profile, catalog, loading, error, selectedId, store, refresh, run, toast, showToast])
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>
 }

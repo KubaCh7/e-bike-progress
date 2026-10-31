@@ -8,6 +8,8 @@ export interface Goal {
   isDefault: boolean
   createdAt: string
   seedKey: string | null
+  /** Model z katalogu, z którego powstał cel (null = własny e-bike). */
+  catalogId: string | null
 }
 
 /** Pojedyncza wpłata. */
@@ -26,6 +28,7 @@ export interface GoalInput {
   targetAmount: number
   photoURL?: string | null
   isDefault?: boolean
+  catalogId?: string | null
 }
 
 export interface DepositInput {
@@ -35,11 +38,34 @@ export interface DepositInput {
   note: string | null
 }
 
+/** Profil użytkownika: imię i informacja o przejściu powitania. */
+export interface Profile {
+  displayName: string | null
+  onboarded: boolean
+}
+
+export type BikeCategory = 'moto' | 'emtb' | 'city'
+
+/** Model z katalogu popularnych e-bike'ów. */
+export interface CatalogBike {
+  id: string
+  brand: string
+  model: string
+  category: BikeCategory
+  /** Orientacyjna cena w PLN. */
+  price: number
+  color: string
+  featured?: boolean
+}
+
 export const DEFAULT_GOAL = {
   name: 'e-ride pro SR',
   targetAmount: 30000,
   seedKey: 'ride_pro_sr',
+  catalogId: 'eride-pro-sr',
   photoURL: 'asset:ride_pro_sr_placeholder',
 } as const
 
 export const SUGGESTED_PHOTO_URL = DEFAULT_GOAL.photoURL
+
+export const bikeName = (bike: CatalogBike) => `${bike.brand} ${bike.model}`

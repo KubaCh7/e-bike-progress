@@ -17,7 +17,9 @@ export function PhotoPicker({
   showSuggested,
   choice,
   onChange,
+  catalogId = null,
 }: {
+  catalogId?: string | null
   currentPhotoURL: string | null
   suggestedURL: string
   showSuggested: boolean
@@ -82,7 +84,7 @@ export function PhotoPicker({
         aria-label={t('photo.drop')}
       >
         <div className="dropzone__preview">
-          {choice.kind === 'file' ? <GoalPhoto photoURL={null} src={preview} alt="" /> : <GoalPhoto photoURL={shownURL} alt="" />}
+          {choice.kind === 'file' ? <GoalPhoto photoURL={null} catalogId={catalogId} src={preview} alt="" /> : <GoalPhoto photoURL={shownURL} catalogId={catalogId} alt="" />}
         </div>
         <span className="muted" style={{ fontSize: '0.85rem' }}>{processing ? t('photo.processing') : t('photo.drop')}</span>
         <input ref={inputRef} type="file" accept="image/*" hidden onChange={(e) => void handleFile(e.target.files?.[0])} />
@@ -91,15 +93,15 @@ export function PhotoPicker({
       {showSuggested && <p className="field__hint">{t('photo.suggestionHint')}</p>}
       <div className="quick">
         {showSuggested && (
-          <button type="button" className="btn btn--sm btn--primary" onClick={() => onChange({ kind: 'suggested' })}>
+          <button type="button" className="btn btn--sm btn--prominent" onClick={() => onChange({ kind: 'suggested' })}>
             <SparkIcon size={16} /> {t('photo.useSuggested')}
           </button>
         )}
-        <button type="button" className="btn btn--sm" onClick={() => inputRef.current?.click()}>
+        <button type="button" className="btn btn--sm glass--clear" onClick={() => inputRef.current?.click()}>
           <ImageIcon size={16} /> {t('photo.uploadOwn')}
         </button>
         {hasPhoto && (
-          <button type="button" className="btn btn--sm btn--danger" onClick={() => onChange({ kind: 'remove' })}>
+          <button type="button" className="btn btn--sm btn--plain btn--danger" onClick={() => onChange({ kind: 'remove' })}>
             <TrashIcon size={16} /> {t('photo.remove')}
           </button>
         )}

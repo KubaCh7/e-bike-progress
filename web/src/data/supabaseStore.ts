@@ -1,7 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { DataStore } from './store'
-import { resolveAsset } from './store'
-import type { Deposit, Goal } from '../lib/types'
+import { BUNDLED_CATALOG, resolveAsset } from './store'
+import type { CatalogBike, Deposit, Goal, Profile } from '../lib/types'
 
 const BUCKET = 'goal-photos'
 
@@ -13,7 +13,18 @@ interface GoalRow {
   photo_url: string | null
   is_default: boolean
   seed_key: string | null
+  catalog_id: string | null
   created_at: string
+}
+
+interface CatalogRow {
+  id: string
+  brand: string
+  model: string
+  category: CatalogBike['category']
+  price: number | string
+  color: string
+  featured: boolean
 }
 
 interface DepositRow {
@@ -33,6 +44,7 @@ const toGoal = (r: GoalRow): Goal => ({
   isDefault: r.is_default,
   createdAt: r.created_at,
   seedKey: r.seed_key,
+  catalogId: r.catalog_id ?? (r.seed_key === 'ride_pro_sr' ? 'eride-pro-sr' : null),
 })
 
 const toDeposit = (r: DepositRow): Deposit => ({
@@ -53,19 +65,38 @@ function check<T>(result: { data: T; error: { message: string } | null }): T {
 export class SupabaseStore implements DataStore {
   readonly kind = 'supabase' as const
   private signedUrls = new Map<string, { url: string; expires: number }>()
-  private ensuredDefault = false
 
   constructor(
     private client: SupabaseClient,
     private userId: string,
   ) {}
 
-  async load() {
-    if (!this.ensuredDefault) {
-      // cel SR po stronie serwera (idempotentne – na wypadek braku triggera)
-      await this.client.rpc('ensure_default_goal')
-      this.ensuredDefault = true
+  async loadProfile(): Promise<Profile> {
+    const { data, error } = await this.client.from('profiles').select('display_name, onboarded').eq('id', this.userId).maybeSingle()
+    if (error) throw new Error(error.message)
+    if (!data) {
+      // konto sprzed migracji profili – profil tworzymy przy pierwszym zapisie
+      return { displayName: null, onboarded: false }
     }
+    return { displayName: data.display_name, onboarded: data.onboarded }
+  }
+
+  async updateProfile(patch: Partial<Profile>) {
+    const row: Record<string, unknown> = { id: this.userId }
+    if (patch.displayName !== undefined) row.display_name = patch.displayName
+    if (patch.onboarded !== undefined) row.onboarded = patch.onboarded
+    check(await this.client.from('profiles').upsert(row))
+    // imię także w metadanych konta (widoczne w panelu Supabase)
+    if (patch.displayName !== undefined) await this.client.auth.updateUser({ data: { display_name: patch.displayName } })
+  }
+
+  async loadCatalog(): Promise<CatalogBike[]> {
+    const { data, error } = await this.client.from('bike_catalog').select('id, brand, model, category, price, color, featured').order('sort')
+    if (error || !data?.length) return BUNDLED_CATALOG
+    return (data as CatalogRow[]).map((r) => ({ ...r, price: Number(r.price) }))
+  }
+
+  async load() {
     const [goals, deposits] = await Promise.all([
       this.client.from('goals').select('*').is('deleted_at', null).order('created_at'),
       this.client.from('deposits').select('*').is('deleted_at', null).order('deposit_date', { ascending: false }),
@@ -80,7 +111,14 @@ export class SupabaseStore implements DataStore {
     const row = check(
       await this.client
         .from('goals')
-        .insert({ name: input.name, target_amount: input.targetAmount, photo_url: input.photoURL ?? null, is_default: false })
+        .insert({
+          name: input.name,
+          target_amount: input.targetAmount,
+          photo_url: input.photoURL ?? null,
+          is_default: false,
+          catalog_id: input.catalogId ?? null,
+          seed_key: input.catalogId === 'eride-pro-sr' ? 'ride_pro_sr' : null,
+        })
         .select()
         .single(),
     ) as GoalRow
@@ -93,6 +131,7 @@ export class SupabaseStore implements DataStore {
     if (patch.name !== undefined) update.name = patch.name
     if (patch.targetAmount !== undefined) update.target_amount = patch.targetAmount
     if (patch.photoURL !== undefined) update.photo_url = patch.photoURL
+    if (patch.catalogId !== undefined) update.catalog_id = patch.catalogId
     if (Object.keys(update).length) check(await this.client.from('goals').update(update).eq('id', id))
     if (patch.isDefault) await this.setDefaultGoal(id)
   }
@@ -162,6 +201,7 @@ export class SupabaseStore implements DataStore {
       .channel('ebike-changes')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'goals' }, onChange)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'deposits' }, onChange)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, onChange)
       .subscribe()
     return () => {
       void this.client.removeChannel(channel)

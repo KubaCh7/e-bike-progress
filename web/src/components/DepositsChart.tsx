@@ -4,6 +4,7 @@ import { Area, AreaChart, Bar, BarChart, CartesianGrid, ReferenceLine, Responsiv
 import type { Deposit } from '../lib/types'
 import { cumulativeSeries, monthlyTotals, type ChartPoint } from '../lib/stats'
 import { formatMoney, formatMoneyShort, localeFor } from '../lib/format'
+import { Segmented } from './Segmented'
 
 type Mode = 'cumulative' | 'monthly'
 
@@ -29,10 +30,10 @@ function useChartColors() {
   return colors
 }
 
-const compact = new Intl.NumberFormat('pl-PL', { notation: 'compact', maximumFractionDigits: 1 })
+const compactFmt = new Intl.NumberFormat('pl-PL', { notation: 'compact', maximumFractionDigits: 1 })
 
 /** Wykres wpłat w czasie: suma narastająco (z linią celu) lub sumy miesięczne. */
-export function DepositsChart({ deposits, target }: { deposits: Deposit[]; target: number }) {
+export function DepositsChart({ deposits, target, compact = false }: { deposits: Deposit[]; target: number; compact?: boolean }) {
   const { t, i18n } = useTranslation()
   const [mode, setMode] = useState<Mode>('cumulative')
   const colors = useChartColors()
@@ -48,7 +49,7 @@ export function DepositsChart({ deposits, target }: { deposits: Deposit[]; targe
     const point = active ? payload?.[0]?.payload : undefined
     if (!point) return null
     return (
-      <div className="chart-tooltip glass glass--m">
+      <div className="chart-tooltip glass r-m">
         <span className="muted">{fmtLong(point.time)}</span>
         <strong className="num">{formatMoney(point.value)}</strong>
       </div>
@@ -58,22 +59,22 @@ export function DepositsChart({ deposits, target }: { deposits: Deposit[]; targe
   const axisProps = { stroke: colors.text, tick: { fill: colors.text, fontSize: 12 }, tickLine: false, axisLine: false }
 
   return (
-    <section className="card glass" aria-label={t('stats.chart')}>
+    <section className={`card glass r-xl ${compact ? 'card--compact' : ''}`} aria-label={t('stats.chart')}>
       <div className="card__head">
         <h2 className="section-title">{t('stats.chart')}</h2>
-        <div className="segmented glass glass--pill" role="group">
-          {(['cumulative', 'monthly'] as Mode[]).map((m) => (
-            <button key={m} type="button" aria-pressed={mode === m} onClick={() => setMode(m)}>
-              {t(`stats.${m}`)}
-            </button>
-          ))}
-        </div>
+        <Segmented
+          className="glass--clear seg--sm"
+          label={t('stats.chart')}
+          value={mode}
+          onChange={setMode}
+          options={(['cumulative', 'monthly'] as Mode[]).map((m) => ({ value: m, label: t(`stats.${m}`) }))}
+        />
       </div>
 
       {data.length === 0 ? (
         <p className="empty">{t('stats.empty')}</p>
       ) : (
-        <div className="chart">
+        <div className={`chart ${compact ? 'chart--compact' : ''}`}>
           <ResponsiveContainer width="100%" height="100%">
             {mode === 'cumulative' ? (
               <AreaChart data={data} margin={{ top: 24, right: 12, left: 0, bottom: 0 }}>
@@ -85,7 +86,7 @@ export function DepositsChart({ deposits, target }: { deposits: Deposit[]; targe
                 </defs>
                 <CartesianGrid stroke={colors.grid} vertical={false} />
                 <XAxis dataKey="time" type="number" scale="time" domain={['dataMin', 'dataMax']} tickFormatter={fmtDay} minTickGap={32} {...axisProps} />
-                <YAxis width={64} tickFormatter={(v: number) => compact.format(v)} domain={[0, (max: number) => Math.max(max, target) * 1.05]} {...axisProps} />
+                <YAxis width={64} tickFormatter={(v: number) => compactFmt.format(v)} domain={[0, (max: number) => Math.max(max, target) * 1.05]} {...axisProps} />
                 <Tooltip content={tooltip} cursor={{ stroke: colors.target, strokeWidth: 1 }} />
                 <ReferenceLine
                   y={target}
@@ -99,7 +100,7 @@ export function DepositsChart({ deposits, target }: { deposits: Deposit[]; targe
               <BarChart data={data} margin={{ top: 24, right: 12, left: 0, bottom: 0 }}>
                 <CartesianGrid stroke={colors.grid} vertical={false} />
                 <XAxis dataKey="time" tickFormatter={fmtMonth} minTickGap={16} {...axisProps} />
-                <YAxis width={64} tickFormatter={(v: number) => compact.format(v)} {...axisProps} />
+                <YAxis width={64} tickFormatter={(v: number) => compactFmt.format(v)} {...axisProps} />
                 <Tooltip content={tooltip} cursor={{ fill: colors.grid }} />
                 <Bar dataKey="value" fill={colors.line} radius={[4, 4, 0, 0]} maxBarSize={44} />
               </BarChart>
@@ -107,7 +108,6 @@ export function DepositsChart({ deposits, target }: { deposits: Deposit[]; targe
           </ResponsiveContainer>
         </div>
       )}
-      <p className="faint" style={{ fontSize: '0.8rem' }}>{t('stats.forecastHint')}</p>
     </section>
   )
 }

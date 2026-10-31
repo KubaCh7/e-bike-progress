@@ -9,18 +9,19 @@ import { SupabaseStore } from './data/supabaseStore'
 import type { DataStore } from './data/store'
 import type { Deposit } from './lib/types'
 import { formatMoney, today } from './lib/format'
-import { Backdrop } from './components/Backdrop'
-import { Sidebar, TopBar } from './components/Sidebar'
-import { GoalHero } from './components/GoalHero'
-import { StatsPanel } from './components/StatsPanel'
-import { DepositsChart } from './components/DepositsChart'
-import { HistoryList } from './components/HistoryList'
+import { PlainWallpaper, Wallpaper } from './components/Wallpaper'
+import { Header } from './components/Header'
+import { TabBar, type Tab } from './components/TabBar'
 import { DepositModal } from './components/DepositModal'
-import { GoalModal } from './components/GoalModal'
-import { SettingsModal } from './components/SettingsModal'
+import { AddGoalModal, GoalModal } from './components/GoalModal'
 import { AuthScreen } from './components/AuthScreen'
+import { Onboarding } from './components/Onboarding'
 import { ConfirmDialog } from './components/Modal'
-import { CheckIcon, PlusIcon } from './components/Icons'
+import { CheckIcon } from './components/Icons'
+import { HomePage } from './pages/HomePage'
+import { HistoryPage } from './pages/HistoryPage'
+import { StatsPage } from './pages/StatsPage'
+import { SettingsPage } from './pages/SettingsPage'
 
 export default function App() {
   return (
@@ -44,8 +45,8 @@ function AuthGate() {
   if (auth.status === 'loading') {
     return (
       <>
-        <div className="backdrop" aria-hidden="true"><div className="backdrop__blob" /><div className="backdrop__blob" /><div className="backdrop__blob" /></div>
-        <main className="auth"><p className="glass glass--pill" style={{ padding: '12px 20px' }}>{t('common.loading')}</p></main>
+        <PlainWallpaper />
+        <main className="center-screen"><span className="spinner" aria-label={t('common.loading')} /></main>
       </>
     )
   }
@@ -53,9 +54,7 @@ function AuthGate() {
   if (!store) {
     return (
       <>
-        <div className="backdrop" aria-hidden="true">
-          <div className="backdrop__blob" /><div className="backdrop__blob" /><div className="backdrop__blob" /><div className="backdrop__blob" /><div className="backdrop__blob" />
-        </div>
+        <PlainWallpaper />
         <AuthScreen />
       </>
     )
@@ -63,15 +62,52 @@ function AuthGate() {
 
   return (
     <DataProvider key={store.kind + (auth.userId ?? '')} store={store}>
-      <Dashboard />
+      <Shell />
     </DataProvider>
   )
 }
 
-type ModalState =
+/** Ekran powitalny (imię + wybór e-bike'ów) albo aplikacja. */
+function Shell() {
+  const { t } = useTranslation()
+  const { loading, profile, currentGoal, error, refresh } = useData()
+
+  if (loading && !profile) {
+    return (
+      <>
+        <PlainWallpaper />
+        <main className="center-screen"><span className="spinner" aria-label={t('common.loading')} /></main>
+      </>
+    )
+  }
+  if (error && !profile) {
+    return (
+      <>
+        <PlainWallpaper />
+        <main className="center-screen">
+          <div className="alert glass">
+            <p className="alert__title">{t('common.error', { message: error })}</p>
+            <button type="button" className="btn btn--prominent" onClick={() => void refresh()}>{t('common.retry')}</button>
+          </div>
+        </main>
+      </>
+    )
+  }
+  if (!profile?.onboarded || !currentGoal) {
+    return (
+      <>
+        <PlainWallpaper />
+        <Onboarding />
+      </>
+    )
+  }
+  return <Dashboard />
+}
+
+type Sheet =
   | { kind: 'deposit'; deposit?: Deposit }
-  | { kind: 'goal'; goalId?: string }
-  | { kind: 'settings' }
+  | { kind: 'editGoal'; goalId: string }
+  | { kind: 'addGoal' }
   | { kind: 'deleteDeposit'; deposit: Deposit }
   | null
 
@@ -79,9 +115,10 @@ function Dashboard() {
   const { t } = useTranslation()
   const data = useData()
   const [theme, setTheme] = useTheme()
-  const [modal, setModal] = useState<ModalState>(null)
-  const { currentGoal, currentStats, currentDeposits } = data
-  const close = () => setModal(null)
+  const [tab, setTab] = useState<Tab>('home')
+  const [sheet, setSheet] = useState<Sheet>(null)
+  const { currentGoal } = data
+  const close = () => setSheet(null)
 
   const quickDeposit = async (amount: number) => {
     if (!currentGoal) return
@@ -89,82 +126,63 @@ function Dashboard() {
     data.showToast(t('deposit.added', { amount: formatMoney(amount) }))
   }
 
-  const editingGoal = modal?.kind === 'goal' && modal.goalId ? data.goals.find((g) => g.id === modal.goalId) : undefined
+  const editingGoal = sheet?.kind === 'editGoal' ? data.goals.find((g) => g.id === sheet.goalId) : undefined
 
   return (
     <>
-      <Backdrop goal={currentGoal} />
+      <Wallpaper goal={currentGoal} />
       <div className="app">
-        <Sidebar onAddGoal={() => setModal({ kind: 'goal' })} onSettings={() => setModal({ kind: 'settings' })} />
+        <Header onAddGoal={() => setSheet({ kind: 'addGoal' })} onProfile={() => setTab('settings')} />
+        <TabBar tab={tab} onChange={setTab} />
 
-        <main className="main">
-          <TopBar onAddGoal={() => setModal({ kind: 'goal' })} onSettings={() => setModal({ kind: 'settings' })} />
+        {data.error && (
+          <div className="banner glass r-l" role="alert">
+            <span className="error small">{t('common.error', { message: data.error })}</span>
+            <button type="button" className="btn btn--sm glass--clear" onClick={() => void data.refresh()}>{t('common.retry')}</button>
+          </div>
+        )}
 
-          {data.error && (
-            <div className="error-bar glass glass--l" role="alert">
-              <span>{t('common.error', { message: data.error })}</span>
-              <button type="button" className="btn btn--sm" onClick={() => void data.refresh()}>{t('common.retry')}</button>
-            </div>
+        <main key={tab} className="content">
+          {tab === 'home' && (
+            <HomePage
+              onAddDeposit={() => setSheet({ kind: 'deposit' })}
+              onQuickDeposit={(amount) => void quickDeposit(amount)}
+              onEditGoal={() => currentGoal && setSheet({ kind: 'editGoal', goalId: currentGoal.id })}
+              onEditDeposit={(deposit) => setSheet({ kind: 'deposit', deposit })}
+            />
           )}
-
-          {data.loading && !currentGoal ? (
-            <p className="glass glass--pill" style={{ padding: '12px 20px', alignSelf: 'center' }}>{t('common.loading')}</p>
-          ) : currentGoal && currentStats ? (
-            <>
-              <GoalHero
-                goal={currentGoal}
-                stats={currentStats}
-                onAddDeposit={() => setModal({ kind: 'deposit' })}
-                onQuickDeposit={(amount) => void quickDeposit(amount)}
-                onEditGoal={() => setModal({ kind: 'goal', goalId: currentGoal.id })}
-              />
-              <StatsPanel stats={currentStats} />
-              <div className="wide">
-                <DepositsChart deposits={currentDeposits} target={currentGoal.targetAmount} />
-                <HistoryList
-                  deposits={currentDeposits}
-                  onAdd={() => setModal({ kind: 'deposit' })}
-                  onEdit={(deposit) => setModal({ kind: 'deposit', deposit })}
-                  onDelete={(deposit) => setModal({ kind: 'deleteDeposit', deposit })}
-                />
-              </div>
-            </>
-          ) : (
-            <div className="empty glass">
-              <p>{t('home.noGoals')}</p>
-              <button type="button" className="btn btn--primary" onClick={() => setModal({ kind: 'goal' })}>
-                <PlusIcon /> {t('nav.addGoal')}
-              </button>
-            </div>
+          {tab === 'history' && (
+            <HistoryPage onEdit={(deposit) => setSheet({ kind: 'deposit', deposit })} onDelete={(deposit) => setSheet({ kind: 'deleteDeposit', deposit })} />
+          )}
+          {tab === 'stats' && <StatsPage />}
+          {tab === 'settings' && (
+            <SettingsPage
+              theme={theme}
+              onTheme={setTheme}
+              onEditGoal={(goalId) => setSheet({ kind: 'editGoal', goalId })}
+              onAddGoal={() => setSheet({ kind: 'addGoal' })}
+            />
           )}
         </main>
       </div>
 
-      {currentGoal && (
-        <button type="button" className="btn btn--primary fab" onClick={() => setModal({ kind: 'deposit' })}>
-          <PlusIcon /> {t('home.addDeposit')}
-        </button>
-      )}
-
-      {modal?.kind === 'deposit' && currentGoal && <DepositModal goal={currentGoal} deposit={modal.deposit} onClose={close} />}
-      {modal?.kind === 'goal' && <GoalModal key={modal.goalId ?? 'new'} goal={editingGoal} onClose={close} />}
-      {modal?.kind === 'settings' && (
-        <SettingsModal theme={theme} onTheme={setTheme} onClose={close} onEditGoal={(goalId) => setModal({ kind: 'goal', goalId })} />
-      )}
-      {modal?.kind === 'deleteDeposit' && (
+      {sheet?.kind === 'deposit' && currentGoal && <DepositModal goal={currentGoal} deposit={sheet.deposit} onClose={close} />}
+      {sheet?.kind === 'editGoal' && editingGoal && <GoalModal key={editingGoal.id} goal={editingGoal} onClose={close} />}
+      {sheet?.kind === 'addGoal' && <AddGoalModal onClose={close} />}
+      {sheet?.kind === 'deleteDeposit' && (
         <ConfirmDialog
           title={t('history.confirmDelete')}
           confirmLabel={t('common.delete')}
           onCancel={close}
           onConfirm={() => {
-            void data.deleteDeposit(modal.deposit.id)
+            void data.deleteDeposit(sheet.deposit.id)
             close()
           }}
         />
       )}
 
       {data.toast && (
-        <div className="toast glass glass--pill" role="status">
+        <div className="toast glass--clear r-pill" role="status">
           <CheckIcon size={18} /> {data.toast}
         </div>
       )}

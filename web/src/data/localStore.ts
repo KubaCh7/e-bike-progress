@@ -1,6 +1,6 @@
 import type { DataStore } from './store'
-import { resolveAsset } from './store'
-import { DEFAULT_GOAL, type Deposit, type Goal } from '../lib/types'
+import { BUNDLED_CATALOG, resolveAsset } from './store'
+import type { Deposit, Goal, Profile } from '../lib/types'
 import { blobToDataURL } from '../lib/image'
 
 const KEY = 'ebike.local.v1'
@@ -8,6 +8,7 @@ const KEY = 'ebike.local.v1'
 interface LocalData {
   goals: Goal[]
   deposits: Deposit[]
+  profile?: Profile
 }
 
 const uuid = () => crypto.randomUUID()
@@ -19,27 +20,18 @@ export class LocalStore implements DataStore {
   private read(): LocalData {
     try {
       const raw = localStorage.getItem(KEY)
-      if (raw) return JSON.parse(raw) as LocalData
+      if (raw) {
+        const data = JSON.parse(raw) as LocalData
+        // starsze dane: brak catalogId i profilu
+        data.goals.forEach((g) => (g.catalogId ??= g.seedKey === 'ride_pro_sr' ? 'eride-pro-sr' : null))
+        data.profile ??= { displayName: null, onboarded: data.goals.length > 0 }
+        return data
+      }
     } catch {
       /* uszkodzone dane – zaczynamy od nowa */
     }
-    // pierwsze uruchomienie: cel e-ride pro SR za 30 000 zł
-    const seed: LocalData = {
-      goals: [
-        {
-          id: uuid(),
-          name: DEFAULT_GOAL.name,
-          targetAmount: DEFAULT_GOAL.targetAmount,
-          photoURL: DEFAULT_GOAL.photoURL,
-          isDefault: true,
-          createdAt: new Date().toISOString(),
-          seedKey: DEFAULT_GOAL.seedKey,
-        },
-      ],
-      deposits: [],
-    }
-    this.write(seed)
-    return seed
+    // pierwsze uruchomienie: cele wybiera się na ekranie powitalnym
+    return { goals: [], deposits: [], profile: { displayName: null, onboarded: false } }
   }
 
   private write(data: LocalData) {
@@ -53,7 +45,20 @@ export class LocalStore implements DataStore {
   }
 
   async load() {
-    return this.read()
+    const { goals, deposits } = this.read()
+    return { goals, deposits }
+  }
+
+  async loadProfile() {
+    return this.read().profile ?? { displayName: null, onboarded: false }
+  }
+
+  async updateProfile(patch: Partial<Profile>) {
+    this.mutate((d) => (d.profile = { ...(d.profile ?? { displayName: null, onboarded: false }), ...patch }))
+  }
+
+  async loadCatalog() {
+    return BUNDLED_CATALOG
   }
 
   async createGoal(input: Parameters<DataStore['createGoal']>[0]) {
@@ -64,7 +69,8 @@ export class LocalStore implements DataStore {
       photoURL: input.photoURL ?? null,
       isDefault: false,
       createdAt: new Date().toISOString(),
-      seedKey: null,
+      seedKey: input.catalogId === 'eride-pro-sr' ? 'ride_pro_sr' : null,
+      catalogId: input.catalogId ?? null,
     }
     this.mutate((d) => {
       d.goals.push(goal)
@@ -76,7 +82,10 @@ export class LocalStore implements DataStore {
   async updateGoal(id: string, patch: Parameters<DataStore['updateGoal']>[1]) {
     this.mutate((d) => {
       const goal = d.goals.find((g) => g.id === id)
-      if (goal) Object.assign(goal, patch)
+      if (!goal) return
+      const { isDefault, ...rest } = patch
+      Object.assign(goal, rest)
+      if (isDefault) d.goals.forEach((g) => (g.isDefault = g.id === id))
     })
   }
 

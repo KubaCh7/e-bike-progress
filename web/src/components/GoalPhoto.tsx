@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useData } from '../state/DataContext'
-import { BikeIcon } from './Icons'
+import type { Goal } from '../lib/types'
+import { BikeArt } from './BikeArt'
 
 /** Zamienia photoURL (Storage / data URL / asset) na adres obrazka. */
 export function useGoalPhoto(photoURL: string | null) {
@@ -24,20 +25,37 @@ export function useGoalPhoto(photoURL: string | null) {
   return src
 }
 
-/** Zdjęcie celu albo grafika zastępcza. */
-export function GoalPhoto({ photoURL, alt, src: override }: { photoURL: string | null; alt: string; src?: string | null }) {
-  const resolved = useGoalPhoto(override === undefined ? photoURL : null)
+/**
+ * Zdjęcie celu. Bez zdjęcia: ilustracja modelu z katalogu (kolor marki),
+ * a dla własnego e-bike'a – neutralna ilustracja.
+ */
+export function GoalPhoto({
+  goal,
+  photoURL,
+  catalogId,
+  alt,
+  src: override,
+}: {
+  goal?: Goal
+  photoURL?: string | null
+  catalogId?: string | null
+  alt: string
+  src?: string | null
+}) {
+  const { catalogById } = useData()
+  const url = photoURL !== undefined ? photoURL : (goal?.photoURL ?? null)
+  const resolved = useGoalPhoto(override === undefined ? url : null)
   const src = override === undefined ? resolved : override
   const [failed, setFailed] = useState(false)
-
   useEffect(() => setFailed(false), [src])
 
-  if (!src || failed) {
-    return (
-      <div className="photo photo-placeholder" role="img" aria-label={alt}>
-        <BikeIcon size={56} />
-      </div>
-    )
+  if (src && !failed) {
+    return <img className="photo" src={src} alt={alt} onError={() => setFailed(true)} loading="lazy" />
   }
-  return <img className="photo" src={src} alt={alt} onError={() => setFailed(true)} loading="lazy" />
+  const bike = catalogById(catalogId !== undefined ? catalogId : goal?.catalogId)
+  return (
+    <div className="photo">
+      <BikeArt category={bike?.category ?? 'emtb'} color={bike?.color ?? '#64748b'} label={alt} />
+    </div>
+  )
 }

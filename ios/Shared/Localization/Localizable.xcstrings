@@ -2262,6 +2262,40 @@
         }
       }
     },
+    "settings.sounds": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sounds"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dźwięki"
+          }
+        }
+      }
+    },
+    "settings.soundsDesc": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quiet button clicks and a short sound when you deposit, delete or add an e-bike. A muted iPhone stays silent."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ciche kliknięcia przycisków i krótki dźwięk przy wpłacie, usunięciu i dodaniu e-bike'a. Wyciszony iPhone gra bez dźwięku."
+          }
+        }
+      }
+    },
     "settings.targetAmount": {
       "extractionState": "manual",
       "localizations": {

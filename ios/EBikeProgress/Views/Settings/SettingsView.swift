@@ -23,6 +23,7 @@ struct SettingsView: View {
     @Environment(NetworkMonitor.self) private var network
     @AppStorage(SettingsKey.language) private var language: AppLanguage = .pl
     @AppStorage(SettingsKey.theme) private var theme: AppTheme = .system
+    @AppStorage(Sounds.enabledKey) private var soundsOn = true
     @State private var model = SettingsViewModel()
     @State private var showManager = false
     @FocusState private var targetFocused: Bool
@@ -74,6 +75,19 @@ struct SettingsView: View {
             }
             .pickerStyle(.segmented)
             .listRowBackground(Color.clear)
+
+            Toggle(isOn: $soundsOn) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(L10n.tr("settings.sounds"))
+                    Text(L10n.tr("settings.soundsDesc"))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .tint(.primary)
+            .onChange(of: soundsOn) { _, on in
+                if on { Sounds.shared.play(.deposit) }
+            }
         }
     }
 

@@ -33,6 +33,9 @@ struct PrimaryFlatButtonStyle: ButtonStyle {
             .padding(.vertical, 12)
             .background(Color.primary, in: .rect(cornerRadius: 10))
             .opacity(isEnabled ? (configuration.isPressed ? 0.8 : 1) : 0.35)
+            .onChange(of: configuration.isPressed) { _, pressed in
+                if pressed { Sounds.shared.play(.tap) }
+            }
     }
 }
 
@@ -43,12 +46,39 @@ struct SecondaryFlatButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(.body.weight(.medium))
+            .lineLimit(1)
+            .minimumScaleFactor(0.8)
             .foregroundStyle(.primary)
             .padding(.horizontal, 16)
             .padding(.vertical, 10)
             .background(Color(.tertiarySystemFill), in: .rect(cornerRadius: 10))
             .opacity(isEnabled ? (configuration.isPressed ? 0.7 : 1) : 0.35)
+            .onChange(of: configuration.isPressed) { _, pressed in
+                if pressed { Sounds.shared.play(.tap) }
+            }
     }
+}
+
+/// Równy „kafelek” kwoty (np. +100 zł): zawsze ta sama wysokość, tekst w jednej linii.
+struct ChipFlatButtonStyle: ButtonStyle {
+    @Environment(\.isEnabled) private var isEnabled
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .foregroundStyle(.primary)
+            .frame(height: 40)
+            .frame(maxWidth: .infinity)
+            .background(Color(.tertiarySystemFill), in: .rect(cornerRadius: 10))
+            .contentShape(.rect)
+            .opacity(isEnabled ? (configuration.isPressed ? 0.7 : 1) : 0.35)
+            .onChange(of: configuration.isPressed) { _, pressed in
+                if pressed { Sounds.shared.play(.tap) }
+            }
+    }
+}
+
+extension ButtonStyle where Self == ChipFlatButtonStyle {
+    static var chipFlat: ChipFlatButtonStyle { ChipFlatButtonStyle() }
 }
 
 extension ButtonStyle where Self == PrimaryFlatButtonStyle {

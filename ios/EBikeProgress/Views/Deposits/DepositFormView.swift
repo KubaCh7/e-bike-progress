@@ -28,15 +28,17 @@ struct DepositFormView: View {
                             .foregroundStyle(.secondary)
                     }
 
-                    Group {
-                        HStack(spacing: 8) {
-                            ForEach([50, 100, 200, 500] as [Decimal], id: \.self) { value in
-                                Button { model.add(value) } label: {
-                                    Text(verbatim: "+\(Money.formatShort(value))")
-                                }
-                                .buttonStyle(.secondaryFlat)
-                                .font(.footnote.bold())
+                    // cztery równe przyciski w jednej linii
+                    HStack(spacing: 8) {
+                        ForEach([50, 100, 200, 500] as [Decimal], id: \.self) { value in
+                            Button { model.add(value) } label: {
+                                Text(verbatim: "+\(Money.formatShort(value))")
+                                    .font(.subheadline.weight(.semibold).monospacedDigit())
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.75)
+                                    .frame(maxWidth: .infinity)
                             }
+                            .buttonStyle(.chipFlat)
                         }
                     }
                     .frame(maxWidth: .infinity)
@@ -77,7 +79,7 @@ struct DepositFormView: View {
                     Button(L10n.tr("common.save"), systemImage: "checkmark") {
                         if model.save(using: goals, goal: goal) { dismiss() }
                     }
-                    .buttonStyle(.primaryFlat)
+                    .tint(.primary)
                     .disabled(!model.isValid)
                 }
             }

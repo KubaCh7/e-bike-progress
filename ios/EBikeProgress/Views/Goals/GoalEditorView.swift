@@ -68,7 +68,7 @@ struct GoalEditorView: View {
                     Button(L10n.tr("common.save"), systemImage: "checkmark") {
                         if model.save(using: goals) { dismiss() }
                     }
-                    .buttonStyle(.primaryFlat)
+                    .tint(.primary)
                     .disabled(!model.isValid)
                 }
             }

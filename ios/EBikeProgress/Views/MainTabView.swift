@@ -22,5 +22,6 @@ struct MainTabView: View {
         .tabBarMinimizeBehavior(.onScrollDown)
         // czarno-białe zakładki (w ciemnym motywie białe)
         .tint(.primary)
+        .onChange(of: selection) { _, _ in Sounds.shared.play(.tap) }
     }
 }

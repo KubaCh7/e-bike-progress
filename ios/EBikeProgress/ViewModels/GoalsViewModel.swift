@@ -57,6 +57,7 @@ final class GoalsViewModel {
     func addDeposit(amount: Decimal, date: Date = .now, note: String? = nil, to goal: Goal? = nil) {
         guard let goal = goal ?? currentGoal, amount > 0 else { return }
         repository.addDeposit(to: goal, amount: amount, date: date, note: note)
+        Sounds.shared.play(.deposit)
         toast = L10n.tr("home.quickAdded", Money.format(amount))
     }
 
@@ -66,6 +67,7 @@ final class GoalsViewModel {
 
     func deleteDeposit(_ deposit: Deposit) {
         repository.deleteDeposit(deposit)
+        Sounds.shared.play(.remove)
     }
 
     // MARK: - Cele
@@ -73,6 +75,7 @@ final class GoalsViewModel {
     @discardableResult
     func createGoal(name: String, target: Decimal, photo: Data?, thumbnail: Data?, photoURL: String?, makeDefault: Bool, catalogId: String? = nil) -> Goal {
         let goal = repository.createGoal(name: name, target: target, photo: photo, thumbnail: thumbnail, photoURL: photoURL, makeDefault: makeDefault, catalogId: catalogId)
+        Sounds.shared.play(.bike)
         selectedGoalID = goal.id
         return goal
     }
@@ -107,5 +110,6 @@ final class GoalsViewModel {
     func deleteGoal(_ goal: Goal) {
         if selectedGoalID == goal.id { selectedGoalID = nil }
         repository.deleteGoal(goal)
+        Sounds.shared.play(.remove)
     }
 }

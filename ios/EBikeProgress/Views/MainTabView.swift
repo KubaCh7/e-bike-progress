@@ -10,6 +10,9 @@ struct MainTabView: View {
             Tab(L10n.tr("tab.history"), systemImage: "list.bullet.rectangle") {
                 HistoryView()
             }
+            Tab(L10n.tr("tab.stats"), systemImage: "chart.xyaxis.line") {
+                StatsView()
+            }
         }
         .tabBarMinimizeBehavior(.onScrollDown)
     }

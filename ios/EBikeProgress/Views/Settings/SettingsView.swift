@@ -3,6 +3,9 @@ import SwiftUI
 /// Ustawienia: język, motyw, cele i kwota celu.
 struct SettingsView: View {
     @Environment(GoalsViewModel.self) private var goals
+    @Environment(AuthViewModel.self) private var auth
+    @Environment(SyncService.self) private var sync
+    @Environment(NetworkMonitor.self) private var network
     @AppStorage(SettingsKey.language) private var language: AppLanguage = .pl
     @AppStorage(SettingsKey.theme) private var theme: AppTheme = .system
     @State private var model = SettingsViewModel()
@@ -81,10 +84,58 @@ struct SettingsView: View {
         }
     }
 
-    /// Konto i synchronizacja – uzupełniane w etapie synchronizacji.
+    /// Konto i synchronizacja z Supabase.
     @ViewBuilder
     private var accountSection: some View {
-        EmptyView()
+        Section {
+            if !auth.isConfigured {
+                Label(L10n.tr("sync.notConfigured"), systemImage: "externaldrive.badge.xmark")
+                    .foregroundStyle(.secondary)
+            } else if auth.isSignedIn {
+                LabeledContent(L10n.tr("auth.account"), value: auth.userEmail ?? "Apple ID")
+                LabeledContent(L10n.tr("sync.status")) {
+                    syncStatusLabel
+                }
+                Button(L10n.tr("sync.now"), systemImage: "arrow.triangle.2.circlepath") {
+                    Task { await sync.sync() }
+                }
+                .disabled(sync.status == .syncing)
+                Button(L10n.tr("auth.signOut"), systemImage: "rectangle.portrait.and.arrow.right", role: .destructive) {
+                    Task { await auth.signOut() }
+                }
+            } else {
+                Text(L10n.tr("auth.offlineHint"))
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                Button(L10n.tr("auth.signIn"), systemImage: "person.crop.circle") {
+                    auth.showSignIn()
+                }
+            }
+        } header: {
+            Text(L10n.tr("settings.account"))
+        } footer: {
+            if let date = sync.lastSyncDate, auth.isSignedIn {
+                Text(L10n.tr("sync.lastSync", date.formatted(.relative(presentation: .named).locale(L10n.locale))))
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var syncStatusLabel: some View {
+        if !network.isOnline {
+            Label(L10n.tr("sync.offline"), systemImage: "wifi.slash").foregroundStyle(.orange)
+        } else {
+            switch sync.status {
+            case .syncing:
+                HStack(spacing: 6) { ProgressView(); Text(L10n.tr("sync.syncing")) }
+            case .failed:
+                Label(L10n.tr("sync.failed"), systemImage: "exclamationmark.triangle").foregroundStyle(.red)
+            case .offline:
+                Label(L10n.tr("sync.offline"), systemImage: "wifi.slash").foregroundStyle(.orange)
+            case .idle, .notSignedIn:
+                Label(L10n.tr("sync.ok"), systemImage: "checkmark.icloud").foregroundStyle(.green)
+            }
+        }
     }
 
     private var aboutSection: some View {

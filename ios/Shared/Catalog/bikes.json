@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "note": "Orientacyjne ceny nowych egzemplarzy w Polsce (PLN, X 2026) – z polskich ogłoszeń dealerów, a przy ich braku przeliczone z cen EUR/USD. Użytkownik może zmienić cenę po wyborze.",
+  "note": "Orientacyjne ceny nowych egzemplarzy w Polsce (PLN, X 2026) – z polskich ogłoszeń dealerów, a przy ich braku przeliczone z cen EUR/USD. Użytkownik może zmienić cenę po wyborze. Zdjęcia: tylko na wolnych licencjach (Wikimedia Commons) – pozostałe modele mają ilustrację; własne zdjęcie można wgrać lub podać link.",
   "bikes": [
     {
       "id": "eride-pro-sr",
@@ -27,7 +27,10 @@
       "category": "moto",
       "price": 22900,
       "color": "#f97316",
-      "featured": true
+      "featured": true,
+      "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Sur-Ron_Electric_Dirt_Bike_1a.jpg?width=960",
+      "image_credit": "Wikimedia Commons",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Sur-Ron_Electric_Dirt_Bike_1a.jpg"
     },
     {
       "id": "surron-lb2",
@@ -119,7 +122,10 @@
       "model": "Freeride E",
       "category": "moto",
       "price": 47000,
-      "color": "#f59e0b"
+      "color": "#f59e0b",
+      "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/KTM_Freeride_E-XC_(RGB).jpg?width=960",
+      "image_credit": "KTM AG / Wikimedia Commons",
+      "image_source": "https://commons.wikimedia.org/wiki/File:KTM_Freeride_E-XC_(RGB).jpg"
     },
     {
       "id": "segway-x260",
@@ -151,6 +157,31 @@
       "model": "Falcon M",
       "category": "moto",
       "price": 17900,
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "79bike-falcon-pro",
+      "brand": "79Bike",
+      "model": "Falcon Pro",
+      "category": "moto",
+      "price": 18900,
+      "color": "#8b5cf6",
+      "featured": true
+    },
+    {
+      "id": "79bike-falcon-pro-ltd",
+      "brand": "79Bike",
+      "model": "Falcon Pro Limited",
+      "category": "moto",
+      "price": 19900,
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "79bike-falcon-m-gt",
+      "brand": "79Bike",
+      "model": "Falcon M GT",
+      "category": "moto",
+      "price": 21900,
       "color": "#8b5cf6"
     },
     {
@@ -192,7 +223,10 @@
       "category": "emtb",
       "price": 28255,
       "color": "#dc2626",
-      "featured": true
+      "featured": true,
+      "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Specialized_Turbo_Levo_FSR.jpg?width=960",
+      "image_credit": "Rm1911 / Wikimedia Commons",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Specialized_Turbo_Levo_FSR.jpg"
     },
     {
       "id": "spec-levo4-expert",
@@ -200,7 +234,10 @@
       "model": "Turbo Levo 4 Expert",
       "category": "emtb",
       "price": 44900,
-      "color": "#dc2626"
+      "color": "#dc2626",
+      "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Specialized_Turbo_Levo_2018.jpg?width=960",
+      "image_credit": "Delete1985 / Wikimedia Commons",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Specialized_Turbo_Levo_2018.jpg"
     },
     {
       "id": "spec-kenevo-sl2",

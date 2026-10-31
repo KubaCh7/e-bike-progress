@@ -61,7 +61,8 @@ export function GoalModal({
     if (!valid || price === null) return
     setBusy(true)
     try {
-      const photoURL = photo.kind === 'suggested' ? SUGGESTED_PHOTO_URL : photo.kind === 'remove' ? null : undefined
+      const photoURL =
+        photo.kind === 'suggested' ? SUGGESTED_PHOTO_URL : photo.kind === 'url' ? photo.url : photo.kind === 'remove' ? null : undefined
       const blob = photo.kind === 'file' ? photo.blob : null
       if (goal) {
         await updateGoal(

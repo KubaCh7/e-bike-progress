@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useData } from '../state/DataContext'
 import type { Goal } from '../lib/types'
 import { BikeArt } from './BikeArt'
+import { BikeImage } from './BikeImage'
 
 /** Zamienia photoURL (Storage / data URL / asset) na adres obrazka. */
 export function useGoalPhoto(photoURL: string | null) {
@@ -55,7 +56,7 @@ export function GoalPhoto({
   const bike = catalogById(catalogId !== undefined ? catalogId : goal?.catalogId)
   return (
     <div className="photo">
-      <BikeArt category={bike?.category ?? 'emtb'} color={bike?.color ?? '#64748b'} label={alt} />
+      {bike ? <BikeImage bike={bike} showCredit /> : <BikeArt category="emtb" color="#64748b" label={alt} />}
     </div>
   )
 }

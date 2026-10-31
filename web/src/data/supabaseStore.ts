@@ -25,6 +25,9 @@ interface CatalogRow {
   price: number | string
   color: string
   featured: boolean
+  image_url: string | null
+  image_credit: string | null
+  image_source: string | null
 }
 
 interface DepositRow {
@@ -91,7 +94,7 @@ export class SupabaseStore implements DataStore {
   }
 
   async loadCatalog(): Promise<CatalogBike[]> {
-    const { data, error } = await this.client.from('bike_catalog').select('id, brand, model, category, price, color, featured').order('sort')
+    const { data, error } = await this.client.from('bike_catalog').select('id, brand, model, category, price, color, featured, image_url, image_credit, image_source').order('sort')
     if (error || !data?.length) return BUNDLED_CATALOG
     return (data as CatalogRow[]).map((r) => ({ ...r, price: Number(r.price) }))
   }
@@ -187,6 +190,8 @@ export class SupabaseStore implements DataStore {
     if (!photoURL) return null
     const asset = resolveAsset(photoURL)
     if (asset) return asset
+    // zdjęcie z linku (podane przez użytkownika)
+    if (/^https?:\/\//.test(photoURL)) return photoURL
     const cached = this.signedUrls.get(photoURL)
     if (cached && cached.expires > Date.now()) return cached.url
     const { data, error } = await this.client.storage.from(BUCKET).createSignedUrl(photoURL, 3600)

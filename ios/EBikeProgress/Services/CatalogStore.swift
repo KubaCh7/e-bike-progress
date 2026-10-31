@@ -17,7 +17,7 @@ final class CatalogStore {
         guard let client else { return }
         do {
             let rows: [CatalogBike] = try await client.from("bike_catalog")
-                .select("id, brand, model, category, price, color, featured")
+                .select("id, brand, model, category, price, color, featured, image_url, image_credit")
                 .order("sort")
                 .execute()
                 .value

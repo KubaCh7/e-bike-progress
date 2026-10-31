@@ -11,6 +11,8 @@ struct PhotoSourceButtons: View {
 
     @State private var model = PhotoPickerViewModel()
     @State private var showCamera = false
+    @State private var showLinkPrompt = false
+    @State private var link = ""
 
     var body: some View {
         VStack(spacing: 10) {
@@ -43,6 +45,15 @@ struct PhotoSourceButtons: View {
                 }
             }
 
+            Button {
+                link = ""
+                showLinkPrompt = true
+            } label: {
+                Label(L10n.tr("photo.fromLink"), systemImage: "link")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.glass)
+
             if canRemove {
                 Button(L10n.tr("photo.remove"), systemImage: "trash", role: .destructive, action: onRemove)
                     .buttonStyle(.glass)
@@ -60,6 +71,24 @@ struct PhotoSourceButtons: View {
             Task {
                 if let result = await model.loadPickerItem() { onPicked(result) }
             }
+        }
+        .alert(L10n.tr("photo.fromLink"), isPresented: $showLinkPrompt) {
+            TextField("https://…", text: $link)
+                .keyboardType(.URL)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+            Button(L10n.tr("common.cancel"), role: .cancel) {}
+            Button(L10n.tr("common.ok")) {
+                guard let url = URL(string: link.trimmingCharacters(in: .whitespaces)), url.scheme == "https" else {
+                    model.errorMessage = L10n.tr("photo.error")
+                    return
+                }
+                Task {
+                    if let result = await model.load(link: url) { onPicked(result) }
+                }
+            }
+        } message: {
+            Text(L10n.tr("photo.linkHint"))
         }
         .fullScreenCover(isPresented: $showCamera) {
             CameraPicker { image in

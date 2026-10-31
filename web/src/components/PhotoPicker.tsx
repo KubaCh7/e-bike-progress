@@ -2,13 +2,14 @@ import { useEffect, useRef, useState, type DragEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { compressImage } from '../lib/image'
 import { GoalPhoto } from './GoalPhoto'
-import { ImageIcon, SparkIcon, TrashIcon } from './Icons'
+import { ImageIcon, LinkIcon, SparkIcon, TrashIcon } from './Icons'
 
 export type PhotoChoice =
   | { kind: 'keep' }
   | { kind: 'file'; blob: Blob }
   | { kind: 'suggested' }
   | { kind: 'remove' }
+  | { kind: 'url'; url: string }
 
 /** Wybór zdjęcia: sugerowane (SR), plik z dysku (input / drag & drop), usunięcie. */
 export function PhotoPicker({
@@ -32,6 +33,9 @@ export function PhotoPicker({
   const [processing, setProcessing] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
+  const [linkOpen, setLinkOpen] = useState(false)
+  const [link, setLink] = useState('')
+  const linkValid = /^https:\/\/\S+$/i.test(link.trim())
 
   // podgląd świeżo wybranego pliku
   useEffect(() => {
@@ -62,7 +66,15 @@ export function PhotoPicker({
   }
 
   const shownURL =
-    choice.kind === 'suggested' ? suggestedURL : choice.kind === 'remove' ? null : choice.kind === 'keep' ? currentPhotoURL : null
+    choice.kind === 'suggested'
+      ? suggestedURL
+      : choice.kind === 'url'
+        ? choice.url
+        : choice.kind === 'remove'
+          ? null
+          : choice.kind === 'keep'
+            ? currentPhotoURL
+            : null
   const hasPhoto = choice.kind === 'file' || !!shownURL
 
   return (
@@ -86,7 +98,7 @@ export function PhotoPicker({
         <div className="dropzone__preview">
           {choice.kind === 'file' ? <GoalPhoto photoURL={null} catalogId={catalogId} src={preview} alt="" /> : <GoalPhoto photoURL={shownURL} catalogId={catalogId} alt="" />}
         </div>
-        <span className="muted" style={{ fontSize: '0.85rem' }}>{processing ? t('photo.processing') : t('photo.drop')}</span>
+        <span className="faint small">{processing ? t('photo.processing') : t('photo.drop')}</span>
         <input ref={inputRef} type="file" accept="image/*" hidden onChange={(e) => void handleFile(e.target.files?.[0])} />
       </div>
 
@@ -100,12 +112,47 @@ export function PhotoPicker({
         <button type="button" className="btn btn--sm glass--clear" onClick={() => inputRef.current?.click()}>
           <ImageIcon size={16} /> {t('photo.uploadOwn')}
         </button>
+        <button type="button" className="btn btn--sm glass--clear" onClick={() => setLinkOpen((v) => !v)} aria-expanded={linkOpen}>
+          <LinkIcon size={16} /> {t('photo.fromLink')}
+        </button>
         {hasPhoto && (
           <button type="button" className="btn btn--sm btn--plain btn--danger" onClick={() => onChange({ kind: 'remove' })}>
             <TrashIcon size={16} /> {t('photo.remove')}
           </button>
         )}
       </div>
+      {linkOpen && (
+        <div className="link-row">
+          <input
+            className="search glass--clear r-pill"
+            type="url"
+            inputMode="url"
+            placeholder="https://…/zdjecie.jpg"
+            value={link}
+            onChange={(e) => setLink(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && linkValid) {
+                e.preventDefault()
+                onChange({ kind: 'url', url: link.trim() })
+                setLinkOpen(false)
+              }
+            }}
+            aria-label={t('photo.fromLink')}
+          />
+          <button
+            type="button"
+            className="btn btn--sm btn--prominent"
+            disabled={!linkValid}
+            onClick={() => {
+              onChange({ kind: 'url', url: link.trim() })
+              setLinkOpen(false)
+            }}
+          >
+            {t('common.ok')}
+          </button>
+        </div>
+      )}
+      {linkOpen && <span className="field__hint">{t('photo.linkHint')}</span>}
       {error && <span className="field__error">{error}</span>}
     </div>
   )

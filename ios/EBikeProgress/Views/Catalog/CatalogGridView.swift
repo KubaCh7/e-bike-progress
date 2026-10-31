@@ -1,15 +1,22 @@
 import SwiftUI
 
-/// Siatka popularnych e-bike'ów z wyszukiwarką i filtrem kategorii + karta "Własny".
+/// Katalog popularnych e-bike'ów: wyszukiwarka, kategorie, sortowanie po marce (sekcje A–Z) lub cenie.
 struct CatalogGridView: View {
     var selected: Set<String> = []
     var disabledIDs: Set<String> = []
     var onToggle: (CatalogBike) -> Void
     var onCustom: () -> Void
 
+    enum SortOrder: String, CaseIterable, Identifiable {
+        case brand, price
+        var id: String { rawValue }
+        var title: String { self == .brand ? L10n.tr("catalog.sortBrand") : L10n.tr("catalog.sortPrice") }
+    }
+
     @Environment(CatalogStore.self) private var catalog
     @State private var query = ""
     @State private var category: BikeCategory?
+    @State private var sort: SortOrder = .brand
 
     private let columns = [GridItem(.adaptive(minimum: 158), spacing: 12)]
 
@@ -20,9 +27,22 @@ struct CatalogGridView: View {
         }
     }
 
+    /// Sekcje: marka A–Z (modele od najtańszego) albo jedna lista wg ceny.
+    private var groups: [(brand: String?, bikes: [CatalogBike])] {
+        switch sort {
+        case .price:
+            return [(nil, bikes.sorted { $0.price < $1.price })]
+        case .brand:
+            let byBrand = Dictionary(grouping: bikes, by: \.brand)
+            return byBrand.keys
+                .sorted { $0.localizedStandardCompare($1) == .orderedAscending }
+                .map { ($0, byBrand[$0, default: []].sorted { $0.price < $1.price }) }
+        }
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            // natywny segmented picker – w iOS 26 ma szklaną, przesuwaną pastylkę
+            // natywne segmented pickery – w iOS 26 ze szklaną, przesuwaną pastylką
             Picker(L10n.tr("catalog.category"), selection: $category) {
                 Text(L10n.tr("catalog.all")).tag(BikeCategory?.none)
                 ForEach(BikeCategory.allCases) { category in
@@ -31,33 +51,48 @@ struct CatalogGridView: View {
             }
             .pickerStyle(.segmented)
 
-            GlassEffectContainer(spacing: 12) {
-                LazyVGrid(columns: columns, spacing: 12) {
-                    Button(action: onCustom) {
-                        VStack(spacing: 8) {
-                            Image(systemName: "plus")
-                                .font(.title2.bold())
-                                .frame(width: 54, height: 54)
-                                .glassEffect(.regular.tint(.accentColor.opacity(0.3)), in: .circle)
-                            Text(L10n.tr("catalog.custom")).font(.headline)
-                            Text(L10n.tr("catalog.customHint"))
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                                .multilineTextAlignment(.center)
-                        }
-                        .frame(maxWidth: .infinity, minHeight: 190)
-                        .padding(10)
-                        .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 24))
-                    }
-                    .buttonStyle(.plain)
+            Picker(L10n.tr("catalog.sort"), selection: $sort) {
+                ForEach(SortOrder.allCases) { Text($0.title).tag($0) }
+            }
+            .pickerStyle(.segmented)
 
-                    ForEach(bikes) { bike in
-                        BikeCard(bike: bike, isSelected: selected.contains(bike.id), isDisabled: disabledIDs.contains(bike.id))
-                            .onTapGesture { if !disabledIDs.contains(bike.id) { onToggle(bike) } }
+            Button(action: onCustom) {
+                HStack(spacing: 14) {
+                    Image(systemName: "plus")
+                        .font(.title3.bold())
+                        .frame(width: 48, height: 48)
+                        .glassEffect(.clear.tint(.accentColor.opacity(0.35)), in: .circle)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(L10n.tr("catalog.custom")).font(.headline)
+                        Text(L10n.tr("catalog.customHint")).font(.caption).foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                }
+                .padding(12)
+                .glassEffect(.clear.interactive(), in: .rect(cornerRadius: 24))
+            }
+            .buttonStyle(.plain)
+
+            ForEach(groups, id: \.brand) { group in
+                if let brand = group.brand {
+                    HStack(spacing: 10) {
+                        Circle().fill(group.bikes.first?.tint ?? .accentColor).frame(width: 12, height: 12)
+                        Text(brand).font(.title2.weight(.heavy))
+                        Text("\(group.bikes.count)").font(.subheadline).foregroundStyle(.secondary)
+                    }
+                    .padding(.top, 8)
+                }
+                GlassEffectContainer(spacing: 12) {
+                    LazyVGrid(columns: columns, spacing: 12) {
+                        ForEach(group.bikes) { bike in
+                            BikeCard(bike: bike, isSelected: selected.contains(bike.id), isDisabled: disabledIDs.contains(bike.id))
+                                .onTapGesture { if !disabledIDs.contains(bike.id) { onToggle(bike) } }
+                        }
                     }
                 }
             }
             .animation(.smooth, value: category)
+            .animation(.smooth, value: sort)
 
             Text(L10n.tr("catalog.priceNote"))
                 .font(.footnote)
@@ -67,15 +102,15 @@ struct CatalogGridView: View {
     }
 }
 
-/// Karta modelu z katalogu.
+/// Karta modelu z katalogu – marka wyraźnie, w kolorze marki.
 struct BikeCard: View {
     let bike: CatalogBike
     var isSelected = false
     var isDisabled = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            BikeArtView(category: bike.category, tint: bike.tint)
+        VStack(alignment: .leading, spacing: 3) {
+            CatalogBikeImage(bike: bike)
                 .aspectRatio(16 / 10, contentMode: .fit)
                 .clipShape(.rect(cornerRadius: 18))
                 .overlay(alignment: .topTrailing) {
@@ -89,14 +124,19 @@ struct BikeCard: View {
                     }
                 }
                 .padding(.bottom, 6)
-            Text(bike.brand).font(.caption.weight(.semibold)).foregroundStyle(.secondary)
+            HStack(spacing: 6) {
+                Circle().fill(bike.tint).frame(width: 8, height: 8)
+                Text(bike.brand.uppercased())
+                    .font(.caption.weight(.heavy))
+                    .tracking(0.6)
+            }
             Text(bike.model).font(.headline).lineLimit(1)
             Text(isDisabled ? L10n.tr("catalog.added") : L10n.tr("catalog.from", Money.formatShort(bike.price)))
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
         .padding(8)
-        .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 24))
+        .glassEffect(.clear.interactive(), in: .rect(cornerRadius: 24))
         .overlay {
             RoundedRectangle(cornerRadius: 24)
                 .strokeBorder(Color.accentColor, lineWidth: isSelected ? 2.5 : 0)

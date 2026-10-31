@@ -443,6 +443,57 @@
         }
       }
     },
+    "catalog.sort": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sort"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sortowanie"
+          }
+        }
+      }
+    },
+    "catalog.sortBrand": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brand A–Z"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Marka A–Z"
+          }
+        }
+      }
+    },
+    "catalog.sortPrice": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Price"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cena"
+          }
+        }
+      }
+    },
     "common.back": {
       "extractionState": "manual",
       "localizations": {
@@ -1350,13 +1401,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pick one or more e-bikes – the first becomes your main goal. You can also add your own."
+            "value": "Pick one or more e-bikes – the first one you pick becomes your main goal. You can also add your own."
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Wybierz jeden lub kilka e-bike'ów – pierwszy będzie celem głównym. Możesz też dodać własny."
+            "value": "Wybierz jeden lub kilka e-bike'ów – pierwszy wybrany będzie celem głównym. Możesz też dodać własny."
           }
         }
       }
@@ -1493,6 +1544,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nie udało się wczytać zdjęcia."
+          }
+        }
+      }
+    },
+    "photo.fromLink": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From link"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Z linku"
+          }
+        }
+      }
+    },
+    "photo.linkHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paste an image address (https://…). Use photos from the internet for personal use only."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wklej adres zdjęcia (https://…). Zdjęć z internetu używaj tylko na własny użytek."
           }
         }
       }
@@ -1639,13 +1724,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "e.g. Alex"
+            "value": "Your name"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "np. Kuba"
+            "value": "Twoje imię"
           }
         }
       }

@@ -15,11 +15,11 @@
   --separator: rgba(11, 15, 20, 0.08);
 
   /* szkło regular (treść) */
-  --glass-tint: rgba(255, 255, 255, 0.34);
-  --glass-blur: 22px;
-  /* szkło clear (kontrolki) */
-  --glass-clear-tint: rgba(255, 255, 255, 0.12);
-  --glass-clear-blur: 8px;
+  --glass-tint: rgba(255, 255, 255, 0.14);
+  --glass-blur: 14px;
+  /* szkło clear (kontrolki) – prawie bez zmatowienia, jak w iOS 26 */
+  --glass-clear-tint: rgba(255, 255, 255, 0.04);
+  --glass-clear-blur: 3px;
   /* połysk i krawędzie */
   --spec-top: rgba(255, 255, 255, 0.95);
   --spec-bottom: rgba(255, 255, 255, 0.35);
@@ -27,7 +27,7 @@
   --glass-shadow: 0 10px 30px rgba(20, 30, 50, 0.1), 0 1px 3px rgba(20, 30, 50, 0.06);
   --glass-fallback: rgba(250, 252, 253, 0.9);
   /* pastylka zaznaczenia */
-  --pill: rgba(255, 255, 255, 0.62);
+  --pill: rgba(255, 255, 255, 0.45);
   --pill-shadow: 0 2px 10px rgba(20, 30, 50, 0.14);
 
   --accent: #0a84ff;
@@ -62,8 +62,8 @@
     --text-2: rgba(245, 247, 250, 0.62);
     --text-3: rgba(245, 247, 250, 0.4);
     --separator: rgba(255, 255, 255, 0.08);
-    --glass-tint: rgba(28, 32, 40, 0.42);
-    --glass-clear-tint: rgba(255, 255, 255, 0.05);
+    --glass-tint: rgba(28, 32, 40, 0.2);
+    --glass-clear-tint: rgba(255, 255, 255, 0.02);
     --spec-top: rgba(255, 255, 255, 0.32);
     --spec-bottom: rgba(255, 255, 255, 0.1);
     --edge-glow: rgba(255, 255, 255, 0.1);
@@ -94,8 +94,8 @@
   --text-2: rgba(245, 247, 250, 0.62);
   --text-3: rgba(245, 247, 250, 0.4);
   --separator: rgba(255, 255, 255, 0.08);
-  --glass-tint: rgba(28, 32, 40, 0.42);
-  --glass-clear-tint: rgba(255, 255, 255, 0.05);
+  --glass-tint: rgba(28, 32, 40, 0.2);
+  --glass-clear-tint: rgba(255, 255, 255, 0.02);
   --spec-top: rgba(255, 255, 255, 0.32);
   --spec-bottom: rgba(255, 255, 255, 0.1);
   --edge-glow: rgba(255, 255, 255, 0.1);

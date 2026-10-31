@@ -21,7 +21,7 @@ struct ProgressPage: View {
                     amountRow(L10n.tr("home.remaining"), Money.formatShort(model.remaining), color: .secondary)
                 }
                 .padding(10)
-                .glassEffect(.regular, in: .rect(cornerRadius: 16))
+                .glassEffect(.clear, in: .rect(cornerRadius: 16))
             }
             .padding(.horizontal, 4)
         }

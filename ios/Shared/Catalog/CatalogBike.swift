@@ -19,8 +19,19 @@ struct CatalogBike: Codable, Identifiable, Hashable, Sendable {
     let price: Decimal
     let color: String
     var featured: Bool?
+    /// Zdjęcie na wolnej licencji (Wikimedia Commons) – opcjonalne.
+    var imageURL: String?
+    /// Autor / źródło zdjęcia (wymagane przez licencję).
+    var imageCredit: String?
+
+    enum CodingKeys: String, CodingKey {
+        case id, brand, model, category, price, color, featured
+        case imageURL = "image_url"
+        case imageCredit = "image_credit"
+    }
 
     var displayName: String { "\(brand) \(model)" }
+    var image: URL? { imageURL.flatMap(URL.init(string:)) }
     var tint: Color { Color(hex: color) ?? .teal }
 }
 

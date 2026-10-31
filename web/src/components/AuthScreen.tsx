@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../state/AuthContext'
 import { Segmented } from './Segmented'
+import { LanguagePicker } from './LanguagePicker'
 import { BikeIcon } from './Icons'
 
 type Mode = 'signIn' | 'signUp'
@@ -42,6 +43,7 @@ export function AuthScreen() {
 
   return (
     <main className="auth">
+      <LanguagePicker />
       <form className="auth__card glass r-xl" onSubmit={submit}>
         <div className="logo"><BikeIcon size={36} /></div>
         <h1 className="title center">{t('app.title')}</h1>
@@ -72,7 +74,7 @@ export function AuthScreen() {
           )}
           <label className="row">
             <span className="row__label">{t('auth.email')}</span>
-            <input className="row__input" type="email" autoComplete="email" placeholder="ty@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <input className="row__input" type="email" autoComplete="email" placeholder={t('auth.emailPlaceholder')} value={email} onChange={(e) => setEmail(e.target.value)} />
           </label>
           <label className="row">
             <span className="row__label">{t('auth.passwordShort')}</span>

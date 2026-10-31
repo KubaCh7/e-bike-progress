@@ -133,7 +133,7 @@ struct HomeView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(18)
-        .glassEffect(.regular, in: .rect(cornerRadius: 28))
+        .glassEffect(.clear, in: .rect(cornerRadius: 28))
     }
 }
 
@@ -175,7 +175,7 @@ struct ToastView: View {
                 .font(.subheadline.bold())
                 .padding(.horizontal, 16)
                 .padding(.vertical, 10)
-                .glassEffect(.regular.tint(.green.opacity(0.35)), in: .capsule)
+                .glassEffect(.clear.tint(.green.opacity(0.35)), in: .capsule)
                 .padding(.top, 8)
                 .transition(.move(edge: .top).combined(with: .opacity))
                 .task(id: message) {

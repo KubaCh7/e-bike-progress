@@ -313,8 +313,15 @@ final class SyncService {
         }
         var changed = false
         for goal in goals {
-            guard let path = goal.photoURL,
-                  let data = try? await client.storage.from(AppConstants.photoBucket).download(path: path) else { continue }
+            guard let path = goal.photoURL else { continue }
+            let data: Data?
+            if path.hasPrefix("http"), let url = URL(string: path) {
+                // zdjęcie z linku ustawione w wersji web
+                data = try? await URLSession.shared.data(from: url).0
+            } else {
+                data = try? await client.storage.from(AppConstants.photoBucket).download(path: path)
+            }
+            guard let data, UIImage(data: data) != nil else { continue }
             let thumbnail = await Task.detached { UIImage(data: data).flatMap(ImageProcessor.thumbnail) }.value
             goal.photoData = data
             goal.thumbnailData = thumbnail

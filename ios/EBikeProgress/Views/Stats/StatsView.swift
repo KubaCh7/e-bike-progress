@@ -74,7 +74,7 @@ struct StatsView: View {
             }
         }
         .padding(18)
-        .glassEffect(.regular, in: .rect(cornerRadius: 28))
+        .glassEffect(.clear, in: .rect(cornerRadius: 28))
     }
 
     @ViewBuilder
@@ -125,7 +125,7 @@ struct StatsView: View {
                                 .font(.caption.bold().monospacedDigit())
                         }
                         .padding(8)
-                        .glassEffect(.regular, in: .rect(cornerRadius: 12))
+                        .glassEffect(.clear, in: .rect(cornerRadius: 12))
                     }
             }
         }
@@ -175,7 +175,7 @@ struct StatTile: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(14)
-        .glassEffect(.regular, in: .rect(cornerRadius: 22))
+        .glassEffect(.clear, in: .rect(cornerRadius: 22))
     }
 }
 

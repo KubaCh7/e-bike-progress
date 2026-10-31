@@ -25,7 +25,7 @@ struct UpdateBanner: View {
                 }
             }
             .padding(14)
-            .glassEffect(.regular, in: .rect(cornerRadius: 26))
+            .glassEffect(.clear, in: .rect(cornerRadius: 26))
             .transition(.move(edge: .top).combined(with: .opacity))
         }
     }

@@ -28,7 +28,47 @@ struct PhotoPlaceholder: View {
     var bike: CatalogBike?
 
     var body: some View {
-        BikeArtView(category: bike?.category ?? .emtb, tint: bike?.tint ?? .teal)
+        if let bike {
+            CatalogBikeImage(bike: bike)
+        } else {
+            BikeArtView(category: .emtb, tint: .teal)
+        }
+    }
+}
+
+/// Zdjęcie modelu z katalogu (wolna licencja) – ładowane z sieci, z ilustracją jako zapasem.
+struct CatalogBikeImage: View {
+    let bike: CatalogBike
+    var showCredit = false
+
+    var body: some View {
+        Color.clear
+            .overlay {
+                if let url = bike.image {
+                    AsyncImage(url: url, transaction: Transaction(animation: .smooth)) { phase in
+                        switch phase {
+                        case .success(let image):
+                            image.resizable().scaledToFill()
+                        default:
+                            BikeArtView(category: bike.category, tint: bike.tint)
+                        }
+                    }
+                } else {
+                    BikeArtView(category: bike.category, tint: bike.tint)
+                }
+            }
+            .overlay(alignment: .bottomLeading) {
+                if showCredit, bike.image != nil, let credit = bike.imageCredit {
+                    Text(credit)
+                        .font(.system(size: 9, weight: .medium))
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(.black.opacity(0.35), in: .capsule)
+                        .padding(8)
+                }
+            }
+            .clipped()
     }
 }
 

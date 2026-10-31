@@ -29,6 +29,24 @@ final class PhotoPickerViewModel {
         }
     }
 
+    /// Pobiera zdjęcie z podanego linku (https) i kompresuje je.
+    func load(link: URL) async -> ImageProcessor.Result? {
+        isProcessing = true
+        defer { isProcessing = false }
+        do {
+            let (data, response) = try await URLSession.shared.data(from: link)
+            guard (response as? HTTPURLResponse).map({ (200..<300).contains($0.statusCode) }) ?? true else {
+                throw URLError(.badServerResponse)
+            }
+            let result = await Task.detached(priority: .userInitiated) { ImageProcessor.process(data) }.value
+            if result == nil { errorMessage = L10n.tr("photo.error") }
+            return result
+        } catch {
+            errorMessage = L10n.tr("photo.error")
+            return nil
+        }
+    }
+
     /// Kompresuje zdjęcie z aparatu.
     func process(cameraImage: UIImage) async -> ImageProcessor.Result? {
         isProcessing = true

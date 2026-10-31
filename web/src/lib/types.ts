@@ -56,6 +56,12 @@ export interface CatalogBike {
   price: number
   color: string
   featured?: boolean
+  /** Zdjęcie na wolnej licencji (Wikimedia Commons) – opcjonalne. */
+  image_url?: string | null
+  /** Autor / źródło zdjęcia (wymagane przez licencję). */
+  image_credit?: string | null
+  /** Strona pliku z licencją. */
+  image_source?: string | null
 }
 
 export const DEFAULT_GOAL = {

@@ -4,6 +4,7 @@ import { useData } from '../state/DataContext'
 import { bikeName, DEFAULT_GOAL, type CatalogBike } from '../lib/types'
 import { formatMoneyShort } from '../lib/format'
 import { CatalogPicker } from './CatalogPicker'
+import { LanguagePicker } from './LanguagePicker'
 import { GoalModal } from './GoalModal'
 import { ArrowLeftIcon, BikeIcon } from './Icons'
 
@@ -17,7 +18,8 @@ export function Onboarding() {
   const [step, setStep] = useState<'name' | 'bikes'>(profile?.displayName ? 'bikes' : 'name')
   const [name, setName] = useState(profile?.displayName ?? '')
   const owned = goals.map((g) => g.catalogId).filter((id): id is string => !!id)
-  const [selected, setSelected] = useState<string[]>(owned.includes(DEFAULT_GOAL.catalogId) ? [] : [DEFAULT_GOAL.catalogId])
+  // nic nie jest zaznaczone z góry – użytkownik sam wybiera
+  const [selected, setSelected] = useState<string[]>([])
   const [customOpen, setCustomOpen] = useState(false)
   const [busy, setBusy] = useState(false)
 
@@ -69,6 +71,7 @@ export function Onboarding() {
         <span className={step === 'bikes' ? 'is-active' : ''} />
       </div>
 
+      {step === 'name' && <LanguagePicker />}
       {step === 'name' ? (
         <form key="name" className="onboarding__card glass r-xl" onSubmit={saveName}>
           <div className="logo"><BikeIcon size={36} /></div>

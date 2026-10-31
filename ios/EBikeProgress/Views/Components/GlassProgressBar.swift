@@ -22,7 +22,7 @@ struct GlassProgressBar: View {
         }
         .frame(height: height)
         .padding(4)
-        .glassEffect(.regular, in: .capsule)
+        .glassEffect(.clear, in: .capsule)
         .accessibilityElement()
         .accessibilityValue(Money.percent(progress))
     }
@@ -47,7 +47,7 @@ struct StatChip: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(14)
-        .glassEffect(.regular, in: .rect(cornerRadius: 22))
+        .glassEffect(.clear, in: .rect(cornerRadius: 22))
     }
 }
 

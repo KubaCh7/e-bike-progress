@@ -23,7 +23,7 @@ struct QuickAddBar: View {
                                 .font(.subheadline.bold().monospacedDigit())
                                 .padding(.horizontal, 14)
                                 .frame(height: 52)
-                                .glassEffect(.regular.interactive(), in: .capsule)
+                                .glassEffect(.clear.interactive(), in: .capsule)
                         }
                         .buttonStyle(.plain)
                         .glassEffectID("amount-\(amount)", in: glassNamespace)
@@ -36,7 +36,7 @@ struct QuickAddBar: View {
                         Image(systemName: "square.and.pencil")
                             .font(.title3.weight(.semibold))
                             .frame(width: 52, height: 52)
-                            .glassEffect(.regular.interactive(), in: .circle)
+                            .glassEffect(.clear.interactive(), in: .circle)
                     }
                     .buttonStyle(.plain)
                     .glassEffectID("custom", in: glassNamespace)
@@ -59,7 +59,7 @@ struct QuickAddBar: View {
                         }
                     }
                     .foregroundStyle(.white)
-                    .glassEffect(.regular.tint(.teal).interactive(), in: .capsule)
+                    .glassEffect(.clear.tint(.teal).interactive(), in: .capsule)
                 }
                 .buttonStyle(.plain)
                 .glassEffectID("toggle", in: glassNamespace)

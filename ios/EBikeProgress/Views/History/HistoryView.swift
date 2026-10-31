@@ -112,10 +112,10 @@ struct HistoryView: View {
                 .font(.title3.bold().monospacedDigit())
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)
-                .glassEffect(.regular.tint(.teal.opacity(0.4)), in: .capsule)
+                .glassEffect(.clear.tint(.teal.opacity(0.4)), in: .capsule)
         }
         .padding(18)
-        .glassEffect(.regular, in: .rect(cornerRadius: 26))
+        .glassEffect(.clear, in: .rect(cornerRadius: 26))
         .padding(.vertical, 4)
     }
 

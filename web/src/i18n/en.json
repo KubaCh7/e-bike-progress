@@ -127,12 +127,12 @@
   "onboarding.helloTitle": "What's your name?",
   "onboarding.helloText": "We'll use it to greet you in the app.",
   "onboarding.bikesTitle": "{{name}}, what are you saving for?",
-  "onboarding.bikesText": "Pick one or more e-bikes – the first becomes your main goal. You can also add your own.",
+  "onboarding.bikesText": "Pick one or more e-bikes – the first one you pick becomes your main goal. You can also add your own.",
   "onboarding.selected_one": "{{count}} selected",
   "onboarding.selected_other": "{{count}} selected",
   "onboarding.start": "Let's go",
   "profile.name": "Name",
-  "profile.namePlaceholder": "e.g. Alex",
+  "profile.namePlaceholder": "Your name",
   "settings.profile": "Profile",
   "settings.goals": "Goals",
   "settings.appearance": "Look",
@@ -141,5 +141,12 @@
   "common.back": "Back",
   "auth.mode": "Sign in or sign up",
   "auth.passwordShort": "Password",
-  "auth.passwordHint": "min. 6 characters"
+  "auth.passwordHint": "min. 6 characters",
+  "catalog.sort": "Sort",
+  "catalog.sortBrand": "Brand A–Z",
+  "catalog.sortPrice": "Price",
+  "photo.fromLink": "From link",
+  "photo.linkHint": "Paste an image address (https://…). Use photos from the internet for personal use only.",
+  "common.ok": "OK",
+  "auth.emailPlaceholder": "you@example.com"
 }

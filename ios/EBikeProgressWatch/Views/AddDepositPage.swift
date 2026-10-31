@@ -13,7 +13,7 @@ struct AddDepositPage: View {
                     .contentTransition(.numericText(value: model.amount))
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 6)
-                    .glassEffect(.regular, in: .rect(cornerRadius: 16))
+                    .glassEffect(.clear, in: .rect(cornerRadius: 16))
                     .focusable()
                     .digitalCrownRotation(
                         $model.amount,
@@ -65,7 +65,7 @@ struct AddDepositPage: View {
                 Label(confirmation, systemImage: "checkmark.circle.fill")
                     .font(.headline)
                     .padding()
-                    .glassEffect(.regular.tint(.green.opacity(0.4)), in: .rect(cornerRadius: 20))
+                    .glassEffect(.clear.tint(.green.opacity(0.4)), in: .rect(cornerRadius: 20))
                     .transition(.scale.combined(with: .opacity))
                     .task {
                         try? await Task.sleep(for: .seconds(1.5))

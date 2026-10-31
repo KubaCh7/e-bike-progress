@@ -9,7 +9,8 @@ struct OnboardingView: View {
 
     @State private var step = 0
     @State private var name = ""
-    @State private var selected: [String] = [AppConstants.defaultCatalogId]
+    // nic nie jest zaznaczone z góry – użytkownik sam wybiera
+    @State private var selected: [String] = []
     @State private var showCustom = false
     @State private var isSaving = false
     @FocusState private var nameFocused: Bool
@@ -41,12 +42,13 @@ struct OnboardingView: View {
 
     private var nameStep: some View {
         VStack(spacing: 22) {
+            LanguagePicker()
             Spacer()
             Image(systemName: "bicycle")
                 .font(.system(size: 40, weight: .semibold))
                 .foregroundStyle(.white)
                 .frame(width: 92, height: 92)
-                .glassEffect(.regular.tint(.accentColor), in: .rect(cornerRadius: 28))
+                .glassEffect(.clear.tint(.accentColor), in: .rect(cornerRadius: 28))
             Text(L10n.tr("onboarding.helloTitle"))
                 .font(.largeTitle.bold())
                 .multilineTextAlignment(.center)
@@ -60,7 +62,7 @@ struct OnboardingView: View {
                 .submitLabel(.next)
                 .focused($nameFocused)
                 .padding(18)
-                .glassEffect(.regular.interactive(), in: .capsule)
+                .glassEffect(.clear.interactive(), in: .capsule)
                 .onSubmit(saveName)
             Spacer()
             Button(action: saveName) {
@@ -118,7 +120,7 @@ struct OnboardingView: View {
             }
             .padding(.leading, 20)
             .padding(8)
-            .glassEffect(.regular, in: .capsule)
+            .glassEffect(.clear, in: .capsule)
             .padding(.horizontal)
         }
         .toolbar {

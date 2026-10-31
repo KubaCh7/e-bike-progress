@@ -52,7 +52,9 @@ wdrożenie po każdym pushu na `main`; backend: projekt Supabase `e-bike-progres
    5. `20261031000005_realtime.sql` – Realtime (web od razu widzi zmiany z iPhone'a)
    6. `20261031000006_harden_functions.sql` – utwardzenie funkcji (Security Advisor)
    7. `20261031000007_profiles_catalog_config.sql` – profile (imię), katalog e-bike'ów, `app_config`
-   8. `20261031000008_seed_bike_catalog.sql` – 46 popularnych modeli (generowane z `catalog/bikes.json`)
+   8. `20261031000008_seed_bike_catalog.sql` – pierwsza wersja katalogu
+   9. `20261031000009_catalog_images.sql` – kolumny na zdjęcia w katalogu
+   10. `20261031000010_seed_bike_catalog_v2.sql` – 49 modeli ze zdjęciami (generowane z `catalog/bikes.json`)
 
    Alternatywnie Supabase CLI: `supabase link --project-ref <ref>` i `supabase db push`.
 3. **Project Settings → API**: skopiuj **Project URL** i klucz **anon public**.
@@ -192,10 +194,10 @@ grafikę `web/public/ride_pro_sr_placeholder.svg`.
 ## Katalog e-bike'ów, imię i aktualizacje
 
 - **Powitanie**: po założeniu konta (z imieniem) lub pierwszym uruchomieniu aplikacja pyta
-  o imię i pokazuje katalog **46 popularnych modeli** – E-Ride Pro SR/SS, Sur-Ron (Light Bee X,
-  Ultra Bee, Storm Bee…), Talaria (Sting R MX4, XXX, Komodo…), Stark Varg, KTM Freeride E,
+  o imię i pokazuje katalog **49 popularnych modeli** – E-Ride Pro SR/SS, Sur-Ron (Light Bee X,
+  Ultra Bee, Storm Bee…), Talaria (Sting R MX4, XXX, Komodo…), 79Bike Falcon (M, Pro, Pro Limited, M GT), Stark Varg, KTM Freeride E,
   Segway, Super73, Specialized Turbo Levo, Trek Rail, Cube Stereo Hybrid, Kross i inne – albo
-  **własny e-bike**. e-ride pro SR jest zaznaczony domyślnie jako cel główny.
+  **własny e-bike** (sortowanie po marce A–Z lub cenie). Pierwszy wybrany model zostaje celem głównym; gdy nic nie wybierzesz, celem jest e-ride pro SR.
 - Ceny są orientacyjne (polskie ogłoszenia, X 2026; gdzie ich brak – przeliczone z EUR/USD)
   i można je zmienić przy dodawaniu.
 - **Katalog** jest w `catalog/bikes.json` (wbudowany w web i iOS – działa offline) oraz w tabeli
@@ -203,6 +205,12 @@ grafikę `web/public/ride_pro_sr_placeholder.svg`.
   bez aktualizacji aplikacji**. Po zmianie pliku: `python3 catalog/build.py` (kopiuje do web/iOS
   i generuje SQL).
 - **Imię** zmienisz w *Ustawienia → Profil*; nazwę i cenę celu – w edycji celu.
+- **Zdjęcia**: katalog zawiera wyłącznie zdjęcia na wolnych licencjach (Wikimedia Commons,
+  z podpisem autora – pole `image_url` / `image_credit` w `catalog/bikes.json` i tabeli
+  `bike_catalog`); pozostałe modele mają ilustrację w kolorze marki. Każdemu celowi możesz
+  wgrać własne zdjęcie, zrobić je aparatem albo podać **link do zdjęcia z internetu**
+  (opcja „Z linku” – na własny użytek). Nowe zdjęcie do katalogu dla wszystkich dodasz w Supabase:
+  `update bike_catalog set image_url = '…', image_credit = '…' where id = 'talaria-xxx';`
 - **Aktualizacje iOS z poziomu aplikacji**: iOS nie pozwala aplikacji podmienić własnego kodu,
   więc nowe wersje dystrybuuje się przez **TestFlight** (wymaga Apple Developer Program).
   Aplikacja sama sprawdza `app_config.ios_update` w Supabase i pokazuje szklany baner

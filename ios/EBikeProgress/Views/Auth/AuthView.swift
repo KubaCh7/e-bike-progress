@@ -14,6 +14,7 @@ struct AuthView: View {
 
             ScrollView {
                 VStack(spacing: 24) {
+                    LanguagePicker()
                     header
 
                     // natywny segmented picker – szklana pastylka przesuwa się między trybami
@@ -29,7 +30,7 @@ struct AuthView: View {
                                 TextField(L10n.tr("profile.name"), text: $auth.displayName)
                                     .textContentType(.givenName)
                                     .padding(16)
-                                    .glassEffect(.regular, in: .rect(cornerRadius: 18))
+                                    .glassEffect(.clear, in: .rect(cornerRadius: 18))
                                     .transition(.move(edge: .top).combined(with: .opacity))
                             }
                             TextField(L10n.tr("auth.email"), text: $auth.email)
@@ -38,12 +39,12 @@ struct AuthView: View {
                                 .textInputAutocapitalization(.never)
                                 .autocorrectionDisabled()
                                 .padding(16)
-                                .glassEffect(.regular, in: .rect(cornerRadius: 18))
+                                .glassEffect(.clear, in: .rect(cornerRadius: 18))
 
                             SecureField(L10n.tr("auth.password"), text: $auth.password)
                                 .textContentType(isSignUp ? .newPassword : .password)
                                 .padding(16)
-                                .glassEffect(.regular, in: .rect(cornerRadius: 18))
+                                .glassEffect(.clear, in: .rect(cornerRadius: 18))
                         }
                     }
 
@@ -109,7 +110,7 @@ struct AuthView: View {
             Image(systemName: "bicycle")
                 .font(.system(size: 44, weight: .semibold))
                 .frame(width: 96, height: 96)
-                .glassEffect(.regular.tint(.teal.opacity(0.5)), in: .circle)
+                .glassEffect(.clear.tint(.teal.opacity(0.5)), in: .circle)
             Text("e-bike progress")
                 .font(.largeTitle.bold())
             Text(L10n.tr("auth.subtitle"))
@@ -117,6 +118,6 @@ struct AuthView: View {
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
         }
-        .padding(.top, 40)
+        .padding(.top, 4)
     }
 }

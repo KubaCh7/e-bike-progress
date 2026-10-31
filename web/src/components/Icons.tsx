@@ -101,3 +101,9 @@ export const ChevronDownIcon = ({ size, ...p }: IconProps) => (
 export const ArrowLeftIcon = ({ size, ...p }: IconProps) => (
   <svg {...base(size)} {...p}><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
 )
+export const LinkIcon = ({ size, ...p }: IconProps) => (
+  <svg {...base(size)} {...p}><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7" /></svg>
+)
+export const GlobeIcon = ({ size, ...p }: IconProps) => (
+  <svg {...base(size)} {...p}><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18" /></svg>
+)

@@ -13,6 +13,7 @@ struct EBikeProgressApp: App {
                 .environment(coordinator.auth)
                 .environment(coordinator.sync)
                 .environment(coordinator.network)
+                .environment(coordinator.watch)
                 .task { coordinator.start() }
         }
         .modelContainer(coordinator.container)

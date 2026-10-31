@@ -1938,6 +1938,57 @@
           }
         }
       }
+    },
+    "watch.crownHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Turn the Digital Crown to change the amount"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obróć koronkę Digital Crown, aby zmienić kwotę"
+          }
+        }
+      }
+    },
+    "watch.pending": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Waiting for iPhone"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Czeka na iPhone'a"
+          }
+        }
+      }
+    },
+    "watch.reset": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset amount"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyzeruj kwotę"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

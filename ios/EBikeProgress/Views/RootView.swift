@@ -6,6 +6,7 @@ struct RootView: View {
     @AppStorage(SettingsKey.theme) private var theme: AppTheme = .system
     @State private var selectedTab: AppTab = .home
     @Environment(AuthViewModel.self) private var auth
+    @Environment(PhoneConnectivity.self) private var watch
 
     var body: some View {
         Group {
@@ -24,6 +25,8 @@ struct RootView: View {
         }
         .animation(.smooth, value: auth.state)
         .animation(.smooth, value: auth.offlineMode)
+        // zegarek pokazuje teksty w tym samym języku co iPhone
+        .onChange(of: language) { _, _ in watch.pushSnapshot() }
             // nowe id przebudowuje widoki, więc wszystkie teksty od razu biorą nowy język
             .id(language)
             .environment(\.locale, language.locale)
